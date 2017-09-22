@@ -11,12 +11,12 @@
 import Foundation
 
 //TODO: would be cool support things like:
-//		$.object[ $prefs.fieldname ]
+//		$.object[ $.prefs.fieldname ]
 //		$.object[ @.primaryKey ]
 //		$.array[ $.objIndex ]
 //	I'm not sure that those are valid in the jsonpath "spec", but it would be cool
 
-enum PathNode {
+internal enum PathNode {
 	/// $
 	case root
 	
@@ -56,9 +56,16 @@ enum PathNode {
 	/// used internally, to support filters
 	/// evaluates to the JsonValue stored in a register index
 	case registerValue(index: Int)
+    
+    
+    /// used internally
+    case noop
+    indirect case nodes(nodes: [PathNode])
+    indirect case path(base: PathNode, nodes: [PathNode])
 }
 
-extension PathNode {
+
+internal extension PathNode {
 	func process(with json: JsonValue, registers:[JsonValue]) throws -> JsonValue? {
 		switch self {
 		
@@ -135,6 +142,11 @@ extension PathNode {
 			}
 			return try function.evaluate(array: node)
 		
+        case .noop:
+            return json
+            
+        case .nodes(_), .path(_, _):
+            throw JsonPathEvaluateError.unexpectedInternalNode
 		}
 	}
 }

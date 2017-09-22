@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import JsonPathLib
+@testable import SwiftPath
 
 class PathNodeTests: XCTestCase {
 	

@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum ArrayFunction {
+internal enum ArrayFunction {
 	
 	/// smallest value  requires an array of Doubles where count > 0
 	case minimum
@@ -29,7 +29,7 @@ enum ArrayFunction {
 	case length
 }
 
-extension ArrayFunction {
+internal extension ArrayFunction {
 	func evaluate(array: JsonArray) throws -> JsonValue {
 		switch self {
 		

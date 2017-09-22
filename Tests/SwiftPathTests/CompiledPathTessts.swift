@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import JsonPathLib
+@testable import SwiftPath
 
 class CompiledPathTessts: XCTestCase {
 	
@@ -32,7 +32,7 @@ class CompiledPathTessts: XCTestCase {
 	/// $.books[1].author
     func testSimplePathValid() {
 		let nodes: [PathNode] = [.root, .property(name: "books"), .arrayItem(index: 1), .property(name:"author")]
-		let compiledPart = CompiledPathPart(parts: nodes)
+		let compiledPart = SwiftPathPart(parts: nodes)
 		runTest("simple path") {
 			let result = try compiledPart.evaluate(with: bookList, registers: [bookList])
 			try Expecting.string("Neal Stephenson", result: result)
@@ -42,7 +42,7 @@ class CompiledPathTessts: XCTestCase {
 	/// $.books.price.sum()
 	func testCollatePropertyOnArray() {
 		let nodes: [PathNode] = [.root, .property(name: "books"), .property(name:"price"), .function(function: .sum)]
-		let compiledPart = CompiledPathPart(parts: nodes)
+		let compiledPart = SwiftPathPart(parts: nodes)
 		runTest("path with collated property") {
 			let result = try compiledPart.evaluate(with: bookList, registers: [bookList])
 			try Expecting.number(59.68, result: result)

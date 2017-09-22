@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import JsonPathLib
+@testable import SwiftPath
 
 
 func runTest(_ name:String, test: () throws -> Void) {

@@ -7,19 +7,59 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B0266CD61F4B788700FCD856 /* Sources in Resources */ = {isa = PBXBuildFile; fileRef = B0266CD51F4B780800FCD856 /* Sources */; };
-		B0266CD71F4B788800FCD856 /* Sources in Resources */ = {isa = PBXBuildFile; fileRef = B0266CD51F4B780800FCD856 /* Sources */; };
-		B0266CD81F4B788800FCD856 /* Sources in Resources */ = {isa = PBXBuildFile; fileRef = B0266CD51F4B780800FCD856 /* Sources */; };
-		B0266CD91F4B788900FCD856 /* Sources in Resources */ = {isa = PBXBuildFile; fileRef = B0266CD51F4B780800FCD856 /* Sources */; };
 		B0542C721F4B80ED00EB5AA1 /* SwiftPathTests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0542C711F4B80ED00EB5AA1 /* SwiftPathTests_iOS.swift */; };
 		B0542C741F4B80ED00EB5AA1 /* SwiftPath.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0266CA41F4B76A300FCD856 /* SwiftPath.framework */; };
 		B0542C811F4B810200EB5AA1 /* SwiftPathTests_tvOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0542C801F4B810200EB5AA1 /* SwiftPathTests_tvOS.swift */; };
 		B0542C831F4B810200EB5AA1 /* SwiftPath.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0266CBF1F4B76D600FCD856 /* SwiftPath.framework */; };
 		B0542C901F4B811100EB5AA1 /* SwiftPathTests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0542C8F1F4B811100EB5AA1 /* SwiftPathTests_macOS.swift */; };
 		B0542C921F4B811100EB5AA1 /* SwiftPath.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0266CCC1F4B76F800FCD856 /* SwiftPath.framework */; };
-		B0542C981F4B811A00EB5AA1 /* Tests in Resources */ = {isa = PBXBuildFile; fileRef = B0266CD41F4B780800FCD856 /* Tests */; };
-		B0542C991F4B811B00EB5AA1 /* Tests in Resources */ = {isa = PBXBuildFile; fileRef = B0266CD41F4B780800FCD856 /* Tests */; };
-		B0542C9A1F4B811B00EB5AA1 /* Tests in Resources */ = {isa = PBXBuildFile; fileRef = B0266CD41F4B780800FCD856 /* Tests */; };
+		F553E5A51F73E0270068B376 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59C1F73DFBC0068B376 /* Types.swift */; };
+		F553E5A61F73E0270068B376 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5971F73DFBC0068B376 /* Parser.swift */; };
+		F553E5A71F73E0270068B376 /* PathParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5981F73DFBC0068B376 /* PathParser.swift */; };
+		F553E5A81F73E0270068B376 /* PathScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5991F73DFBC0068B376 /* PathScanner.swift */; };
+		F553E5A91F73E0270068B376 /* ArrayFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5931F73DFBC0068B376 /* ArrayFunctions.swift */; };
+		F553E5AA1F73E0270068B376 /* SwiftPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5941F73DFBC0068B376 /* SwiftPath.swift */; };
+		F553E5AB1F73E0270068B376 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5951F73DFBC0068B376 /* Errors.swift */; };
+		F553E5AC1F73E0270068B376 /* PathNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59A1F73DFBC0068B376 /* PathNode.swift */; };
+		F553E5AE1F73E0270068B376 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59C1F73DFBC0068B376 /* Types.swift */; };
+		F553E5AF1F73E0270068B376 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5971F73DFBC0068B376 /* Parser.swift */; };
+		F553E5B01F73E0270068B376 /* PathParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5981F73DFBC0068B376 /* PathParser.swift */; };
+		F553E5B11F73E0270068B376 /* PathScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5991F73DFBC0068B376 /* PathScanner.swift */; };
+		F553E5B21F73E0270068B376 /* ArrayFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5931F73DFBC0068B376 /* ArrayFunctions.swift */; };
+		F553E5B31F73E0270068B376 /* SwiftPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5941F73DFBC0068B376 /* SwiftPath.swift */; };
+		F553E5B41F73E0270068B376 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5951F73DFBC0068B376 /* Errors.swift */; };
+		F553E5B51F73E0270068B376 /* PathNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59A1F73DFBC0068B376 /* PathNode.swift */; };
+		F553E5B71F73E0280068B376 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59C1F73DFBC0068B376 /* Types.swift */; };
+		F553E5B81F73E0280068B376 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5971F73DFBC0068B376 /* Parser.swift */; };
+		F553E5B91F73E0280068B376 /* PathParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5981F73DFBC0068B376 /* PathParser.swift */; };
+		F553E5BA1F73E0280068B376 /* PathScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5991F73DFBC0068B376 /* PathScanner.swift */; };
+		F553E5BB1F73E0280068B376 /* ArrayFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5931F73DFBC0068B376 /* ArrayFunctions.swift */; };
+		F553E5BC1F73E0280068B376 /* SwiftPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5941F73DFBC0068B376 /* SwiftPath.swift */; };
+		F553E5BD1F73E0280068B376 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5951F73DFBC0068B376 /* Errors.swift */; };
+		F553E5BE1F73E0280068B376 /* PathNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59A1F73DFBC0068B376 /* PathNode.swift */; };
+		F553E5C01F73E0280068B376 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59C1F73DFBC0068B376 /* Types.swift */; };
+		F553E5C11F73E0280068B376 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5971F73DFBC0068B376 /* Parser.swift */; };
+		F553E5C21F73E0280068B376 /* PathParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5981F73DFBC0068B376 /* PathParser.swift */; };
+		F553E5C31F73E0280068B376 /* PathScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5991F73DFBC0068B376 /* PathScanner.swift */; };
+		F553E5C41F73E0280068B376 /* ArrayFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5931F73DFBC0068B376 /* ArrayFunctions.swift */; };
+		F553E5C51F73E0280068B376 /* SwiftPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5941F73DFBC0068B376 /* SwiftPath.swift */; };
+		F553E5C61F73E0280068B376 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5951F73DFBC0068B376 /* Errors.swift */; };
+		F553E5C71F73E0280068B376 /* PathNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59A1F73DFBC0068B376 /* PathNode.swift */; };
+		F553E5C91F73E02D0068B376 /* CompiledPathTessts.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59F1F73DFFA0068B376 /* CompiledPathTessts.swift */; };
+		F553E5CA1F73E02D0068B376 /* PathArrayFunctionTestes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A01F73DFFA0068B376 /* PathArrayFunctionTestes.swift */; };
+		F553E5CB1F73E02D0068B376 /* PathNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A11F73DFFA0068B376 /* PathNodeTests.swift */; };
+		F553E5CC1F73E02D0068B376 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A21F73DFFA0068B376 /* TestHelpers.swift */; };
+		F553E5CD1F73E02D0068B376 /* CompiledPathTessts.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59F1F73DFFA0068B376 /* CompiledPathTessts.swift */; };
+		F553E5CE1F73E02D0068B376 /* PathArrayFunctionTestes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A01F73DFFA0068B376 /* PathArrayFunctionTestes.swift */; };
+		F553E5CF1F73E02D0068B376 /* PathNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A11F73DFFA0068B376 /* PathNodeTests.swift */; };
+		F553E5D01F73E02D0068B376 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A21F73DFFA0068B376 /* TestHelpers.swift */; };
+		F553E5D11F73E02D0068B376 /* CompiledPathTessts.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59F1F73DFFA0068B376 /* CompiledPathTessts.swift */; };
+		F553E5D21F73E02D0068B376 /* PathArrayFunctionTestes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A01F73DFFA0068B376 /* PathArrayFunctionTestes.swift */; };
+		F553E5D31F73E02D0068B376 /* PathNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A11F73DFFA0068B376 /* PathNodeTests.swift */; };
+		F553E5D41F73E02D0068B376 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A21F73DFFA0068B376 /* TestHelpers.swift */; };
+		F5B17A761F752A7400D4D813 /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B17A751F752A7400D4D813 /* ParserTests.swift */; };
+		F5B17A771F752A7400D4D813 /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B17A751F752A7400D4D813 /* ParserTests.swift */; };
+		F5B17A781F752A7400D4D813 /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B17A751F752A7400D4D813 /* ParserTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,9 +91,6 @@
 		B0266CB21F4B76BF00FCD856 /* SwiftPath.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftPath.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0266CBF1F4B76D600FCD856 /* SwiftPath.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftPath.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0266CCC1F4B76F800FCD856 /* SwiftPath.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftPath.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B0266CD41F4B780800FCD856 /* Tests */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Tests; sourceTree = "<group>"; };
-		B0266CD51F4B780800FCD856 /* Sources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sources; sourceTree = "<group>"; };
-		B0266CDA1F4B790800FCD856 /* Config */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Config; sourceTree = "<group>"; };
 		B0542C6F1F4B80ED00EB5AA1 /* SwiftPathTests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftPathTests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0542C711F4B80ED00EB5AA1 /* SwiftPathTests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftPathTests_iOS.swift; sourceTree = "<group>"; };
 		B0542C731F4B80ED00EB5AA1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -63,6 +100,21 @@
 		B0542C8D1F4B811000EB5AA1 /* SwiftPathTests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftPathTests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0542C8F1F4B811100EB5AA1 /* SwiftPathTests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftPathTests_macOS.swift; sourceTree = "<group>"; };
 		B0542C911F4B811100EB5AA1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F553E5931F73DFBC0068B376 /* ArrayFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayFunctions.swift; sourceTree = "<group>"; };
+		F553E5941F73DFBC0068B376 /* SwiftPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftPath.swift; sourceTree = "<group>"; };
+		F553E5951F73DFBC0068B376 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		F553E5971F73DFBC0068B376 /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
+		F553E5981F73DFBC0068B376 /* PathParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathParser.swift; sourceTree = "<group>"; };
+		F553E5991F73DFBC0068B376 /* PathScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathScanner.swift; sourceTree = "<group>"; };
+		F553E59A1F73DFBC0068B376 /* PathNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathNode.swift; sourceTree = "<group>"; };
+		F553E59C1F73DFBC0068B376 /* Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
+		F553E59F1F73DFFA0068B376 /* CompiledPathTessts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompiledPathTessts.swift; sourceTree = "<group>"; };
+		F553E5A01F73DFFA0068B376 /* PathArrayFunctionTestes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathArrayFunctionTestes.swift; sourceTree = "<group>"; };
+		F553E5A11F73DFFA0068B376 /* PathNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathNodeTests.swift; sourceTree = "<group>"; };
+		F553E5A21F73DFFA0068B376 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
+		F553E5D61F73E1F00068B376 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F553E5D71F73E1F00068B376 /* SwiftPath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftPath.h; sourceTree = "<group>"; };
+		F5B17A751F752A7400D4D813 /* ParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,14 +217,66 @@
 		B0C71FEA1F4B6C47003991B5 = {
 			isa = PBXGroup;
 			children = (
-				B0266CDA1F4B790800FCD856 /* Config */,
-				B0266CD51F4B780800FCD856 /* Sources */,
-				B0266CD41F4B780800FCD856 /* Tests */,
+				F553E5911F73DFBC0068B376 /* Sources */,
+				F553E59D1F73DFFA0068B376 /* Tests */,
 				B0542C701F4B80ED00EB5AA1 /* SwiftPathTests iOS */,
 				B0542C7F1F4B810200EB5AA1 /* SwiftPathTests tvOS */,
 				B0542C8E1F4B811100EB5AA1 /* SwiftPathTests macOS */,
 				B0266CA51F4B76A300FCD856 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		F553E5911F73DFBC0068B376 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				F553E5921F73DFBC0068B376 /* SwiftPath */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		F553E5921F73DFBC0068B376 /* SwiftPath */ = {
+			isa = PBXGroup;
+			children = (
+				F553E5941F73DFBC0068B376 /* SwiftPath.swift */,
+				F553E59C1F73DFBC0068B376 /* Types.swift */,
+				F553E59A1F73DFBC0068B376 /* PathNode.swift */,
+				F553E5931F73DFBC0068B376 /* ArrayFunctions.swift */,
+				F553E5951F73DFBC0068B376 /* Errors.swift */,
+				F553E5971F73DFBC0068B376 /* Parser.swift */,
+				F553E5981F73DFBC0068B376 /* PathParser.swift */,
+				F553E5991F73DFBC0068B376 /* PathScanner.swift */,
+				F553E5D51F73E1F00068B376 /* Supporting Files */,
+			);
+			path = SwiftPath;
+			sourceTree = "<group>";
+		};
+		F553E59D1F73DFFA0068B376 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				F553E59E1F73DFFA0068B376 /* SwiftPathTests */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		F553E59E1F73DFFA0068B376 /* SwiftPathTests */ = {
+			isa = PBXGroup;
+			children = (
+				F553E59F1F73DFFA0068B376 /* CompiledPathTessts.swift */,
+				F5B17A751F752A7400D4D813 /* ParserTests.swift */,
+				F553E5A01F73DFFA0068B376 /* PathArrayFunctionTestes.swift */,
+				F553E5A11F73DFFA0068B376 /* PathNodeTests.swift */,
+				F553E5A21F73DFFA0068B376 /* TestHelpers.swift */,
+			);
+			path = SwiftPathTests;
+			sourceTree = "<group>";
+		};
+		F553E5D51F73E1F00068B376 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F553E5D61F73E1F00068B376 /* Info.plist */,
+				F553E5D71F73E1F00068B376 /* SwiftPath.h */,
+			);
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -395,7 +499,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0266CD61F4B788700FCD856 /* Sources in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -403,7 +506,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0266CD71F4B788800FCD856 /* Sources in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,7 +513,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0266CD81F4B788800FCD856 /* Sources in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,7 +520,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0266CD91F4B788900FCD856 /* Sources in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -427,7 +527,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0542C981F4B811A00EB5AA1 /* Tests in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -435,7 +534,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0542C991F4B811B00EB5AA1 /* Tests in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -443,7 +541,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0542C9A1F4B811B00EB5AA1 /* Tests in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -454,6 +551,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F553E5A61F73E0270068B376 /* Parser.swift in Sources */,
+				F553E5A51F73E0270068B376 /* Types.swift in Sources */,
+				F553E5A71F73E0270068B376 /* PathParser.swift in Sources */,
+				F553E5AA1F73E0270068B376 /* SwiftPath.swift in Sources */,
+				F553E5AC1F73E0270068B376 /* PathNode.swift in Sources */,
+				F553E5A81F73E0270068B376 /* PathScanner.swift in Sources */,
+				F553E5A91F73E0270068B376 /* ArrayFunctions.swift in Sources */,
+				F553E5AB1F73E0270068B376 /* Errors.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -461,6 +566,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F553E5AF1F73E0270068B376 /* Parser.swift in Sources */,
+				F553E5AE1F73E0270068B376 /* Types.swift in Sources */,
+				F553E5B01F73E0270068B376 /* PathParser.swift in Sources */,
+				F553E5B31F73E0270068B376 /* SwiftPath.swift in Sources */,
+				F553E5B51F73E0270068B376 /* PathNode.swift in Sources */,
+				F553E5B11F73E0270068B376 /* PathScanner.swift in Sources */,
+				F553E5B21F73E0270068B376 /* ArrayFunctions.swift in Sources */,
+				F553E5B41F73E0270068B376 /* Errors.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -468,6 +581,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F553E5B81F73E0280068B376 /* Parser.swift in Sources */,
+				F553E5B71F73E0280068B376 /* Types.swift in Sources */,
+				F553E5B91F73E0280068B376 /* PathParser.swift in Sources */,
+				F553E5BC1F73E0280068B376 /* SwiftPath.swift in Sources */,
+				F553E5BE1F73E0280068B376 /* PathNode.swift in Sources */,
+				F553E5BA1F73E0280068B376 /* PathScanner.swift in Sources */,
+				F553E5BB1F73E0280068B376 /* ArrayFunctions.swift in Sources */,
+				F553E5BD1F73E0280068B376 /* Errors.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -475,6 +596,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F553E5C11F73E0280068B376 /* Parser.swift in Sources */,
+				F553E5C01F73E0280068B376 /* Types.swift in Sources */,
+				F553E5C21F73E0280068B376 /* PathParser.swift in Sources */,
+				F553E5C51F73E0280068B376 /* SwiftPath.swift in Sources */,
+				F553E5C71F73E0280068B376 /* PathNode.swift in Sources */,
+				F553E5C31F73E0280068B376 /* PathScanner.swift in Sources */,
+				F553E5C41F73E0280068B376 /* ArrayFunctions.swift in Sources */,
+				F553E5C61F73E0280068B376 /* Errors.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -482,7 +611,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F553E5CB1F73E02D0068B376 /* PathNodeTests.swift in Sources */,
+				F553E5CC1F73E02D0068B376 /* TestHelpers.swift in Sources */,
+				F5B17A761F752A7400D4D813 /* ParserTests.swift in Sources */,
 				B0542C721F4B80ED00EB5AA1 /* SwiftPathTests_iOS.swift in Sources */,
+				F553E5CA1F73E02D0068B376 /* PathArrayFunctionTestes.swift in Sources */,
+				F553E5C91F73E02D0068B376 /* CompiledPathTessts.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -490,7 +624,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F553E5CF1F73E02D0068B376 /* PathNodeTests.swift in Sources */,
+				F553E5D01F73E02D0068B376 /* TestHelpers.swift in Sources */,
+				F5B17A771F752A7400D4D813 /* ParserTests.swift in Sources */,
 				B0542C811F4B810200EB5AA1 /* SwiftPathTests_tvOS.swift in Sources */,
+				F553E5CE1F73E02D0068B376 /* PathArrayFunctionTestes.swift in Sources */,
+				F553E5CD1F73E02D0068B376 /* CompiledPathTessts.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -498,7 +637,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F553E5D31F73E02D0068B376 /* PathNodeTests.swift in Sources */,
+				F553E5D41F73E02D0068B376 /* TestHelpers.swift in Sources */,
+				F5B17A781F752A7400D4D813 /* ParserTests.swift in Sources */,
 				B0542C901F4B811100EB5AA1 /* SwiftPathTests_macOS.swift in Sources */,
+				F553E5D21F73E02D0068B376 /* PathArrayFunctionTestes.swift in Sources */,
+				F553E5D11F73E02D0068B376 /* CompiledPathTessts.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -554,6 +698,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -577,9 +722,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = Config/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/SwiftPath/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -627,6 +772,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -644,9 +790,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = Config/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/SwiftPath/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.g-mark.SwiftPath-iOS";
@@ -716,7 +862,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = Config/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/SwiftPath/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -731,7 +877,7 @@
 				TARGETED_DEVICE_FAMILY = 4;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
-				WATCHOS_DEPLOYMENT_TARGET = 4.0;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
 		};
@@ -783,7 +929,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = Config/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/SwiftPath/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -797,7 +943,7 @@
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
-				WATCHOS_DEPLOYMENT_TARGET = 4.0;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
 		};
@@ -855,7 +1001,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = Config/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/SwiftPath/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -868,7 +1014,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 11.0;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -922,7 +1068,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = Config/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/SwiftPath/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -933,7 +1079,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 11.0;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -996,10 +1142,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = Config/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/SwiftPath/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.g-mark.SwiftPath-macOS";
@@ -1064,10 +1210,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = Config/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/SwiftPath/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.g-mark.SwiftPath-macOS";
 				PRODUCT_NAME = SwiftPath;
@@ -1083,6 +1229,7 @@
 		B0542C781F4B80ED00EB5AA1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1147,6 +1294,7 @@
 		B0542C791F4B80ED00EB5AA1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1204,6 +1352,7 @@
 		B0542C871F4B810200EB5AA1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1267,6 +1416,7 @@
 		B0542C881F4B810200EB5AA1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1323,6 +1473,7 @@
 		B0542C961F4B811100EB5AA1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1387,6 +1538,7 @@
 		B0542C971F4B811100EB5AA1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1443,12 +1595,64 @@
 		B0C71FEF1F4B6C47003991B5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
 		};
 		B0C71FF01F4B6C47003991B5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 			};
 			name = Release;
 		};
