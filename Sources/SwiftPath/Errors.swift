@@ -21,4 +21,5 @@ public enum JsonPathEvaluateError: Error {
 	case evaluateSubPathFailed
 	case indexOutOfBounds
     case unexpectedInternalNode
+    case invalidJSONString
 }

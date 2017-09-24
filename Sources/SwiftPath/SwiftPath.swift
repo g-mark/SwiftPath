@@ -15,8 +15,9 @@ public struct SwiftPath {
     /// will fail if the json path is invalid
     ///
     /// typical usage:
-    ///     let path = SwiftPath("$.books[0].author")
-    ///     let author = path.evaluate(with: someJsonFromTheWebs)
+    ///     if let path = SwiftPath("$.books[0].author") {
+    ///         let author = path.evaluate(with: someJsonFromTheWebs)
+    ///     }
     ///
     public init?(_ path: String) {
         guard let node = PathParser.parse(path: path) else { return nil }
@@ -35,6 +36,14 @@ public struct SwiftPath {
             registers.append(value)
         }
         return try path.evaluate(with: json, registers: registers)
+    }
+    
+    public func evaluate(with string:String) throws -> JsonValue? {
+        guard let data = string.data(using: String.Encoding.utf8 ) else {
+            throw JsonPathEvaluateError.invalidJSONString;
+        }
+        let json = try JSONSerialization.jsonObject(with: data)
+        return try evaluate(with: json)
     }
 	
     
@@ -66,7 +75,10 @@ struct SwiftPathPart {
 		}
 		
 		for node in parts[1...] {
-			guard let value = current else { throw JsonPathEvaluateError.expectingSomethingNotNil }
+            guard let value = current else {
+                // no json to continue from, return nil
+                return nil
+            }
 			current = try node.process(with: value, registers: registers)
 		}
 		

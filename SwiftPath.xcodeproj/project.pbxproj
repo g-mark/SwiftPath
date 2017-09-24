@@ -13,6 +13,9 @@
 		B0542C831F4B810200EB5AA1 /* SwiftPath.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0266CBF1F4B76D600FCD856 /* SwiftPath.framework */; };
 		B0542C901F4B811100EB5AA1 /* SwiftPathTests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0542C8F1F4B811100EB5AA1 /* SwiftPathTests_macOS.swift */; };
 		B0542C921F4B811100EB5AA1 /* SwiftPath.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0266CCC1F4B76F800FCD856 /* SwiftPath.framework */; };
+		F502B32B1F76908E0057525C /* PathParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F502B32A1F76908E0057525C /* PathParserTests.swift */; };
+		F502B32C1F76908E0057525C /* PathParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F502B32A1F76908E0057525C /* PathParserTests.swift */; };
+		F502B32D1F76908E0057525C /* PathParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F502B32A1F76908E0057525C /* PathParserTests.swift */; };
 		F553E5A51F73E0270068B376 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59C1F73DFBC0068B376 /* Types.swift */; };
 		F553E5A61F73E0270068B376 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5971F73DFBC0068B376 /* Parser.swift */; };
 		F553E5A71F73E0270068B376 /* PathParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5981F73DFBC0068B376 /* PathParser.swift */; };
@@ -100,6 +103,7 @@
 		B0542C8D1F4B811000EB5AA1 /* SwiftPathTests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftPathTests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0542C8F1F4B811100EB5AA1 /* SwiftPathTests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftPathTests_macOS.swift; sourceTree = "<group>"; };
 		B0542C911F4B811100EB5AA1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F502B32A1F76908E0057525C /* PathParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathParserTests.swift; sourceTree = "<group>"; };
 		F553E5931F73DFBC0068B376 /* ArrayFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayFunctions.swift; sourceTree = "<group>"; };
 		F553E5941F73DFBC0068B376 /* SwiftPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftPath.swift; sourceTree = "<group>"; };
 		F553E5951F73DFBC0068B376 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
@@ -263,6 +267,7 @@
 			children = (
 				F553E59F1F73DFFA0068B376 /* CompiledPathTessts.swift */,
 				F5B17A751F752A7400D4D813 /* ParserTests.swift */,
+				F502B32A1F76908E0057525C /* PathParserTests.swift */,
 				F553E5A01F73DFFA0068B376 /* PathArrayFunctionTestes.swift */,
 				F553E5A11F73DFFA0068B376 /* PathNodeTests.swift */,
 				F553E5A21F73DFFA0068B376 /* TestHelpers.swift */,
@@ -616,6 +621,7 @@
 				F5B17A761F752A7400D4D813 /* ParserTests.swift in Sources */,
 				B0542C721F4B80ED00EB5AA1 /* SwiftPathTests_iOS.swift in Sources */,
 				F553E5CA1F73E02D0068B376 /* PathArrayFunctionTestes.swift in Sources */,
+				F502B32B1F76908E0057525C /* PathParserTests.swift in Sources */,
 				F553E5C91F73E02D0068B376 /* CompiledPathTessts.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -629,6 +635,7 @@
 				F5B17A771F752A7400D4D813 /* ParserTests.swift in Sources */,
 				B0542C811F4B810200EB5AA1 /* SwiftPathTests_tvOS.swift in Sources */,
 				F553E5CE1F73E02D0068B376 /* PathArrayFunctionTestes.swift in Sources */,
+				F502B32C1F76908E0057525C /* PathParserTests.swift in Sources */,
 				F553E5CD1F73E02D0068B376 /* CompiledPathTessts.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -642,6 +649,7 @@
 				F5B17A781F752A7400D4D813 /* ParserTests.swift in Sources */,
 				B0542C901F4B811100EB5AA1 /* SwiftPathTests_macOS.swift in Sources */,
 				F553E5D21F73E02D0068B376 /* PathArrayFunctionTestes.swift in Sources */,
+				F502B32D1F76908E0057525C /* PathParserTests.swift in Sources */,
 				F553E5D11F73E02D0068B376 /* CompiledPathTessts.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1145,7 +1153,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Sources/SwiftPath/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.g-mark.SwiftPath-macOS";
@@ -1213,7 +1221,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Sources/SwiftPath/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.g-mark.SwiftPath-macOS";
 				PRODUCT_NAME = SwiftPath;

@@ -2,7 +2,8 @@
 //  ParserTests.swift
 //  SwiftPath
 //
-//  Created by Think Space Studio on 9/22/17.
+//  Created by Steven Grosmark on 9/22/17.
+//  Copyright © 2017 Steven Grosmark. All rights reserved.
 //
 
 import XCTest
