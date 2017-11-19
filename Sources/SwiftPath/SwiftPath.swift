@@ -61,10 +61,10 @@ public struct SwiftPath {
 
 
 
-struct SwiftPathPart {
+internal struct SwiftPathPart {
 	let parts: [PathNode]
 	
-	func evaluate(with json:JsonValue, registers:[JsonValue]) throws -> JsonValue? {
+	internal func evaluate(with json:JsonValue, registers:[JsonValue]) throws -> JsonValue? {
 		guard parts.count > 0 else { throw JsonPathEvaluateError.emptyPath }
 		var current:JsonValue?
 		

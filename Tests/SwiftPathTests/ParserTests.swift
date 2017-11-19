@@ -83,7 +83,7 @@ class ParserTests: XCTestCase {
         XCTAssertNil(tup)
     }
     
-    /// one parser folled by another
+    /// one parser followed by another
     func testSequence() {
         let helloParser = literal(string: "hello")
         let worldParser = literal(string: "world")

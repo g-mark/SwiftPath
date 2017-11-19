@@ -67,7 +67,7 @@ internal enum PathNode {
 
 
 internal extension PathNode {
-	func process(with json: JsonValue, registers:[JsonValue]) throws -> JsonValue? {
+	internal func process(with json: JsonValue, registers:[JsonValue]) throws -> JsonValue? {
 		switch self {
 		
 		case .root:
