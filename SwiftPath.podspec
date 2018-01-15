@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name          = "SwiftPath"
-  s.version       = "0.1.0"
+  s.version       = "0.1.1"
   s.summary       = "JSONPath for Swift"
   s.homepage      = "https://github.com/g-mark/SwiftPath"
   s.license       = "MIT"
