@@ -1,4 +1,9 @@
 # SwiftPath
+[![Build Status](https://travis-ci.org/g-mark/SwiftPath.svg?branch=develop)](https://travis-ci.org/g-mark/SwiftPath)
+[![Swift 4 compatible](https://img.shields.io/badge/swift4-compatible-4BC51D.svg?style=flat)](https://developer.apple.com/swift)
+[![CocoaPods compatible](https://img.shields.io/cocoapods/v/SwiftPath.svg)](https://cocoapods.org/pods/SwiftPath)
+[![License: MIT](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://raw.githubusercontent.com/g-mark/SwiftPath/master/LICENSE)
+
 JSONPath for Swift
 
 ### Problem
@@ -11,7 +16,7 @@ SwiftPath allows you to keep your data source **and** your data mapping dynamic.
 
 ## Installation
 
-Analytics is available through [CocoaPods](http://cocoapods.org) and [Carthage](https://github.com/Carthage/Carthage).
+SwiftPath is available through [CocoaPods](http://cocoapods.org) and [Carthage](https://github.com/Carthage/Carthage).
 
 ### CocoaPods
 
