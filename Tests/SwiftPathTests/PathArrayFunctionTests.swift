@@ -1,5 +1,5 @@
 //
-//  PathArrayFunctionTestes.swift
+//  PathArrayFunctionTests.swift
 //  JsonPathTests
 //
 //  Created by Steven Grosmark on 8/20/17.
@@ -9,7 +9,7 @@
 import XCTest
 @testable import SwiftPath
 
-class PathArrayFunctionTestes: XCTestCase {
+class PathArrayFunctionTests: XCTestCase {
 	
 	let positives = [ 980.87, 509.42, 11.98, 165.31, 791.29, 834.18, 68.69, 817.87, 994.97, 862.40 ]
 	let negatives = [ -194.65, -790.89, -696.61, -322.70, -803.83, -57.13, -162.76, -646.61, -260.87, -934.49 ]
