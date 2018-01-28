@@ -27,7 +27,7 @@ public struct SwiftPath {
     }
     
     /// evaluate the SwiftPath on the specified JSON value
-    public func evaluate(with json:JsonValue) throws -> JsonValue? {
+    public func evaluate(with json: JsonValue) throws -> JsonValue? {
         var registers = [json]
         for part in precompute {
             guard let value = try part.evaluate(with: json, registers: registers) else {
@@ -38,10 +38,14 @@ public struct SwiftPath {
         return try path.evaluate(with: json, registers: registers)
     }
     
-    public func evaluate(with string:String) throws -> JsonValue? {
+    public func evaluate(with string: String) throws -> JsonValue? {
         guard let data = string.data(using: String.Encoding.utf8 ) else {
             throw JsonPathEvaluateError.invalidJSONString;
         }
+        return try evaluate(with: data)
+    }
+    
+    public func evaluate(with data: Data) throws -> JsonValue? {
         let json = try JSONSerialization.jsonObject(with: data)
         return try evaluate(with: json)
     }
@@ -53,7 +57,7 @@ public struct SwiftPath {
 	/// paths that need to be pre-computed
 	private let precompute: [SwiftPathPart]
 	
-	internal init(path: SwiftPathPart, precompute:[SwiftPathPart]? = nil) {
+	internal init(path: SwiftPathPart, precompute: [SwiftPathPart]? = nil) {
 		self.path = path
 		self.precompute = precompute ?? []
 	}

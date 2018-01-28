@@ -31,8 +31,15 @@ internal enum PathNode {
 	
 	/// ['name1', 'name2']
 	/// executed on an object, evaluates to a JsonObject with only those properties
-	case properties(names: [String])
+    /// can optionally provide a new name for each property, like this:
+    ///   ['name1', 'name2'=>'newName']
+    case properties(names: [String], rename:[String])
 	
+    /// .*
+    /// executed on an object
+    /// evaluates to an array of JsonValues containing all the values of the object (keys are lost)
+    case values
+    
 	/// [0]; or [-2] (2nd from the end)
 	/// executed on an Array, evaluates to a JsonValue
 	case arrayItem(index: Int)
@@ -94,16 +101,36 @@ internal extension PathNode {
 			}
 			throw JsonPathEvaluateError.expectingAnObject
 		
-		case .properties(let names):
-			guard let node = json as? JsonObject else {
-				throw JsonPathEvaluateError.expectingAnObject
-			}
-			var reducedObject: JsonObject = [:]
-			for name in names {
-				reducedObject[name] = node[name]
-			}
-			return reducedObject
+		case .properties(let names, let rename):
+            if let node = json as? JsonObject {
+                var reducedObject: JsonObject = [:]
+                for (sourceName, targetName) in zip(names, rename) {
+                    reducedObject[targetName] = node[sourceName]
+                }
+                return reducedObject
+            }
+            guard let array = json as? JsonArray else {
+                throw JsonPathEvaluateError.expectingAnArray
+            }
+            var values = JsonArray()
+            for obj in array {
+                guard let node = obj as? JsonObject else {
+                    throw JsonPathEvaluateError.expectingAnObject
+                }
+                var reducedObject: JsonObject = [:]
+                for (sourceName, targetName) in zip(names, rename) {
+                    reducedObject[targetName] = node[sourceName]
+                }
+                values.append(reducedObject)
+            }
+            return values
 		
+        case .values:
+            guard let node = json as? JsonObject else {
+                throw JsonPathEvaluateError.expectingAnObject
+            }
+            return Array(node.values)
+            
 		case .arrayItem(let index):
 			guard let node = json as? JsonArray else {
 				throw JsonPathEvaluateError.expectingAnArray

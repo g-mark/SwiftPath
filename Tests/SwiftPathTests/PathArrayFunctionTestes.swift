@@ -109,13 +109,6 @@ class PathArrayFunctionTestes: XCTestCase {
 		// expected precision
 		let precision = 1E-10
 		
-		// some oddball comparisons that came up:
-		//  comparing -487.054 with -487.054 - diff is 1.13686837721616e-13
-		//  comparing -20.671 with -20.671 - diff is 3.5527136788005e-15
-		//  comparing 365.22564369989 with 365.225643699891 - diff is 1.36424205265939e-12
-		//  comparing 302.63954467981 with 302.639544679806 - diff is 4.49063009000383e-12
-		//  comparing 59.232366903577 with 59.2323669035773 - diff is 3.05533376376843e-13
-		
 		for test in tests {
 			do {
 				if let result = try test.function.evaluate(array: test.numbers) as? Double {
@@ -127,7 +120,7 @@ class PathArrayFunctionTestes: XCTestCase {
 						equal = result.isNaN
 					}
 					else {
-						equal = abs(test.expectedResult - result) < precision
+                        equal = abs(test.expectedResult - result) < precision
 					}
 					XCTAssert(equal, "\(test.function) failed: expecting \(test.expectedResult) got \(result) for \(test.numbers)")
 				}
@@ -140,5 +133,4 @@ class PathArrayFunctionTestes: XCTestCase {
 			}
 		}
 	}
-    
 }
