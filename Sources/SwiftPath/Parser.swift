@@ -18,11 +18,14 @@ extension Parser {
         return (result, remainder.contextString)
     }
     
-    func followed(by rparser:Parser) -> Parser<[T]> {
+    func followed(by rparser:Parser, required: Bool = true) -> Parser<[T]> {
         return Parser<[T]>(parse: { scanner in
             guard let (lvalue, lscanner) = self.parse(scanner) else { return nil }
-            guard let (rvalue, rscanner) = rparser.parse(lscanner) else { return nil }
-            return ([lvalue, rvalue], rscanner)
+            if let (rvalue, rscanner) = rparser.parse(lscanner) {
+                return ([lvalue, rvalue], rscanner)
+            }
+            guard !required else { return nil }
+            return ([lvalue], lscanner)
         })
     }
     func followed(by rparsers:[Parser]) -> Parser<[T]> {
