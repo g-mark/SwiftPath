@@ -1,0 +1,12 @@
+[
+ {
+ "name": "Cryptocurrency Market Capitalizations",
+ "uri": "https://api.coinmarketcap.com/v1/ticker/",
+ "path": "$['name', 'symbol', 'price_usd'=>'usd']"
+ },
+ {
+ "name": "CoinBin",
+ "uri": "https://coinbin.org/coins",
+ "path": "$.coins.*['name', 'ticker'=>'symbol', 'usd']"
+ }
+]
