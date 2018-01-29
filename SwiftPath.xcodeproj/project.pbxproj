@@ -49,15 +49,15 @@
 		F553E5C61F73E0280068B376 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5951F73DFBC0068B376 /* Errors.swift */; };
 		F553E5C71F73E0280068B376 /* PathNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59A1F73DFBC0068B376 /* PathNode.swift */; };
 		F553E5C91F73E02D0068B376 /* CompiledPathTessts.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59F1F73DFFA0068B376 /* CompiledPathTessts.swift */; };
-		F553E5CA1F73E02D0068B376 /* PathArrayFunctionTestes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A01F73DFFA0068B376 /* PathArrayFunctionTestes.swift */; };
+		F553E5CA1F73E02D0068B376 /* PathArrayFunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A01F73DFFA0068B376 /* PathArrayFunctionTests.swift */; };
 		F553E5CB1F73E02D0068B376 /* PathNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A11F73DFFA0068B376 /* PathNodeTests.swift */; };
 		F553E5CC1F73E02D0068B376 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A21F73DFFA0068B376 /* TestHelpers.swift */; };
 		F553E5CD1F73E02D0068B376 /* CompiledPathTessts.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59F1F73DFFA0068B376 /* CompiledPathTessts.swift */; };
-		F553E5CE1F73E02D0068B376 /* PathArrayFunctionTestes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A01F73DFFA0068B376 /* PathArrayFunctionTestes.swift */; };
+		F553E5CE1F73E02D0068B376 /* PathArrayFunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A01F73DFFA0068B376 /* PathArrayFunctionTests.swift */; };
 		F553E5CF1F73E02D0068B376 /* PathNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A11F73DFFA0068B376 /* PathNodeTests.swift */; };
 		F553E5D01F73E02D0068B376 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A21F73DFFA0068B376 /* TestHelpers.swift */; };
 		F553E5D11F73E02D0068B376 /* CompiledPathTessts.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59F1F73DFFA0068B376 /* CompiledPathTessts.swift */; };
-		F553E5D21F73E02D0068B376 /* PathArrayFunctionTestes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A01F73DFFA0068B376 /* PathArrayFunctionTestes.swift */; };
+		F553E5D21F73E02D0068B376 /* PathArrayFunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A01F73DFFA0068B376 /* PathArrayFunctionTests.swift */; };
 		F553E5D31F73E02D0068B376 /* PathNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A11F73DFFA0068B376 /* PathNodeTests.swift */; };
 		F553E5D41F73E02D0068B376 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5A21F73DFFA0068B376 /* TestHelpers.swift */; };
 		F5B17A761F752A7400D4D813 /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B17A751F752A7400D4D813 /* ParserTests.swift */; };
@@ -113,7 +113,7 @@
 		F553E59A1F73DFBC0068B376 /* PathNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathNode.swift; sourceTree = "<group>"; };
 		F553E59C1F73DFBC0068B376 /* Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
 		F553E59F1F73DFFA0068B376 /* CompiledPathTessts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompiledPathTessts.swift; sourceTree = "<group>"; };
-		F553E5A01F73DFFA0068B376 /* PathArrayFunctionTestes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathArrayFunctionTestes.swift; sourceTree = "<group>"; };
+		F553E5A01F73DFFA0068B376 /* PathArrayFunctionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathArrayFunctionTests.swift; sourceTree = "<group>"; };
 		F553E5A11F73DFFA0068B376 /* PathNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathNodeTests.swift; sourceTree = "<group>"; };
 		F553E5A21F73DFFA0068B376 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		F553E5D61F73E1F00068B376 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -268,7 +268,7 @@
 				F553E59F1F73DFFA0068B376 /* CompiledPathTessts.swift */,
 				F5B17A751F752A7400D4D813 /* ParserTests.swift */,
 				F502B32A1F76908E0057525C /* PathParserTests.swift */,
-				F553E5A01F73DFFA0068B376 /* PathArrayFunctionTestes.swift */,
+				F553E5A01F73DFFA0068B376 /* PathArrayFunctionTests.swift */,
 				F553E5A11F73DFFA0068B376 /* PathNodeTests.swift */,
 				F553E5A21F73DFFA0068B376 /* TestHelpers.swift */,
 			);
@@ -620,7 +620,7 @@
 				F553E5CC1F73E02D0068B376 /* TestHelpers.swift in Sources */,
 				F5B17A761F752A7400D4D813 /* ParserTests.swift in Sources */,
 				B0542C721F4B80ED00EB5AA1 /* SwiftPathTests_iOS.swift in Sources */,
-				F553E5CA1F73E02D0068B376 /* PathArrayFunctionTestes.swift in Sources */,
+				F553E5CA1F73E02D0068B376 /* PathArrayFunctionTests.swift in Sources */,
 				F502B32B1F76908E0057525C /* PathParserTests.swift in Sources */,
 				F553E5C91F73E02D0068B376 /* CompiledPathTessts.swift in Sources */,
 			);
@@ -634,7 +634,7 @@
 				F553E5D01F73E02D0068B376 /* TestHelpers.swift in Sources */,
 				F5B17A771F752A7400D4D813 /* ParserTests.swift in Sources */,
 				B0542C811F4B810200EB5AA1 /* SwiftPathTests_tvOS.swift in Sources */,
-				F553E5CE1F73E02D0068B376 /* PathArrayFunctionTestes.swift in Sources */,
+				F553E5CE1F73E02D0068B376 /* PathArrayFunctionTests.swift in Sources */,
 				F502B32C1F76908E0057525C /* PathParserTests.swift in Sources */,
 				F553E5CD1F73E02D0068B376 /* CompiledPathTessts.swift in Sources */,
 			);
@@ -648,7 +648,7 @@
 				F553E5D41F73E02D0068B376 /* TestHelpers.swift in Sources */,
 				F5B17A781F752A7400D4D813 /* ParserTests.swift in Sources */,
 				B0542C901F4B811100EB5AA1 /* SwiftPathTests_macOS.swift in Sources */,
-				F553E5D21F73E02D0068B376 /* PathArrayFunctionTestes.swift in Sources */,
+				F553E5D21F73E02D0068B376 /* PathArrayFunctionTests.swift in Sources */,
 				F502B32D1F76908E0057525C /* PathParserTests.swift in Sources */,
 				F553E5D11F73E02D0068B376 /* CompiledPathTessts.swift in Sources */,
 			);
