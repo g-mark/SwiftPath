@@ -3,3 +3,18 @@ os: osx
 osx_image: xcode9.2
 xcode_project: SwiftPath.xcodeproj
 xcode_scheme: "SwiftPath iOS"
+
+env:
+  global:
+    - CC_TEST_REPORTER_ID=42b18e4c24f263181042103e7d275fa5bac381724107eff0e14d2340cd346bfa
+language: ruby
+rvm:
+  - 2.2.0
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+script:
+  - bundle exec rspec
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
