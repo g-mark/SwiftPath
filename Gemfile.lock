@@ -1,4 +1,5 @@
 GEM
+  remote: https://rubygems.org/
   specs:
     ansi (1.5.0)
     diff-lcs (1.3)
