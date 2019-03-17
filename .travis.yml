@@ -18,7 +18,7 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
-  #- xcodebuild build test -project SwiftPath.xcodeproj -scheme "SwiftPath iOS" -configuration Debug CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+  - xcodebuild build test -project SwiftPath.xcodeproj -scheme "SwiftPath iOS" -configuration Debug CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
   - bundle exec rspec
 
 after_script:
