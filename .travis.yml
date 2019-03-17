@@ -15,6 +15,7 @@ rvm:
 
 before_install:
   - gem install bundler
+  - gem install xcpretty --no-ri --no-rdoc
 
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-darwin-amd64 > ./cc-test-reporter
