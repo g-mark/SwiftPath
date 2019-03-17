@@ -7,7 +7,7 @@ xcode_destination: platform=iOS Simulator,OS=11.3,name=iPhone 8
 
 language: ruby
 rvm:
-  - 2.2.0
+  - 2.5.0
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-darwin-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
