@@ -41,7 +41,7 @@ public struct SwiftPath {
     public func evaluate(with string: String) throws -> JsonValue? {
         guard let data = string.data(using: String.Encoding.utf8 ) else {
             throw JsonPathEvaluateError.invalidJSONString;
-        }f
+        }
         return try evaluate(with: data)
     }
     
