@@ -8,11 +8,15 @@ xcode_destination: platform=iOS Simulator,OS=11.3,name=iPhone 8
 language: ruby
 rvm:
   - 2.5.0
+
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-darwin-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
+
 script:
+  - xcodebuild build test -project SwiftPath.xcodeproj -scheme "SwiftPath iOS" -configuration Debug CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
   - bundle exec rspec
+
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
