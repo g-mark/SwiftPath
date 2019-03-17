@@ -22,8 +22,8 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
-  - xcodebuild clean build test -project SwiftPath.xcodeproj -scheme "SwiftPath iOS" -configuration Debug -destination "platform=iOS Simulator,OS=11.3,name=iPhone 8" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
   - bundle exec rspec
+  - xcodebuild -project SwiftPath.xcodeproj -scheme "SwiftPath iOS" -configuration Debug -destination "platform=iOS Simulator,OS=11.3,name=iPhone 8" -UseModernBuildSystem=NO clean test | xcpretty --test --color
 
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
