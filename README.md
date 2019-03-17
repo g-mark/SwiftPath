@@ -29,3 +29,6 @@ pod "SwiftPath"
 ```
 github "g-mark/SwiftPath" "master"
 ```
+
+## References
+[Jayway JsonPath](https://github.com/json-path/JsonPath) - A Java DSL for reading JSON documents.
