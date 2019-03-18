@@ -1,6 +1,13 @@
 language: swift
 os: osx
 osx_image: xcode10.1
+# matrix:
+#   include:
+#     - os: osx
+#       osx_image: xcode10.1
+#       language: swift
+#       env: 
+#         - SWIFT_VERSION="3.2"
 
 env:
   global:
@@ -20,7 +27,14 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
-  - xcodebuild -project SwiftPath.xcodeproj -scheme "SwiftPath iOS" -configuration Debug -destination "platform=iOS Simulator,OS=11.3,name=iPhone 8" -UseModernBuildSystem=NO clean test | xcpretty --test --color
+  - xcodebuild \
+    -project SwiftPath.xcodeproj \
+    -scheme "SwiftPath iOS" \
+    -configuration Debug \
+    -destination "platform=iOS Simulator,OS=11.3,name=iPhone 8" \
+    -UseModernBuildSystem=NO \
+    -enableCodeCoverage YES clean test \
+    \| xcpretty --simple --color --report junit --report html
   #- bundle exec rspec
 
 after_script:
