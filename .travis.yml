@@ -27,14 +27,14 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
-  - xcodebuild \
-    -project SwiftPath.xcodeproj \
-    -scheme "SwiftPath iOS" \
-    -configuration Debug \
-    -destination "platform=iOS Simulator,OS=11.3,name=iPhone 8" \
-    -UseModernBuildSystem=NO \
-    -enableCodeCoverage YES clean test \
-    \| xcpretty --simple --color --report junit --report html
+  - xcodebuild
+    -project SwiftPath.xcodeproj
+    -scheme "SwiftPath iOS"
+    -configuration Debug
+    -destination "platform=iOS Simulator,OS=11.3,name=iPhone 8"
+    -UseModernBuildSystem=NO
+    -enableCodeCoverage YES clean test
+    | xcpretty --simple --color --report junit --report html
   #- bundle exec rspec
 
 after_script:
