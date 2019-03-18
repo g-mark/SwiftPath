@@ -31,13 +31,34 @@ script:
     -project SwiftPath.xcodeproj
     -scheme "SwiftPath iOS"
     -configuration Debug
-    -destination "platform=iOS Simulator,OS=11.3,name=iPhone 8"
+    -destination "platform=iOS Simulator,OS=10.3.1,name=iPhone 6"
     -UseModernBuildSystem=NO
     CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
     SWIFT_VERSION="3.2"
     -enableCodeCoverage YES clean test
     | xcpretty --simple --color --report junit --report html
-  #- bundle exec rspec
+
+  - xcodebuild
+    -project SwiftPath.xcodeproj
+    -scheme "SwiftPath iOS"
+    -configuration Debug
+    -destination "platform=iOS Simulator,OS=11.3,name=iPhone 7"
+    -UseModernBuildSystem=NO
+    CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+    SWIFT_VERSION="4.0"
+    -enableCodeCoverage YES clean test
+    | xcpretty --simple --color --report junit --report html
+
+  - xcodebuild
+    -project SwiftPath.xcodeproj
+    -scheme "SwiftPath iOS"
+    -configuration Debug
+    -destination "platform=iOS Simulator,OS=12.1,name=iPhone 8"
+    -UseModernBuildSystem=NO
+    CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+    SWIFT_VERSION="4.2"
+    -enableCodeCoverage YES clean test
+    | xcpretty --simple --color --report junit --report html
 
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
