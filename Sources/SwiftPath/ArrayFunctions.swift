@@ -29,37 +29,33 @@ internal enum ArrayFunction {
 	case length
 }
 
-internal extension ArrayFunction {
-	func evaluate(array: JsonArray) throws -> JsonValue {
+extension ArrayFunction {
+    
+	internal func evaluate(array: JsonArray) throws -> JsonValue {
 		switch self {
 		
 		case .minimum:
-			guard array.count > 0 else { throw JsonPathEvaluateError.expectingAnArrayWithSomeValues }
-			let doubles: [Double] = array.flatMap({ $0 as? Double })
-			guard doubles.count == array.count else { throw JsonPathEvaluateError.expectingANumber }
+            guard array.count > 0 else { throw JsonPathEvaluateError.expectingAnArrayWithSomeValues }
+            let doubles = try array.doubles()
 			return doubles.reduce(doubles[0], { $0 < $1 ? $0 : $1 })
 		
 		case .maximum:
-			guard array.count > 0 else { throw JsonPathEvaluateError.expectingAnArrayWithSomeValues }
-			let doubles: [Double] = array.flatMap({ $0 as? Double })
-			guard doubles.count == array.count else { throw JsonPathEvaluateError.expectingANumber }
+            guard array.count > 0 else { throw JsonPathEvaluateError.expectingAnArrayWithSomeValues }
+            let doubles = try array.doubles()
 			return doubles.reduce(doubles[0], { $0 > $1 ? $0 : $1 })
 		
 		case .average:
-			guard array.count > 0 else { throw JsonPathEvaluateError.expectingAnArrayWithSomeValues }
-			let doubles: [Double] = array.flatMap({ $0 as? Double })
-			guard doubles.count == array.count else { throw JsonPathEvaluateError.expectingANumber }
+            guard array.count > 0 else { throw JsonPathEvaluateError.expectingAnArrayWithSomeValues }
+            let doubles = try array.doubles()
 			return doubles.reduce(0, {$0 + $1}) / Double(doubles.count)
 		
 		case .sum:
-			let doubles: [Double] = array.flatMap({ $0 as? Double })
-			guard doubles.count == array.count else { throw JsonPathEvaluateError.expectingANumber }
+            let doubles = try array.doubles()
 			return doubles.reduce(0, {$0 + $1})
 		
 		case .standardDeviation:
 			guard array.count >= 2 else { throw JsonPathEvaluateError.expectingAnArrayWithTwoOrMoreValues }
-			let doubles: [Double] = array.flatMap({ $0 as? Double })
-			guard doubles.count == array.count else { throw JsonPathEvaluateError.expectingANumber }
+            let doubles = try array.doubles()
 			let length = Double(doubles.count)
 			let avg = doubles.reduce(0, {$0 + $1}) / length
 			let sumOfSquaredAvgDiff = doubles.map { pow($0 - avg, 2.0)}.reduce(0, {$0 + $1})
@@ -69,4 +65,5 @@ internal extension ArrayFunction {
 			return Double(array.count)
 		}
 	}
+    
 }
