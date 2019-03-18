@@ -90,6 +90,25 @@ class PathParserTests: XCTestCase {
         XCTAssertEqual(name, "property")
     }
     
+    func testSingleQuotedMultiWordPropertyOnRoot() {
+        let result = PathParser.parse(path: "$['property & more']")
+        XCTAssertNotNil(result)
+        guard case let .path(base, nodes) = result! else {
+            XCTFail("PathParser.parse returned unexpected node type")
+            return
+        }
+        guard case .root = base else {
+            XCTFail("expected a root node")
+            return
+        }
+        XCTAssert(nodes.count == 1)
+        guard case let .property(name) = nodes[0] else {
+            XCTFail("expecting a property node")
+            return
+        }
+        XCTAssertEqual(name, "property & more")
+    }
+    
     func testDoubleQuotedPropertyOnRoot() {
         let result = PathParser.parse(path: "$[\"property\"]")
         XCTAssertNotNil(result)
@@ -107,6 +126,25 @@ class PathParserTests: XCTestCase {
             return
         }
         XCTAssertEqual(name, "property")
+    }
+    
+    func testDoubleQuotedMultiWordPropertyOnRoot() {
+        let result = PathParser.parse(path: "$[\"property & more\"]")
+        XCTAssertNotNil(result)
+        guard case let .path(base, nodes) = result! else {
+            XCTFail("PathParser.parse returned unexpected node type")
+            return
+        }
+        guard case .root = base else {
+            XCTFail("expected a root node")
+            return
+        }
+        XCTAssert(nodes.count == 1)
+        guard case let .property(name) = nodes[0] else {
+            XCTFail("expecting a property node")
+            return
+        }
+        XCTAssertEqual(name, "property & more")
     }
     
     func testQuotedPropertiesOnRoot() {

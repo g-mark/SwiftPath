@@ -52,7 +52,7 @@ internal struct PathParser {
     private static let SingleQuote = literal(string: "'")
     private static let Comma = pattern(string: "\\s*,\\s*")
     
-    private static let SubscriptPropertyName = pattern(string: "[^ \t\r\n\"\']+")
+    private static let SubscriptPropertyName = pattern(string: "[^\t\r\n\"\']+")
     private static let QuotedSubscriptProperty = Quote.followed(by: [SubscriptPropertyName, Quote]).map { $0[1] }
     private static let SingleQuotedSubscriptProperty = SingleQuote.followed(by: [SubscriptPropertyName, SingleQuote]).map { $0[1] }
     
