@@ -8,6 +8,29 @@ osx_image: xcode10.1
 #       language: swift
 #       env: 
 #         - SWIFT_VERSION="3.2"
+#         - CODE_SIGN_IDENTITY=""
+#         - CODE_SIGNING_REQUIRED=NO
+#     - os: osx
+#       osx_image: xcode10.1
+#       language: swift
+#       env: 
+#         - SWIFT_VERSION="4.0"
+#         - CODE_SIGN_IDENTITY=""
+#         - CODE_SIGNING_REQUIRED=NO
+#     - os: osx
+#       osx_image: xcode10.1
+#       language: swift
+#       env: 
+#         - SWIFT_VERSION="4.2"
+#         - CODE_SIGN_IDENTITY=""
+#         - CODE_SIGNING_REQUIRED=NO
+#     - os: osx
+#       osx_image: xcode10.2
+#       language: swift
+#       env: 
+#         - SWIFT_VERSION="5.0"
+#         - CODE_SIGN_IDENTITY=""
+#         - CODE_SIGNING_REQUIRED=NO
 
 env:
   global:
