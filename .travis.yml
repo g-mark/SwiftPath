@@ -21,7 +21,7 @@ before_script:
 
 script:
   - xcodebuild -project SwiftPath.xcodeproj -scheme "SwiftPath iOS" -configuration Debug -destination "platform=iOS Simulator,OS=11.3,name=iPhone 8" -UseModernBuildSystem=NO clean test | xcpretty --test --color
-  - bundle exec rspec
+  #- bundle exec rspec
 
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
