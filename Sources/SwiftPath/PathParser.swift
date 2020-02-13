@@ -88,7 +88,7 @@ internal struct PathParser {
     ///   [0, 2, 4]
     private static let IndexValue = pattern(string: "-?[0-9]+").map { Int($0) }
     private static let IndexValueList = IndexValue.repeated(delimiter: Comma).map { list -> PathNode in
-        let flat = list.flatMap { $0 }
+        let flat = list.compactMap { $0 }
         return flat.count == 1 ? PathNode.arrayItem(index: flat[0]) : PathNode.arrayItems(indices: flat)
     }
     
