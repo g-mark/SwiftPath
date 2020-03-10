@@ -8,7 +8,8 @@
 
 import Foundation
 
-class PathScanner {
+final class PathScanner {
+    
 	let source: String
 	private (set) var startIndex: String.Index
 	let endIndex: String.Index
@@ -78,4 +79,5 @@ class PathScanner {
 	func advance(by amount: Int) {
 		startIndex = source.index(startIndex, offsetBy: amount)
 	}
+    
 }
