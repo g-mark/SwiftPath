@@ -18,10 +18,11 @@ matrix:
       osx_image: xcode11.3
       env: 
         - SWIFT_VERSION="5.1"
-    - os: osx
-      osx_image: xcode11.4
-      env: 
-        - SWIFT_VERSION="5.2"
+    # xcode 11.4 not yet supported
+    #- os: osx
+    #  osx_image: xcode11.4
+    #  env: 
+    #    - SWIFT_VERSION="5.2"
 
 script:
   - xcodebuild
