@@ -1,31 +1,27 @@
-env:
-  matrix:
-    include:
-      - os: osx
-        osx_image: xcode10.3
-        language: swift
-        env: 
-          - SWIFT_VERSION="4.0"
-      - os: osx
-        osx_image: xcode10.3
-        language: swift
-        env: 
-          - SWIFT_VERSION="4.2"
-      - os: osx
-        osx_image: xcode10.3
-        language: swift
-        env: 
-          - SWIFT_VERSION="5.0"
-      - os: osx
-        osx_image: xcode11.3
-        language: swift
-        env: 
-          - SWIFT_VERSION="5.1"
-      - os: osx
-        osx_image: xcode11.4
-        language: swift
-        env: 
-          - SWIFT_VERSION="5.2"
+language: swift
+
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode10.3
+      env: 
+        - SWIFT_VERSION="4.0"
+    - os: osx
+      osx_image: xcode10.3
+      env: 
+        - SWIFT_VERSION="4.2"
+    - os: osx
+      osx_image: xcode10.3
+      env: 
+        - SWIFT_VERSION="5.0"
+    - os: osx
+      osx_image: xcode11.3
+      env: 
+        - SWIFT_VERSION="5.1"
+    - os: osx
+      osx_image: xcode11.4
+      env: 
+        - SWIFT_VERSION="5.2"
 
 script:
   - xcodebuild
