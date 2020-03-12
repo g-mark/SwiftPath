@@ -1,87 +1,35 @@
 language: swift
-os: osx
-osx_image: xcode10.1
-# matrix:
-#   include:
-#     - os: osx
-#       osx_image: xcode10.1
-#       language: swift
-#       env: 
-#         - SWIFT_VERSION="3.2"
-#         - CODE_SIGN_IDENTITY=""
-#         - CODE_SIGNING_REQUIRED=NO
-#     - os: osx
-#       osx_image: xcode10.1
-#       language: swift
-#       env: 
-#         - SWIFT_VERSION="4.0"
-#         - CODE_SIGN_IDENTITY=""
-#         - CODE_SIGNING_REQUIRED=NO
-#     - os: osx
-#       osx_image: xcode10.1
-#       language: swift
-#       env: 
-#         - SWIFT_VERSION="4.2"
-#         - CODE_SIGN_IDENTITY=""
-#         - CODE_SIGNING_REQUIRED=NO
-#     - os: osx
-#       osx_image: xcode10.2
-#       language: swift
-#       env: 
-#         - SWIFT_VERSION="5.0"
-#         - CODE_SIGN_IDENTITY=""
-#         - CODE_SIGNING_REQUIRED=NO
 
-env:
-  global:
-    - CC_TEST_REPORTER_ID=$CC_TEST_REPORTER_ID
-
-language: ruby
-rvm:
-  - 2.5.0
-
-before_install:
-  - gem install bundler
-  - gem install xcpretty --no-ri --no-rdoc
-
-before_script:
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-darwin-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode10.3
+      env: 
+        - SWIFT_VERSION="4.0"
+    - os: osx
+      osx_image: xcode10.3
+      env: 
+        - SWIFT_VERSION="4.2"
+    - os: osx
+      osx_image: xcode10.3
+      env: 
+        - SWIFT_VERSION="5.0"
+    - os: osx
+      osx_image: xcode11.3
+      env: 
+        - SWIFT_VERSION="5.1"
+    # xcode 11.4 not yet supported
+    #- os: osx
+    #  osx_image: xcode11.4
+    #  env: 
+    #    - SWIFT_VERSION="5.2"
 
 script:
   - xcodebuild
     -project SwiftPath.xcodeproj
     -scheme "SwiftPath iOS"
     -configuration Debug
-    -destination "platform=iOS Simulator,OS=10.3.1,name=iPhone 6"
+    -destination "platform=iOS Simulator,name=iPhone 8"
     -UseModernBuildSystem=NO
-    CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
-    SWIFT_VERSION="3.2"
-    -enableCodeCoverage YES clean test
-    | xcpretty --simple --color --report junit --report html
-
-  - xcodebuild
-    -project SwiftPath.xcodeproj
-    -scheme "SwiftPath iOS"
-    -configuration Debug
-    -destination "platform=iOS Simulator,OS=11.3,name=iPhone 7"
-    -UseModernBuildSystem=NO
-    CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
-    SWIFT_VERSION="4.0"
-    -enableCodeCoverage YES clean test
-    | xcpretty --simple --color --report junit --report html
-
-  - xcodebuild
-    -project SwiftPath.xcodeproj
-    -scheme "SwiftPath iOS"
-    -configuration Debug
-    -destination "platform=iOS Simulator,OS=12.1,name=iPhone 8"
-    -UseModernBuildSystem=NO
-    CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
-    SWIFT_VERSION="4.2"
-    -enableCodeCoverage YES clean test
-    | xcpretty --simple --color --report junit --report html
-
-after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+    SWIFT_VERSION=$SWIFT_VERSION
+    clean test
