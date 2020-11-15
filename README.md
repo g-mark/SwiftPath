@@ -1,6 +1,7 @@
 # SwiftPath
 [![Build Status](https://travis-ci.org/g-mark/SwiftPath.svg?branch=develop)](https://travis-ci.org/g-mark/SwiftPath)
-[![Swift 4 compatible](https://img.shields.io/badge/swift4-compatible-4BC51D.svg?style=flat)](https://developer.apple.com/swift)
+[![Swift 4.2-5.3 compatible](https://img.shields.io/badge/Swift%204.2%20--%205.3-compatible-4BC51D.svg?style=flat)](https://developer.apple.com/swift)
+[![swift-package-manager](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 [![CocoaPods compatible](https://img.shields.io/cocoapods/v/SwiftPath.svg)](https://cocoapods.org/pods/SwiftPath)
 [![License: MIT](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://raw.githubusercontent.com/g-mark/SwiftPath/master/LICENSE)
 
