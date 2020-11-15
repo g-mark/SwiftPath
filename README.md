@@ -84,8 +84,8 @@ $['name', 'value'=>'id']
 
 To publish a new version of SwiftPath:
 1. Update version number in `SwiftPath.podspec`
-1. Create a release branch off of `master`, `release/#.#.#`
-1. Merge `develop` into release branch
-1. Create PR into `master from release branch
-1. Once CI passess, tag it with `#.#.#`, merge into `master`, and delete the release branch
+1. Create a release/version branch off of `release` with version: e.g., `release/#.#.#`
+1. Merge `develop` into release/version branch
+1. Create PR into `release` from release/version branch
+1. Once CI passess, tag it with `#.#.#`, merge into `release`, and delete the release/version branch
 1. Run `pod trunk push SwiftLint.podspec`
