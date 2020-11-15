@@ -8,24 +8,29 @@
 
 import Foundation
 
-struct Parser<T> {
+internal struct Parser<T> {
     let parse: (PathScanner) -> (T, PathScanner)?
 }
 
 extension Parser {
-    func run(_ string: String) -> (T, String)? {
+    
+    internal func run(_ string: String) -> (T, String)? {
         guard let (result, remainder) = parse(PathScanner(string: string)) else { return nil }
         return (result, remainder.contextString)
     }
     
-    func followed(by rparser:Parser) -> Parser<[T]> {
+    internal func followed(by rparser:Parser, required: Bool = true) -> Parser<[T]> {
         return Parser<[T]>(parse: { scanner in
             guard let (lvalue, lscanner) = self.parse(scanner) else { return nil }
-            guard let (rvalue, rscanner) = rparser.parse(lscanner) else { return nil }
-            return ([lvalue, rvalue], rscanner)
+            if let (rvalue, rscanner) = rparser.parse(lscanner) {
+                return ([lvalue, rvalue], rscanner)
+            }
+            guard !required else { return nil }
+            return ([lvalue], lscanner)
         })
     }
-    func followed(by rparsers:[Parser]) -> Parser<[T]> {
+    
+    internal func followed(by rparsers:[Parser]) -> Parser<[T]> {
         return Parser<[T]>(parse: { scanner in
             guard let (lvalue, lscanner) = self.parse(scanner) else { return nil }
             var scanner = lscanner
@@ -39,13 +44,13 @@ extension Parser {
         })
     }
     
-    func or(_ rparser: Parser) -> Parser<T> {
+    internal func or(_ rparser: Parser) -> Parser<T> {
         return Parser<T>(parse: { scanner in
             return self.parse(scanner) ?? rparser.parse(scanner)
         })
     }
     
-    func repeated() -> Parser<[T]> {
+    internal func repeated() -> Parser<[T]> {
         return Parser<[T]>(parse: { scanner in
             guard let (lvalue, lscanner) = self.parse(scanner) else { return nil }
             var scanner = lscanner
@@ -58,7 +63,7 @@ extension Parser {
         })
     }
     
-    func repeated<A>(delimiter: Parser<A>) -> Parser<[T]> {
+    internal func repeated<A>(delimiter: Parser<A>) -> Parser<[T]> {
         return Parser<[T]>(parse: { scanner in
             guard let (lvalue, lscanner) = self.parse(scanner) else { return nil }
             var scanner = lscanner
@@ -72,7 +77,7 @@ extension Parser {
         })
     }
     
-    func zeroOrMore() -> Parser<[T]> {
+    internal func zeroOrMore() -> Parser<[T]> {
         return Parser<[T]>(parse: { scanner in
             guard let (lvalue, lscanner) = self.parse(scanner) else { return ([], scanner) }
             var scanner = lscanner
@@ -85,7 +90,7 @@ extension Parser {
         })
     }
     
-    func map<TResult>(_ transform: @escaping (T) -> TResult) -> Parser<TResult> {
+    internal func map<TResult>(_ transform: @escaping (T) -> TResult) -> Parser<TResult> {
         return Parser<TResult> { scanner in
             guard let (result, remainder) = self.parse(scanner) else { return nil }
             return (transform(result), remainder)

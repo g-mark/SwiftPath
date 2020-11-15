@@ -26,25 +26,59 @@ internal struct PathParser {
     private static let Current = literal(string: "@").map { _ in PathNode.current }
     private static let Node = Root.or(Current)
     
+    /// wildcard
+    ///  the special "all values" property of an object
+    ///   $.book.*
+    ///  TODO: the special "all items" of an array
+    ///   $.books[*]
+    private static let Wildcard = literal(string: "*")
+    
     /// a dot-property
     /// specifies a named property of an object
     ///  .propName
     private static let Dot = literal(string: ".")
-    private static let DotPropertyName = pattern(string: "[a-zA-Z_][a-zA-Z0-9_$]*")
-    private static let DotProperty = Dot.followed(by: DotPropertyName).map { PathNode.property(name: $0[1]) }
-    
+    private static let DotPropertyName = pattern(string: "(?:[a-zA-Z_][a-zA-Z0-9_$]*)|\\*")
+    private static let DotProperty = Dot.followed(by: DotPropertyName).map { list -> PathNode in
+        if list[1] == "*" { return PathNode.values }
+        return PathNode.property(name: list[1])
+    }
+        
     /// quoted properties
     /// used with a subscript to access a property
     /// multiple properties can be comma separated
-    ///   ["propName"]
-    ///   ["prop1", "propTwo"]
+    ///   ["propName"] or ['propName']
+    ///   ["prop1", "propTwo"] or ['prop1', "prop2"]
     private static let Quote = literal(string: "\"")
+    private static let SingleQuote = literal(string: "'")
     private static let Comma = pattern(string: "\\s*,\\s*")
     
-    private static let SubscriptPropertyName = pattern(string: "[^ \t\r\n\"]+")
-    private static let SubscriptProperty = Quote.followed(by: [SubscriptPropertyName, Quote]).map { $0[1] }
+    private static let SubscriptPropertyName = pattern(string: "[^\t\r\n\"\']+")
+    private static let QuotedSubscriptProperty = Quote.followed(by: [SubscriptPropertyName, Quote]).map { $0[1] }
+    private static let SingleQuotedSubscriptProperty = SingleQuote.followed(by: [SubscriptPropertyName, SingleQuote]).map { $0[1] }
+    
+    // subscript property parser -> String
+    private static let SubscriptProperty1 = QuotedSubscriptProperty.or(SingleQuotedSubscriptProperty)
+    
+    // subscript property parser -> (String, String)
+    private static let SubscriptProperty2 = QuotedSubscriptProperty.or(SingleQuotedSubscriptProperty).map { name -> (String, String) in
+        return (name, name)
+    }
+    
+    private static let RenameArrow = pattern(string: "\\s*=>\\s*")
+    private static let RenamedProperty = RenameArrow.followed(by: SubscriptProperty1).map { str -> (String, String) in return (str[1], str[1]) }
+    
+    private static let SubscriptProperty = SubscriptProperty2.followed(by: RenamedProperty, required: false).map { list -> (String, String) in
+        guard list.count > 1 else { return list[0] }
+        return (list[0].0, list[1].0)
+    }
+    
     private static let SubscriptPropertyList = SubscriptProperty.repeated(delimiter: Comma).map { list -> PathNode in
-        return list.count == 1 ? PathNode.property(name: list[0]) : PathNode.properties(names: list)
+        guard list.count > 1 else { return PathNode.property(name: list[0].0) }
+        let (names, rename) = list.reduce(into: ([String](), [String]())) {
+            $0.0.append($1.0)
+            $0.1.append($1.1)
+        }
+        return PathNode.properties(names: names, rename: rename)
     }
     
     /// index value
@@ -54,7 +88,7 @@ internal struct PathParser {
     ///   [0, 2, 4]
     private static let IndexValue = pattern(string: "-?[0-9]+").map { Int($0) }
     private static let IndexValueList = IndexValue.repeated(delimiter: Comma).map { list -> PathNode in
-        let flat = list.flatMap { $0 }
+        let flat = list.compactMap { $0 }
         return flat.count == 1 ? PathNode.arrayItem(index: flat[0]) : PathNode.arrayItems(indices: flat)
     }
     

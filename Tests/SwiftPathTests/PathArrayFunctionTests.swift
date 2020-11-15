@@ -1,5 +1,5 @@
 //
-//  PathArrayFunctionTestes.swift
+//  PathArrayFunctionTests.swift
 //  JsonPathTests
 //
 //  Created by Steven Grosmark on 8/20/17.
@@ -9,7 +9,7 @@
 import XCTest
 @testable import SwiftPath
 
-class PathArrayFunctionTestes: XCTestCase {
+class PathArrayFunctionTests: XCTestCase {
 	
 	let positives = [ 980.87, 509.42, 11.98, 165.31, 791.29, 834.18, 68.69, 817.87, 994.97, 862.40 ]
 	let negatives = [ -194.65, -790.89, -696.61, -322.70, -803.83, -57.13, -162.76, -646.61, -260.87, -934.49 ]
@@ -109,13 +109,6 @@ class PathArrayFunctionTestes: XCTestCase {
 		// expected precision
 		let precision = 1E-10
 		
-		// some oddball comparisons that came up:
-		//  comparing -487.054 with -487.054 - diff is 1.13686837721616e-13
-		//  comparing -20.671 with -20.671 - diff is 3.5527136788005e-15
-		//  comparing 365.22564369989 with 365.225643699891 - diff is 1.36424205265939e-12
-		//  comparing 302.63954467981 with 302.639544679806 - diff is 4.49063009000383e-12
-		//  comparing 59.232366903577 with 59.2323669035773 - diff is 3.05533376376843e-13
-		
 		for test in tests {
 			do {
 				if let result = try test.function.evaluate(array: test.numbers) as? Double {
@@ -127,7 +120,7 @@ class PathArrayFunctionTestes: XCTestCase {
 						equal = result.isNaN
 					}
 					else {
-						equal = abs(test.expectedResult - result) < precision
+                        equal = abs(test.expectedResult - result) < precision
 					}
 					XCTAssert(equal, "\(test.function) failed: expecting \(test.expectedResult) got \(result) for \(test.numbers)")
 				}
@@ -140,5 +133,4 @@ class PathArrayFunctionTestes: XCTestCase {
 			}
 		}
 	}
-    
 }

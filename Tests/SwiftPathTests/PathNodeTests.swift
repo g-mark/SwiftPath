@@ -32,6 +32,14 @@ class PathNodeTests: XCTestCase {
 			try Expecting.string("the summary value", result: result)
 		}
     }
+    
+    func testProperyValues() {
+        let node = PathNode.values
+        runTest("property values") {
+            let result = try node.process(with: jsonObject, registers: [])
+            try Expecting.array(["the name value", "the summary value", "the three value"], ordered: false, result: result)
+        }
+    }
 	
 	func testCollatedProperty() {
 		var array: JsonArray = []
@@ -47,10 +55,10 @@ class PathNodeTests: XCTestCase {
 	}
 	
 	func testPropertyList() {
-		let node = PathNode.properties(names: ["summary", "three"])
+        let node = PathNode.properties(names: ["summary", "three"], rename: ["summary", "third"])
 		runTest("property list") {
 			let result = try node.process(with: jsonObject, registers: [])
-			try Expecting.object(["summary":"the summary value", "three":"the three value"], result: result)
+			try Expecting.object(["summary":"the summary value", "third":"the three value"], result: result)
 		}
 	}
 	
