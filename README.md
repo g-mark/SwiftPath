@@ -80,3 +80,13 @@ $['name', 'value'=>'id']
   {"name": "one", "id": 3 }
 ]
 ```
+
+## Publishing
+
+To publish a new version of SwiftPath:
+1. Update version number in `SwiftPath.podspec`
+1. Create a release branch off of `production` with version: e.g., `release/#.#.#`
+1. Merge `develop` into release/version branch
+1. Create PR into `production` from release/version branch
+1. Once CI passess, tag it with `#.#.#`, merge into `production`, and delete the release/version branch
+1. Run `pod trunk push SwiftLint.podspec`
