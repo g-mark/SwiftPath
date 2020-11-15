@@ -1,6 +1,7 @@
 # SwiftPath
 [![Build Status](https://travis-ci.org/g-mark/SwiftPath.svg?branch=develop)](https://travis-ci.org/g-mark/SwiftPath)
-[![Swift 4 compatible](https://img.shields.io/badge/swift4-compatible-4BC51D.svg?style=flat)](https://developer.apple.com/swift)
+[![Swift 4.2-5.3 compatible](https://img.shields.io/badge/Swift%204.2%20--%205.3-compatible-4BC51D.svg?style=flat)](https://developer.apple.com/swift)
+[![swift-package-manager](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 [![CocoaPods compatible](https://img.shields.io/cocoapods/v/SwiftPath.svg)](https://cocoapods.org/pods/SwiftPath)
 [![License: MIT](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://raw.githubusercontent.com/g-mark/SwiftPath/master/LICENSE)
 
@@ -79,3 +80,13 @@ $['name', 'value'=>'id']
   {"name": "one", "id": 3 }
 ]
 ```
+
+## Publishing
+
+To publish a new version of SwiftPath:
+1. Update version number in `SwiftPath.podspec`
+1. Create a release branch off of `production` with version: e.g., `release/#.#.#`
+1. Merge `develop` into release/version branch
+1. Create PR into `production` from release/version branch
+1. Once CI passess, tag it with `#.#.#`, merge into `production`, and delete the release/version branch
+1. Run `pod trunk push SwiftLint.podspec`
