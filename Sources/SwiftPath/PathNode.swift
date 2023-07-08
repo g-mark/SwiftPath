@@ -10,12 +10,6 @@
 
 import Foundation
 
-//TODO: would be cool support things like:
-//		$.object[ $.prefs.fieldname ]
-//		$.object[ @.primaryKey ]
-//		$.array[ $.objIndex ]
-//	I'm not sure that those are valid in the jsonpath "spec", but it would be cool
-
 internal enum PathNode {
     
 	/// $
