@@ -65,8 +65,6 @@ public struct JsonPath {
 	}
 }
 
-
-
 internal struct JsonPathPart {
 	let parts: [PathNode]
 	
