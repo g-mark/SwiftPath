@@ -37,7 +37,7 @@ internal struct PathParser {
     /// specifies a named property of an object
     ///  .propName
     private static let Dot = literal(string: ".")
-    private static let DotPropertyName = pattern(string: "(?:[a-zA-Z_][a-zA-Z0-9_$]*)|\\*")
+    private static let DotPropertyName = pattern(string: "(?:[a-zA-Z_][a-zA-Z0-9_$-]*)|\\*")
     private static let DotProperty = Dot.followed(by: DotPropertyName).map { list -> PathNode in
         if list[1] == "*" { return PathNode.values }
         return PathNode.property(name: list[1])

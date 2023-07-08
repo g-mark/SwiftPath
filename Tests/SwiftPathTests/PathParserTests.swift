@@ -167,6 +167,25 @@ class PathParserTests: XCTestCase {
         XCTAssertEqual(rename, ["property", "new-name", "three"])
     }
     
+    func testPropertyWithDash() {
+        let result = PathParser.parse(path: "$.dash-property")
+        XCTAssertNotNil(result)
+        guard case let .path(base, nodes) = result! else {
+            XCTFail("PathParser.parse returned unexpected node type")
+            return
+        }
+        guard case .root = base else {
+            XCTFail("expected a root node")
+            return
+        }
+        XCTAssert(nodes.count == 1)
+        guard case let .property(name) = nodes[0] else {
+            XCTFail("expecting a property node")
+            return
+        }
+        XCTAssertEqual(name, "dash-property")
+    }
+    
     func testWildcard() {
         let result = PathParser.parse(path: "$.*")
         XCTAssertNotNil(result)
