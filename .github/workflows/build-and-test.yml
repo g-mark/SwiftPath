@@ -1,0 +1,69 @@
+name: Build & Test
+
+on:
+  push:
+    branches: [ "develop", "production" ]
+  pull_request:
+    branches: [ "develop", "production" ]
+  workflow_dispatch:
+
+jobs:
+  build-and-test-macOS-12:
+    runs-on: macos-12
+    strategy:
+      fail-fast: false
+      matrix:
+        xcode-version: [13.4.1, 14.0.1]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Install dependencies in Gemfile
+        run: gem install fastlane
+      
+      - name: Build & test, using Xcode ${{ matrix.xcode-version }}
+        run: fastlane scan --project "SwiftPath.xcodeproj" --scheme "SwiftPath iOS" --devices "iPhone 11" --clean
+        env:
+         DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode-version }}.app
+
+      - name: Post job cleanup
+        run: git clean -ffdxq
+        if: always()
+        continue-on-error: true
+  
+  build-and-test-macOS-13:
+    runs-on: macos-13
+    strategy:
+      fail-fast: false
+      matrix:
+        xcode-version: [14.2, 14.3]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Install dependencies in Gemfile
+        run: gem install fastlane
+      
+      - name: Build & test, using Xcode ${{ matrix.xcode-version }}
+        run: fastlane scan --project "SwiftPath.xcodeproj" --scheme "SwiftPath iOS" --devices "iPhone 13" --clean
+        env:
+          DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode-version }}.app/Contents/Developer
+
+      - name: Post job cleanup
+        run: git clean -ffdxq
+        if: always()
+        continue-on-error: true
+
+  build-and-test-swiftpm:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build
+        run: swift build -v
+      - name: Run tests
+        run: swift test -v
+      - name: Post job cleanup
+        run: git clean -ffdxq
+        if: always()
+        continue-on-error: true
