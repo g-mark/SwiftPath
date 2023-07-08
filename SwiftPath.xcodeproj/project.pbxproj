@@ -21,7 +21,7 @@
 		F553E5A71F73E0270068B376 /* PathParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5981F73DFBC0068B376 /* PathParser.swift */; };
 		F553E5A81F73E0270068B376 /* PathScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5991F73DFBC0068B376 /* PathScanner.swift */; };
 		F553E5A91F73E0270068B376 /* ArrayFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5931F73DFBC0068B376 /* ArrayFunctions.swift */; };
-		F553E5AA1F73E0270068B376 /* SwiftPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5941F73DFBC0068B376 /* SwiftPath.swift */; };
+		F553E5AA1F73E0270068B376 /* JsonPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5941F73DFBC0068B376 /* JsonPath.swift */; };
 		F553E5AB1F73E0270068B376 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5951F73DFBC0068B376 /* Errors.swift */; };
 		F553E5AC1F73E0270068B376 /* PathNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59A1F73DFBC0068B376 /* PathNode.swift */; };
 		F553E5AE1F73E0270068B376 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59C1F73DFBC0068B376 /* Types.swift */; };
@@ -29,7 +29,7 @@
 		F553E5B01F73E0270068B376 /* PathParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5981F73DFBC0068B376 /* PathParser.swift */; };
 		F553E5B11F73E0270068B376 /* PathScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5991F73DFBC0068B376 /* PathScanner.swift */; };
 		F553E5B21F73E0270068B376 /* ArrayFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5931F73DFBC0068B376 /* ArrayFunctions.swift */; };
-		F553E5B31F73E0270068B376 /* SwiftPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5941F73DFBC0068B376 /* SwiftPath.swift */; };
+		F553E5B31F73E0270068B376 /* JsonPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5941F73DFBC0068B376 /* JsonPath.swift */; };
 		F553E5B41F73E0270068B376 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5951F73DFBC0068B376 /* Errors.swift */; };
 		F553E5B51F73E0270068B376 /* PathNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59A1F73DFBC0068B376 /* PathNode.swift */; };
 		F553E5B71F73E0280068B376 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59C1F73DFBC0068B376 /* Types.swift */; };
@@ -37,7 +37,7 @@
 		F553E5B91F73E0280068B376 /* PathParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5981F73DFBC0068B376 /* PathParser.swift */; };
 		F553E5BA1F73E0280068B376 /* PathScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5991F73DFBC0068B376 /* PathScanner.swift */; };
 		F553E5BB1F73E0280068B376 /* ArrayFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5931F73DFBC0068B376 /* ArrayFunctions.swift */; };
-		F553E5BC1F73E0280068B376 /* SwiftPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5941F73DFBC0068B376 /* SwiftPath.swift */; };
+		F553E5BC1F73E0280068B376 /* JsonPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5941F73DFBC0068B376 /* JsonPath.swift */; };
 		F553E5BD1F73E0280068B376 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5951F73DFBC0068B376 /* Errors.swift */; };
 		F553E5BE1F73E0280068B376 /* PathNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59A1F73DFBC0068B376 /* PathNode.swift */; };
 		F553E5C01F73E0280068B376 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59C1F73DFBC0068B376 /* Types.swift */; };
@@ -45,7 +45,7 @@
 		F553E5C21F73E0280068B376 /* PathParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5981F73DFBC0068B376 /* PathParser.swift */; };
 		F553E5C31F73E0280068B376 /* PathScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5991F73DFBC0068B376 /* PathScanner.swift */; };
 		F553E5C41F73E0280068B376 /* ArrayFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5931F73DFBC0068B376 /* ArrayFunctions.swift */; };
-		F553E5C51F73E0280068B376 /* SwiftPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5941F73DFBC0068B376 /* SwiftPath.swift */; };
+		F553E5C51F73E0280068B376 /* JsonPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5941F73DFBC0068B376 /* JsonPath.swift */; };
 		F553E5C61F73E0280068B376 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E5951F73DFBC0068B376 /* Errors.swift */; };
 		F553E5C71F73E0280068B376 /* PathNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59A1F73DFBC0068B376 /* PathNode.swift */; };
 		F553E5C91F73E02D0068B376 /* CompiledPathTessts.swift in Sources */ = {isa = PBXBuildFile; fileRef = F553E59F1F73DFFA0068B376 /* CompiledPathTessts.swift */; };
@@ -105,7 +105,7 @@
 		B0542C911F4B811100EB5AA1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F502B32A1F76908E0057525C /* PathParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathParserTests.swift; sourceTree = "<group>"; };
 		F553E5931F73DFBC0068B376 /* ArrayFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayFunctions.swift; sourceTree = "<group>"; };
-		F553E5941F73DFBC0068B376 /* SwiftPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftPath.swift; sourceTree = "<group>"; };
+		F553E5941F73DFBC0068B376 /* JsonPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonPath.swift; sourceTree = "<group>"; };
 		F553E5951F73DFBC0068B376 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		F553E5971F73DFBC0068B376 /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 		F553E5981F73DFBC0068B376 /* PathParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathParser.swift; sourceTree = "<group>"; };
@@ -241,7 +241,7 @@
 		F553E5921F73DFBC0068B376 /* SwiftPath */ = {
 			isa = PBXGroup;
 			children = (
-				F553E5941F73DFBC0068B376 /* SwiftPath.swift */,
+				F553E5941F73DFBC0068B376 /* JsonPath.swift */,
 				F553E59C1F73DFBC0068B376 /* Types.swift */,
 				F553E59A1F73DFBC0068B376 /* PathNode.swift */,
 				F553E5931F73DFBC0068B376 /* ArrayFunctions.swift */,
@@ -562,7 +562,7 @@
 				F553E5A61F73E0270068B376 /* Parser.swift in Sources */,
 				F553E5A51F73E0270068B376 /* Types.swift in Sources */,
 				F553E5A71F73E0270068B376 /* PathParser.swift in Sources */,
-				F553E5AA1F73E0270068B376 /* SwiftPath.swift in Sources */,
+				F553E5AA1F73E0270068B376 /* JsonPath.swift in Sources */,
 				F553E5AC1F73E0270068B376 /* PathNode.swift in Sources */,
 				F553E5A81F73E0270068B376 /* PathScanner.swift in Sources */,
 				F553E5A91F73E0270068B376 /* ArrayFunctions.swift in Sources */,
@@ -577,7 +577,7 @@
 				F553E5AF1F73E0270068B376 /* Parser.swift in Sources */,
 				F553E5AE1F73E0270068B376 /* Types.swift in Sources */,
 				F553E5B01F73E0270068B376 /* PathParser.swift in Sources */,
-				F553E5B31F73E0270068B376 /* SwiftPath.swift in Sources */,
+				F553E5B31F73E0270068B376 /* JsonPath.swift in Sources */,
 				F553E5B51F73E0270068B376 /* PathNode.swift in Sources */,
 				F553E5B11F73E0270068B376 /* PathScanner.swift in Sources */,
 				F553E5B21F73E0270068B376 /* ArrayFunctions.swift in Sources */,
@@ -592,7 +592,7 @@
 				F553E5B81F73E0280068B376 /* Parser.swift in Sources */,
 				F553E5B71F73E0280068B376 /* Types.swift in Sources */,
 				F553E5B91F73E0280068B376 /* PathParser.swift in Sources */,
-				F553E5BC1F73E0280068B376 /* SwiftPath.swift in Sources */,
+				F553E5BC1F73E0280068B376 /* JsonPath.swift in Sources */,
 				F553E5BE1F73E0280068B376 /* PathNode.swift in Sources */,
 				F553E5BA1F73E0280068B376 /* PathScanner.swift in Sources */,
 				F553E5BB1F73E0280068B376 /* ArrayFunctions.swift in Sources */,
@@ -607,7 +607,7 @@
 				F553E5C11F73E0280068B376 /* Parser.swift in Sources */,
 				F553E5C01F73E0280068B376 /* Types.swift in Sources */,
 				F553E5C21F73E0280068B376 /* PathParser.swift in Sources */,
-				F553E5C51F73E0280068B376 /* SwiftPath.swift in Sources */,
+				F553E5C51F73E0280068B376 /* JsonPath.swift in Sources */,
 				F553E5C71F73E0280068B376 /* PathNode.swift in Sources */,
 				F553E5C31F73E0280068B376 /* PathScanner.swift in Sources */,
 				F553E5C41F73E0280068B376 /* ArrayFunctions.swift in Sources */,

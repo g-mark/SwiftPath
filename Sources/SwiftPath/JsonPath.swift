@@ -1,5 +1,5 @@
 //
-//  SwiftPath.swift
+//  JsonPath.swift
 //  SwiftPath
 //
 //  Created by Steven Grosmark on 8/20/17.
@@ -8,25 +8,27 @@
 
 import Foundation
 
+@available(*, deprecated, renamed: "JsonPath")
+public typealias SwiftPath = JsonPath
 
-public struct SwiftPath {
+public struct JsonPath {
     
-    /// create a SwiftPath from a JSONPath string
+    /// create a JsonPath from a JSONPath string
     /// will fail if the json path is invalid
     ///
     /// typical usage:
-    ///     if let path = SwiftPath("$.books[0].author") {
+    ///     if let path = JsonPath("$.books[0].author") {
     ///         let author = path.evaluate(with: someJsonFromTheWebs)
     ///     }
     ///
     public init?(_ path: String) {
         guard let node = PathParser.parse(path: path) else { return nil }
         guard case let .path(base, parts) = node else { return nil }
-        self.path = SwiftPathPart(parts: [base] + parts)
+        self.path = JsonPathPart(parts: [base] + parts)
         self.precompute = []
     }
     
-    /// evaluate the SwiftPath on the specified JSON value
+    /// evaluate the JsonPath on the specified JSON value
     public func evaluate(with json: JsonValue) throws -> JsonValue? {
         var registers = [json]
         for part in precompute {
@@ -52,12 +54,12 @@ public struct SwiftPath {
 	
     
 	/// the main JsonPath expression, compiled
-	private let path: SwiftPathPart
+	private let path: JsonPathPart
 	
 	/// paths that need to be pre-computed
-	private let precompute: [SwiftPathPart]
+	private let precompute: [JsonPathPart]
 	
-	internal init(path: SwiftPathPart, precompute: [SwiftPathPart]? = nil) {
+	internal init(path: JsonPathPart, precompute: [JsonPathPart]? = nil) {
 		self.path = path
 		self.precompute = precompute ?? []
 	}
@@ -65,7 +67,7 @@ public struct SwiftPath {
 
 
 
-internal struct SwiftPathPart {
+internal struct JsonPathPart {
 	let parts: [PathNode]
 	
 	internal func evaluate(with json:JsonValue, registers:[JsonValue]) throws -> JsonValue? {
