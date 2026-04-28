@@ -52,21 +52,21 @@ internal struct PathParser {
     private static let SingleQuote = literal(string: "'")
     private static let Comma = pattern(string: "\\s*,\\s*")
     
-    private static let SubscriptPropertyName = pattern(string: "[^\t\r\n\"\']+")
-    private static let QuotedSubscriptProperty = Quote.followed(by: [SubscriptPropertyName, Quote]).map { $0[1] }
-    private static let SingleQuotedSubscriptProperty = SingleQuote.followed(by: [SubscriptPropertyName, SingleQuote]).map { $0[1] }
+    private static let QuotedPropertyNameContent = pattern(string: "[^\t\r\n\"\']+")
+    private static let DoubleQuotedPropertyName = Quote.followed(by: [QuotedPropertyNameContent, Quote]).map { $0[1] }
+    private static let SingleQuotedPropertyName = SingleQuote.followed(by: [QuotedPropertyNameContent, SingleQuote]).map { $0[1] }
     
     // subscript property parser -> String
-    private static let SubscriptProperty1 = QuotedSubscriptProperty.or(SingleQuotedSubscriptProperty)
+    private static let QuotedPropertyName = DoubleQuotedPropertyName.or(SingleQuotedPropertyName)
 
     /// array filter paths support dot-properties and quoted subscript properties.
-    private static let FilterOpenSubscript = pattern(string: "\\[\\s*").map { _ in PathNode.noop }
-    private static let FilterCloseSubscript = pattern(string: "\\s*\\]").map { _ in PathNode.noop }
-    private static let FilterSubscriptProperty = FilterOpenSubscript.followed(by: [
-        SubscriptProperty1.map { PathNode.property(name: $0) },
-        FilterCloseSubscript
+    private static let FilterOpenBracket = pattern(string: "\\[\\s*").map { _ in PathNode.noop }
+    private static let FilterCloseBracket = pattern(string: "\\s*\\]").map { _ in PathNode.noop }
+    private static let FilterBracketProperty = FilterOpenBracket.followed(by: [
+        QuotedPropertyName.map { PathNode.property(name: $0) },
+        FilterCloseBracket
     ]).map { $0[1] }
-    private static let FilterPathSpecifier = DotProperty.or(FilterSubscriptProperty)
+    private static let FilterPathSpecifier = DotProperty.or(FilterBracketProperty)
     private static let FilterPathSpecifiers = FilterPathSpecifier.zeroOrMore().map { PathNode.nodes(nodes: $0) }
     private static let FilterPath = Node.followed(by: FilterPathSpecifiers).map { result -> PathNode? in
         guard case let .nodes(nodes) = result[1] else { return nil }
@@ -74,19 +74,19 @@ internal struct PathParser {
     }
     
     // subscript property parser -> (String, String)
-    private static let SubscriptProperty2 = QuotedSubscriptProperty.or(SingleQuotedSubscriptProperty).map { name -> (String, String) in
+    private static let PropertySelection = QuotedPropertyName.map { name -> (String, String) in
         return (name, name)
     }
     
     private static let RenameArrow = pattern(string: "\\s*=>\\s*")
-    private static let RenamedProperty = RenameArrow.followed(by: SubscriptProperty1).map { str -> (String, String) in return (str[1], str[1]) }
+    private static let RenameTarget = RenameArrow.followed(by: QuotedPropertyName).map { str -> (String, String) in return (str[1], str[1]) }
     
-    private static let SubscriptProperty = SubscriptProperty2.followed(by: RenamedProperty, required: false).map { list -> (String, String) in
+    private static let RenameablePropertySelection = PropertySelection.followed(by: RenameTarget, required: false).map { list -> (String, String) in
         guard list.count > 1 else { return list[0] }
         return (list[0].0, list[1].0)
     }
     
-    private static let SubscriptPropertyList = SubscriptProperty.repeated(delimiter: Comma).map { list -> PathNode in
+    private static let PropertySelectionList = RenameablePropertySelection.repeated(delimiter: Comma).map { list -> PathNode in
         guard list.count > 1 else { return PathNode.property(name: list[0].0) }
         let (names, rename) = list.reduce(into: ([String](), [String]())) {
             $0.0.append($1.0)
@@ -184,15 +184,15 @@ internal struct PathParser {
         return (JsonPathPart(parts: [base] + nodes), pathScanner)
     }
 
-    private static let SubscriptSpecifier = SubscriptPropertyList.or(IndexValueList).or(Wildcard).or(ArrayFilterSpecifier)
+    private static let BracketSpecifier = PropertySelectionList.or(IndexValueList).or(Wildcard).or(ArrayFilterSpecifier)
     
     
-    private static let OpenSubscript = pattern(string: "\\[\\s*").map { str -> PathNode in PathNode.noop }
-    private static let CloseSubscript = pattern(string: "\\s*\\]").map { str -> PathNode in PathNode.noop }
-    private static let Subscript = OpenSubscript.followed(by: [SubscriptSpecifier, CloseSubscript]).map { $0[1] }
+    private static let OpenBracket = pattern(string: "\\[\\s*").map { str -> PathNode in PathNode.noop }
+    private static let CloseBracket = pattern(string: "\\s*\\]").map { str -> PathNode in PathNode.noop }
+    private static let BracketSelector = OpenBracket.followed(by: [BracketSpecifier, CloseBracket]).map { $0[1] }
     
     /// a specifier is either a dot-property or a subscript
-    private static let Specifier = DotProperty.or(Subscript)
+    private static let Specifier = DotProperty.or(BracketSelector)
     
     /// a sequence of zero or more specifiers
     private static let Specifiers = Specifier.zeroOrMore().map { PathNode.nodes(nodes: $0) }
@@ -211,8 +211,8 @@ internal struct PathParser {
     DotProperty.run(".hello")
     DotProperty.run(". fail")
     
-    SubscriptProperty.run("\"123ghj\"")
-    SubscriptPropertyList.run("\"123\", \"abc\", \"himom!\"")
+    RenameablePropertySelection.run("\"123ghj\"")
+    PropertySelectionList.run("\"123\", \"abc\", \"himom!\"")
     
     IndexValue.run("")
     IndexValue.run("123")
@@ -224,18 +224,18 @@ internal struct PathParser {
     IndexValueList.run("42")
     IndexValueList.run("1,12,      56     ,9")
     
-    SubscriptSpecifier.run("\"123ghj\"")
-    SubscriptSpecifier.run("\"123\", \"abc\", \"himom!\"")
-    SubscriptSpecifier.run("42")
-    SubscriptSpecifier.run("1,12,      56     ,9")
+    BracketSpecifier.run("\"123ghj\"")
+    BracketSpecifier.run("\"123\", \"abc\", \"himom!\"")
+    BracketSpecifier.run("42")
+    BracketSpecifier.run("1,12,      56     ,9")
     
-    Subscript.run("[1,2,3]")
-    Subscript.run("[0]")
-    Subscript.run("[-1]")
-    Subscript.run("[]")
-    Subscript.run("[\"hello\"]")
-    Subscript.run("[\"hello\", \"mother\"]")
-    Subscript.run("[\"hello\", 3]")
+    BracketSelector.run("[1,2,3]")
+    BracketSelector.run("[0]")
+    BracketSelector.run("[-1]")
+    BracketSelector.run("[]")
+    BracketSelector.run("[\"hello\"]")
+    BracketSelector.run("[\"hello\", \"mother\"]")
+    BracketSelector.run("[\"hello\", 3]")
     
     Specifier.run(".yoyoma")
     Specifier.run("[\"yoyoma\"]")
