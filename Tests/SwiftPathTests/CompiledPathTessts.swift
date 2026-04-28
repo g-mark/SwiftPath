@@ -137,6 +137,14 @@ class CompiledPathTessts: XCTestCase {
 		}
 	}
 
+	func testArrayFilterQuotedPropertyPath() {
+		runTest("array filter quoted property path") {
+			let result = try filterResult(path: "$.books[?(@['id'] == 5)]")
+			XCTAssertEqual(result.count, 1)
+			XCTAssertEqual((result[0] as? JsonObject)?["title"] as? String, "Oryx and Crake")
+		}
+	}
+
 	private func filterResult(path: String) throws -> JsonArray {
 		guard let path = JsonPath(path) else {
 			throw TestError(message: "expected path to parse")

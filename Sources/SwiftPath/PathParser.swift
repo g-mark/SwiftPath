@@ -42,13 +42,6 @@ internal struct PathParser {
         if list[1] == "*" { return PathNode.values }
         return PathNode.property(name: list[1])
     }
-
-    /// array filter
-    private static let FilterPathSpecifiers = DotProperty.zeroOrMore().map { PathNode.nodes(nodes: $0) }
-    private static let FilterPath = Node.followed(by: FilterPathSpecifiers).map { result -> PathNode? in
-        guard case let .nodes(nodes) = result[1] else { return nil }
-        return PathNode.path(base: result[0], nodes: nodes)
-    }
         
     /// quoted properties
     /// used with a subscript to access a property
@@ -65,6 +58,20 @@ internal struct PathParser {
     
     // subscript property parser -> String
     private static let SubscriptProperty1 = QuotedSubscriptProperty.or(SingleQuotedSubscriptProperty)
+
+    /// array filter paths support dot-properties and quoted subscript properties.
+    private static let FilterOpenSubscript = pattern(string: "\\[\\s*").map { _ in PathNode.noop }
+    private static let FilterCloseSubscript = pattern(string: "\\s*\\]").map { _ in PathNode.noop }
+    private static let FilterSubscriptProperty = FilterOpenSubscript.followed(by: [
+        SubscriptProperty1.map { PathNode.property(name: $0) },
+        FilterCloseSubscript
+    ]).map { $0[1] }
+    private static let FilterPathSpecifier = DotProperty.or(FilterSubscriptProperty)
+    private static let FilterPathSpecifiers = FilterPathSpecifier.zeroOrMore().map { PathNode.nodes(nodes: $0) }
+    private static let FilterPath = Node.followed(by: FilterPathSpecifiers).map { result -> PathNode? in
+        guard case let .nodes(nodes) = result[1] else { return nil }
+        return PathNode.path(base: result[0], nodes: nodes)
+    }
     
     // subscript property parser -> (String, String)
     private static let SubscriptProperty2 = QuotedSubscriptProperty.or(SingleQuotedSubscriptProperty).map { name -> (String, String) in
