@@ -29,6 +29,9 @@ final class PathScanner {
 	func popLocation() {
 		startIndex = indexStack.removeLast()
 	}
+	func dropLocation() {
+		indexStack.removeLast()
+	}
 	
 	var hasMore: Bool { return startIndex < endIndex }
 	

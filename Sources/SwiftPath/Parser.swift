@@ -49,6 +49,18 @@ extension Parser {
             return self.parse(scanner) ?? rparser.parse(scanner)
         })
     }
+
+    internal func attempt() -> Parser<T> {
+        return Parser<T>(parse: { scanner in
+            scanner.pushLocation()
+            if let result = self.parse(scanner) {
+                scanner.dropLocation()
+                return result
+            }
+            scanner.popLocation()
+            return nil
+        })
+    }
     
     internal func repeated() -> Parser<[T]> {
         return Parser<[T]>(parse: { scanner in

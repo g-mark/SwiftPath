@@ -130,9 +130,20 @@ class ParserTests: XCTestCase {
         XCTAssertEqual(result, "もしもし")
         XCTAssertEqual(remains, "")
     }
+
+    func testAttemptRollsBackConsumedInputOnFailure() {
+        let abParser = literal(string: "a").followed(by: literal(string: "b")).attempt()
+        let aParser = literal(string: "a").map { [$0] }
+        let parser = abParser.or(aParser)
+
+        let tup = parser.run("ac")
+        XCTAssertNotNil(tup)
+        let (result, remains) = tup!
+        XCTAssertEqual(result, ["a"])
+        XCTAssertEqual(remains, "c")
+    }
     
     func testRepeated() {
         
     }
 }
-
