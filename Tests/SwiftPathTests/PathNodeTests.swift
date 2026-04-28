@@ -1,6 +1,6 @@
 //
 //  PathNodeTests.swift
-//  JsonPathLibTests
+//  SwiftPathTests
 //
 //  Created by Steven Grosmark on 8/20/17.
 //  Copyright © 2017 Steven Grosmark. All rights reserved.
