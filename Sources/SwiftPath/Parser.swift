@@ -61,6 +61,28 @@ extension Parser {
             return nil
         })
     }
+
+    internal func chainLeft(operator op: Parser<(T, T) -> T>) -> Parser<T> {
+        return Parser<T>(parse: { scanner in
+            guard let (initialValue, initialScanner) = self.parse(scanner) else { return nil }
+            var result = initialValue
+            var scanner = initialScanner
+
+            while true {
+                scanner.pushLocation()
+                guard let (combine, operatorScanner) = op.parse(scanner),
+                      let (nextValue, nextScanner) = self.parse(operatorScanner) else {
+                    scanner.popLocation()
+                    break
+                }
+                scanner.dropLocation()
+                result = combine(result, nextValue)
+                scanner = nextScanner
+            }
+
+            return (result, scanner)
+        })
+    }
     
     internal func repeated() -> Parser<[T]> {
         return Parser<[T]>(parse: { scanner in

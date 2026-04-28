@@ -158,6 +158,18 @@ class ParserTests: XCTestCase {
         XCTAssertEqual(number, "-12")
         XCTAssertEqual(numberRemains, "rest")
     }
+
+    func testChainLeftParsesLeftAssociativeOperators() {
+        let numberParser = tokenPattern(string: "[0-9]+").map { Int($0)! }
+        let plusParser = token(string: "+").map { _ in { (lhs: Int, rhs: Int) in lhs + rhs } }
+        let parser = numberParser.chainLeft(operator: plusParser)
+
+        let tup = parser.run("1 + 2 + 3 rest")
+        XCTAssertNotNil(tup)
+        let (result, remains) = tup!
+        XCTAssertEqual(result, 6)
+        XCTAssertEqual(remains, "rest")
+    }
     
     func testRepeated() {
         
