@@ -12,6 +12,7 @@
 import XCTest
 @testable import SwiftPath
 
+#if !os(Linux)
 final class ConcurrencyTests: XCTestCase {
 
     private let booksJson = """
@@ -317,3 +318,4 @@ final class ConcurrencyTests: XCTestCase {
         }
     }
 }
+#endif
