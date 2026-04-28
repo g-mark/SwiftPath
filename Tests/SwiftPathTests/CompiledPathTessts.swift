@@ -56,6 +56,22 @@ class CompiledPathTessts: XCTestCase {
 		}
 	}
 
+	func testArraySlicePaths() {
+		runTest("array slice paths") {
+			XCTAssertEqual(try titles(path: "$.books[1:3]"), ["Snow Crash", "Do Androids Dream of Electric Sheep?"])
+			XCTAssertEqual(try titles(path: "$.books[:3]"), ["Ready Player One", "Snow Crash", "Do Androids Dream of Electric Sheep?"])
+			XCTAssertEqual(try titles(path: "$.books[2:]"), ["Do Androids Dream of Electric Sheep?", "Slaughterhouse-Five", "Oryx and Crake"])
+			XCTAssertEqual(try titles(path: "$.books[-2:]"), ["Slaughterhouse-Five", "Oryx and Crake"])
+			XCTAssertEqual(try titles(path: "$.books[1:5:2]"), ["Snow Crash", "Slaughterhouse-Five"])
+			XCTAssertEqual(try titles(path: "$.books[::-1]"), ["Oryx and Crake", "Slaughterhouse-Five", "Do Androids Dream of Electric Sheep?", "Snow Crash", "Ready Player One"])
+			XCTAssertEqual(try titles(path: "$.books[-99:99]"), ["Ready Player One", "Snow Crash", "Do Androids Dream of Electric Sheep?", "Slaughterhouse-Five", "Oryx and Crake"])
+			XCTAssertEqual(try titles(path: "$.books[99:100]"), [])
+			XCTAssertEqual(try titles(path: "$.books[4:1]"), [])
+			XCTAssertEqual(try titles(path: "$.books[::0]"), [])
+			XCTAssertEqual(try titles(path: "$.books[10:-10:-2]"), ["Oryx and Crake", "Do Androids Dream of Electric Sheep?", "Ready Player One"])
+		}
+	}
+
 	func testArrayFilterPath() {
 		runTest("array filter path") {
 			guard let path = JsonPath("$.books[?(@.id==5)]") else {
@@ -153,6 +169,16 @@ class CompiledPathTessts: XCTestCase {
 			throw TestError(message: "expected array result")
 		}
 		return array
+	}
+
+	private func titles(path: String) throws -> [String] {
+		guard let path = JsonPath(path) else {
+			throw TestError(message: "expected path to parse")
+		}
+		guard let array = try path.evaluate(with: bookList) as? JsonArray else {
+			throw TestError(message: "expected array result")
+		}
+		return array.compactMap { ($0 as? JsonObject)?["title"] as? String }
 	}
     
 }

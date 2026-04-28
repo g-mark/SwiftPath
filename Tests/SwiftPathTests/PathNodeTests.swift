@@ -124,6 +124,56 @@ class PathNodeTests: XCTestCase {
 			try Expecting.array(["three", "four"], result: result)
 		}
 	}
+
+	/// [1:5:2] 1 up to 5, every second item
+	func testArrayRangeWithStep() {
+		let node = PathNode.arrayRange(from: 1, to: 5, step: 2)
+		runTest("array range with step") {
+			let result = try node.process(with: jsonArray, registers: [])
+			try Expecting.array(["one", "three"], result: result)
+		}
+	}
+
+	/// [::-1] all items in reverse order
+	func testArrayRangeWithNegativeStep() {
+		let node = PathNode.arrayRange(from: nil, to: nil, step: -1)
+		runTest("array range with negative step") {
+			let result = try node.process(with: jsonArray, registers: [])
+			try Expecting.array(["four", "three", "two", "one", "zero"], result: result)
+		}
+	}
+
+	func testArrayRangeClampsOutOfBounds() {
+		let node = PathNode.arrayRange(from: -10, to: 10)
+		runTest("array range clamps out of bounds") {
+			let result = try node.process(with: jsonArray, registers: [])
+			try Expecting.array(["zero", "one", "two", "three", "four"], result: result)
+		}
+	}
+
+	func testArrayRangeReturnsEmptyWhenBoundsDoNotIterate() {
+		let node = PathNode.arrayRange(from: 4, to: 1)
+		runTest("array range returns empty") {
+			let result = try node.process(with: jsonArray, registers: [])
+			try Expecting.array([], result: result)
+		}
+	}
+
+	func testArrayRangeReturnsEmptyForZeroStep() {
+		let node = PathNode.arrayRange(from: nil, to: nil, step: 0)
+		runTest("array range returns empty for zero step") {
+			let result = try node.process(with: jsonArray, registers: [])
+			try Expecting.array([], result: result)
+		}
+	}
+
+	func testReverseArrayRangeClampsOutOfBounds() {
+		let node = PathNode.arrayRange(from: 10, to: -10, step: -2)
+		runTest("reverse array range clamps out of bounds") {
+			let result = try node.process(with: jsonArray, registers: [])
+			try Expecting.array(["four", "two", "zero"], result: result)
+		}
+	}
 	
 	func testFunction() {
 		let node = PathNode.function(function: .average)
