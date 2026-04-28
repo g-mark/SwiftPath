@@ -1,8 +1,6 @@
 # SwiftPath
-[![Build Status](https://travis-ci.org/g-mark/SwiftPath.svg?branch=develop)](https://travis-ci.org/g-mark/SwiftPath)
-[![Swift 4.2-5.3 compatible](https://img.shields.io/badge/Swift%204.2%20--%205.3-compatible-4BC51D.svg?style=flat)](https://developer.apple.com/swift)
+[![Swift 6.1 compatible](https://img.shields.io/badge/Swift%206.1-compatible-4BC51D.svg?style=flat)](https://developer.apple.com/swift)
 [![swift-package-manager](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
-[![CocoaPods compatible](https://img.shields.io/cocoapods/v/SwiftPath.svg)](https://cocoapods.org/pods/SwiftPath)
 [![License: MIT](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://raw.githubusercontent.com/g-mark/SwiftPath/master/LICENSE)
 
 JSONPath for Swift
@@ -17,18 +15,10 @@ SwiftPath allows you to keep your data source **and** your data mapping dynamic.
 
 ## Installation
 
-SwiftPath is available through [CocoaPods](http://cocoapods.org) and [Carthage](https://github.com/Carthage/Carthage).
+SwiftPath is available through Swift Package Manager.
 
-### CocoaPods
-
-```ruby
-pod "SwiftPath"
-```
-
-### Carthage
-
-```
-github "g-mark/SwiftPath" "master"
+```swift
+.package(url: "https://github.com/g-mark/SwiftPath.git", from: "0.4.0")
 ```
 
 ## Documentation
@@ -84,9 +74,7 @@ $['name', 'value'=>'id']
 ## Publishing
 
 To publish a new version of SwiftPath:
-1. Update version number in `SwiftPath.podspec`
 1. Create a release branch off of `production` with version: e.g., `release/#.#.#`
 1. Merge `develop` into release/version branch
 1. Create PR into `production` from release/version branch
-1. Once CI passess, tag it with `#.#.#`, merge into `production`, and delete the release/version branch
-1. Run `pod trunk push SwiftLint.podspec`
+1. Once CI passes, tag it with `#.#.#`, merge into `production`, and delete the release/version branch
