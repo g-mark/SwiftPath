@@ -10,7 +10,11 @@
 
 import Foundation
 
-internal enum PathNode {
+// @unchecked Sendable: PathNode is an immutable enum; all associated values are either
+// primitive Sendable types or ArrayFilter/FilterExpression with documented safety invariants.
+// @unchecked is required to break the circular dependency PathNode → ArrayFilter →
+// FilterExpression → JsonPathPart → [PathNode].
+internal enum PathNode: Sendable {
     
 	/// $
 	case root
@@ -189,6 +193,7 @@ extension PathNode {
 }
 
 private extension Array where Element == JsonValue {
+    
 	func slice(from lowerBound: Int?, to upperBound: Int?, by step: Int) -> JsonArray {
 		guard step != 0 else { return [] }
 
@@ -229,7 +234,7 @@ private extension Array where Element == JsonValue {
 	}
 }
 
-internal struct ArrayFilter {
+internal struct ArrayFilter: Sendable {
 	let expression: FilterExpression
 
 	internal init(path: JsonPathPart) {
@@ -249,7 +254,10 @@ internal struct ArrayFilter {
 	}
 }
 
-internal indirect enum FilterExpression {
+// @unchecked Sendable: the .comparison case stores a JsonValue (Any) parsed from a
+// JSONPath literal — always a primitive (String, Int, Double, Bool) or NSNull,
+// immutable after construction.
+internal indirect enum FilterExpression: @unchecked Sendable {
 	case exists(JsonPathPart)
 	case comparison(JsonPathPart, FilterComparisonOperator, JsonValue)
 	case not(FilterExpression)

@@ -8,7 +8,9 @@
 
 import Foundation
 
-final class PathScanner {
+// @unchecked Sendable: PathScanner is created, used, and discarded within a single
+// synchronous call on one thread. It never escapes across isolation boundaries.
+final class PathScanner: @unchecked Sendable {
     
 	let source: String
 	private(set) var startIndex: String.Index

@@ -8,7 +8,10 @@
 
 import Foundation
 
-internal struct Parser<T> {
+// @unchecked Sendable: Parser<T> is an immutable struct whose stored closure
+// either is a pure function or captures only other immutable Parser instances.
+// All parsing executes synchronously on the calling thread with no shared mutable state.
+internal struct Parser<T>: @unchecked Sendable {
     let parse: (PathScanner) -> (T, PathScanner)?
 }
 
