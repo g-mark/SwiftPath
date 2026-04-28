@@ -11,7 +11,7 @@ import Foundation
 final class PathScanner {
     
 	let source: String
-	private (set) var startIndex: String.Index
+	private(set) var startIndex: String.Index
 	let endIndex: String.Index
 	
 	private var indexStack:[String.Index]
