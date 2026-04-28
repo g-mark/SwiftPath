@@ -133,6 +133,15 @@ class PathNodeTests: XCTestCase {
 			try Expecting.array(["one", "three"], result: result)
 		}
 	}
+
+	/// [::-1] all items in reverse order
+	func testArrayRangeWithNegativeStep() {
+		let node = PathNode.arrayRange(from: nil, to: nil, step: -1)
+		runTest("array range with negative step") {
+			let result = try node.process(with: jsonArray, registers: [])
+			try Expecting.array(["four", "three", "two", "one", "zero"], result: result)
+		}
+	}
 	
 	func testFunction() {
 		let node = PathNode.function(function: .average)

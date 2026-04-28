@@ -159,21 +159,46 @@ extension PathNode {
 			guard let node = json as? JsonArray else {
 				throw JsonPathEvaluateError.expectingAnArray
 			}
-			var lb = lowerBound ?? 0
-			var ub = upperBound ?? node.count
 			let increment = step ?? 1
-			if lb < 0 {
-				lb += node.count
+			var result = JsonArray()
+
+			if increment > 0 {
+				var lb = lowerBound ?? 0
+				var ub = upperBound ?? node.count
+				if lb < 0 {
+					lb += node.count
+				}
+				if ub < 0 {
+					ub += node.count
+				}
+				guard lb >= 0 && lb < ub && ub <= node.count else {
+					throw JsonPathEvaluateError.indexOutOfBounds
+				}
+				var index = lb
+				while index < ub {
+					result.append(node[index])
+					index += increment
+				}
+				return result
 			}
+
+			guard increment < 0 else {
+				throw JsonPathEvaluateError.indexOutOfBounds
+			}
+
+			var ub = lowerBound ?? node.count - 1
+			var lb = upperBound ?? -node.count - 1
 			if ub < 0 {
 				ub += node.count
 			}
-			guard lb >= 0 && lb < ub && ub <= node.count && increment > 0 else {
+			if lb < 0 {
+				lb += node.count
+			}
+			guard ub >= 0 && ub < node.count && lb >= -1 && lb < ub else {
 				throw JsonPathEvaluateError.indexOutOfBounds
 			}
-			var result = JsonArray()
-			var index = lb
-			while index < ub {
+			var index = ub
+			while lb < index {
 				result.append(node[index])
 				index += increment
 			}
