@@ -170,6 +170,15 @@ class ParserTests: XCTestCase {
         XCTAssertEqual(result, 6)
         XCTAssertEqual(remains, "rest")
     }
+
+    func testLazyDefersParserConstruction() {
+        let parser = Parser<String>.lazy { literal(string: "later") }
+        let tup = parser.run("later remains")
+        XCTAssertNotNil(tup)
+        let (result, remains) = tup!
+        XCTAssertEqual(result, "later")
+        XCTAssertEqual(remains, " remains")
+    }
     
     func testRepeated() {
         

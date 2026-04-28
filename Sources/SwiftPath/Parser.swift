@@ -13,6 +13,12 @@ internal struct Parser<T> {
 }
 
 extension Parser {
+
+    internal static func lazy(_ parser: @escaping () -> Parser<T>) -> Parser<T> {
+        return Parser<T>(parse: { scanner in
+            parser().parse(scanner)
+        })
+    }
     
     internal func run(_ string: String) -> (T, String)? {
         guard let (result, remainder) = parse(PathScanner(string: string)) else { return nil }
