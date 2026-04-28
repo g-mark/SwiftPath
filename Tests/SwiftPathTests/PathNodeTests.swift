@@ -140,10 +140,28 @@ class PathNodeTests: XCTestCase {
 			try Expecting.string("precalculated", result: result)
 		}
 	}
-	
-	
-	///TODO: case arrayFilter
-	
-	
+
+	func testArrayFilter() {
+		let filter = ArrayFilter(path: JsonPathPart(parts: [.current, .property(name: "index")]), expectedValue: 3)
+		let node = PathNode.arrayFilter(filter: filter)
+		let array: JsonArray = [
+			["index": 1, "key": "one"],
+			["index": 3, "key": "three"]
+		]
+		runTest("array filter") {
+			let result = try node.process(with: array, registers: [])
+			guard let filtered = result as? JsonArray else {
+				XCTFail("expected an array result")
+				return
+			}
+			XCTAssertEqual(filtered.count, 1)
+			guard let object = filtered[0] as? JsonObject else {
+				XCTFail("expected an object result")
+				return
+			}
+			XCTAssertEqual(object["key"] as? String, "three")
+		}
+	}
+
     
 }

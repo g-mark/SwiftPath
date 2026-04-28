@@ -42,6 +42,13 @@ internal struct PathParser {
         if list[1] == "*" { return PathNode.values }
         return PathNode.property(name: list[1])
     }
+
+    /// array filter
+    private static let FilterPathSpecifiers = DotProperty.zeroOrMore().map { PathNode.nodes(nodes: $0) }
+    private static let FilterPath = Node.followed(by: FilterPathSpecifiers).map { result -> PathNode? in
+        guard case let .nodes(nodes) = result[1] else { return nil }
+        return PathNode.path(base: result[0], nodes: nodes)
+    }
         
     /// quoted properties
     /// used with a subscript to access a property
@@ -92,7 +99,20 @@ internal struct PathParser {
         return flat.count == 1 ? PathNode.arrayItem(index: flat[0]) : PathNode.arrayItems(indices: flat)
     }
 
-    private static let SubscriptSpecifier = SubscriptPropertyList.or(IndexValueList).or(Wildcard)
+    /// filter
+    /// used to select items in an array
+    ///   [?(@.id==5)]
+    private static let ArrayFilterSpecifier = Parser<PathNode>(parse: { scanner in
+        guard scanner.mustMatch(pattern: "\\?\\s*\\(\\s*") != nil else { return nil }
+        guard let (parsedPath, pathScanner) = FilterPath.parse(scanner), let pathNode = parsedPath else { return nil }
+        guard case let .path(base, nodes) = pathNode else { return nil }
+        guard pathScanner.mustMatch(pattern: "\\s*==\\s*") != nil else { return nil }
+        guard let expectedValue = parseFilterValue(pathScanner) else { return nil }
+        guard pathScanner.mustMatch(pattern: "\\s*\\)") != nil else { return nil }
+        return (PathNode.arrayFilter(filter: ArrayFilter(path: JsonPathPart(parts: [base] + nodes), expectedValue: expectedValue)), pathScanner)
+    })
+
+    private static let SubscriptSpecifier = SubscriptPropertyList.or(IndexValueList).or(Wildcard).or(ArrayFilterSpecifier)
     
     
     private static let OpenSubscript = pattern(string: "\\[\\s*").map { str -> PathNode in PathNode.noop }
@@ -151,4 +171,29 @@ internal struct PathParser {
     
     Path.run("$[1].hello")
      */
+}
+
+private func parseFilterValue(_ scanner: PathScanner) -> JsonValue? {
+    if let value = scanner.mustMatch(pattern: "\"[^\"\t\r\n]*\"") {
+        return String(value.dropFirst().dropLast())
+    }
+    if let value = scanner.mustMatch(pattern: "'[^'\t\r\n]*'") {
+        return String(value.dropFirst().dropLast())
+    }
+    if scanner.mustMatch(pattern: "true") != nil {
+        return true
+    }
+    if scanner.mustMatch(pattern: "false") != nil {
+        return false
+    }
+    if scanner.mustMatch(pattern: "null") != nil {
+        return NSNull()
+    }
+    if let value = scanner.mustMatch(pattern: "-?[0-9]+\\.[0-9]+") {
+        return Double(value)
+    }
+    if let value = scanner.mustMatch(pattern: "-?[0-9]+") {
+        return Int(value)
+    }
+    return nil
 }

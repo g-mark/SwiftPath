@@ -55,5 +55,25 @@ class CompiledPathTessts: XCTestCase {
 			XCTAssertEqual(array.count, 5)
 		}
 	}
+
+	func testArrayFilterPath() {
+		runTest("array filter path") {
+			guard let path = JsonPath("$.books[?(@.id==5)]") else {
+				XCTFail("expected path to parse")
+				return
+			}
+			let result = try path.evaluate(with: bookList)
+			guard let array = result as? JsonArray else {
+				XCTFail("expected an array result")
+				return
+			}
+			XCTAssertEqual(array.count, 1)
+			guard let object = array[0] as? JsonObject else {
+				XCTFail("expected an object result")
+				return
+			}
+			XCTAssertEqual(object["id"] as? Int, 5)
+		}
+	}
     
 }

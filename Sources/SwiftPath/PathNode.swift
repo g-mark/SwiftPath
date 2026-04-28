@@ -53,7 +53,9 @@ internal enum PathNode {
 	/// executed on an array, evaluates to an array of JsonValues
 	case arrayRange(from: Int?, to: Int?)
 	
-	///TODO: case arrayFilter
+	/// [?(@.name==value)]
+	/// executed on an array, evaluates to the items whose filter matches
+	case arrayFilter(filter: ArrayFilter)
 	
 	/// .min()
 	/// executed on an array or numbers, evaluates to a number
@@ -168,6 +170,18 @@ extension PathNode {
 				throw JsonPathEvaluateError.indexOutOfBounds
 			}
 			return Array(node[lb..<ub])
+
+		case .arrayFilter(let filter):
+			guard let node = json as? JsonArray else {
+				throw JsonPathEvaluateError.expectingAnArray
+			}
+			var filtered: JsonArray = []
+			for item in node {
+				if try filter.matches(item) {
+					filtered.append(item)
+				}
+			}
+			return filtered
 		
 		case .function(let function):
 			guard let node = json as? JsonArray else {
@@ -181,5 +195,52 @@ extension PathNode {
         case .nodes(_), .path(_, _):
             throw JsonPathEvaluateError.unexpectedInternalNode
 		}
+	}
+}
+
+internal struct ArrayFilter {
+	let path: JsonPathPart
+	let expectedValue: JsonValue
+
+	internal func matches(_ json: JsonValue) throws -> Bool {
+		let value = try path.evaluate(with: json, registers: [json])
+		return valuesEqual(value, expectedValue)
+	}
+
+	private func valuesEqual(_ lhs: JsonValue?, _ rhs: JsonValue) -> Bool {
+		guard let lhs = lhs else { return false }
+
+		if lhs is NSNull {
+			return rhs is NSNull
+		}
+		if let rhs = rhs as? String {
+			return (lhs as? String) == rhs
+		}
+		if let rhs = rhs as? Bool {
+			return (lhs as? Bool) == rhs
+		}
+		if let rhs = rhs as? Int {
+			if let lhs = lhs as? Int {
+				return lhs == rhs
+			}
+			if let lhs = lhs as? Double {
+				return lhs == Double(rhs)
+			}
+			if let lhs = lhs as? NSNumber {
+				return lhs.doubleValue == Double(rhs)
+			}
+		}
+		if let rhs = rhs as? Double {
+			if let lhs = lhs as? Double {
+				return lhs == rhs
+			}
+			if let lhs = lhs as? Int {
+				return Double(lhs) == rhs
+			}
+			if let lhs = lhs as? NSNumber {
+				return lhs.doubleValue == rhs
+			}
+		}
+		return false
 	}
 }
