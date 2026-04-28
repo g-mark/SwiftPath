@@ -6,257 +6,155 @@
 //  Copyright © 2017 Steven Grosmark. All rights reserved.
 //
 
-import XCTest
+import Testing
 @testable import SwiftPath
 
-class PathParserTests: XCTestCase {
-    
-    override func setUp() {
-        super.setUp()
+@Suite(.serialized)
+struct PathParserTests {
+
+    @Test
+    func testRoot() throws {
+        let nodes = try rootNodes("$")
+        #expect(nodes.isEmpty)
     }
-    
-    override func tearDown() {
-        super.tearDown()
-    }
-    
-    func testRoot() {
-        let result = PathParser.parse(path: "$")
-        XCTAssertNotNil(result)
-        guard case let .path(base, nodes) = result! else {
-            XCTFail("PathParser.parse returned unexpected node type")
-            return
-        }
-        guard case .root = base else {
-            XCTFail("expected a root node")
-            return
-        }
-        XCTAssert(nodes.count == 0)
-    }
-    
-    func testBasicPropertyOnRoot() {
-        let result = PathParser.parse(path: "$.hello")
-        XCTAssertNotNil(result)
-        guard case let .path(base, nodes) = result! else {
-            XCTFail("PathParser.parse returned unexpected node type")
-            return
-        }
-        guard case .root = base else {
-            XCTFail("expected a root node")
-            return
-        }
-        XCTAssert(nodes.count == 1)
+
+    @Test
+    func testBasicPropertyOnRoot() throws {
+        let nodes = try rootNodes("$.hello")
+        #expect(nodes.count == 1)
         guard case let .property(name) = nodes[0] else {
-            XCTFail("expecting a property node")
+            Issue.record("expecting a property node")
             return
         }
-        XCTAssertEqual(name, "hello")
+        #expect(name == "hello")
     }
-    
-    func testBasicArrayIndexOnRoot() {
-        let result = PathParser.parse(path: "$[0]")
-        XCTAssertNotNil(result)
-        guard case let .path(base, nodes) = result! else {
-            XCTFail("PathParser.parse returned unexpected node type")
-            return
-        }
-        guard case .root = base else {
-            XCTFail("expected a root node")
-            return
-        }
-        XCTAssert(nodes.count == 1)
+
+    @Test
+    func testBasicArrayIndexOnRoot() throws {
+        let nodes = try rootNodes("$[0]")
+        #expect(nodes.count == 1)
         guard case let .arrayItem(index) = nodes[0] else {
-            XCTFail("expecting a arrayItem node")
+            Issue.record("expecting an arrayItem node")
             return
         }
-        XCTAssertEqual(index, 0)
+        #expect(index == 0)
     }
-    
-    func testSingleQuotedPropertyOnRoot() {
-        let result = PathParser.parse(path: "$['property']")
-        XCTAssertNotNil(result)
-        guard case let .path(base, nodes) = result! else {
-            XCTFail("PathParser.parse returned unexpected node type")
-            return
-        }
-        guard case .root = base else {
-            XCTFail("expected a root node")
-            return
-        }
-        XCTAssert(nodes.count == 1)
+
+    @Test
+    func testSingleQuotedPropertyOnRoot() throws {
+        let nodes = try rootNodes("$['property']")
+        #expect(nodes.count == 1)
         guard case let .property(name) = nodes[0] else {
-            XCTFail("expecting a property node")
+            Issue.record("expecting a property node")
             return
         }
-        XCTAssertEqual(name, "property")
+        #expect(name == "property")
     }
-    
-    func testSingleQuotedMultiWordPropertyOnRoot() {
-        let result = PathParser.parse(path: "$['property & more']")
-        XCTAssertNotNil(result)
-        guard case let .path(base, nodes) = result! else {
-            XCTFail("PathParser.parse returned unexpected node type")
-            return
-        }
-        guard case .root = base else {
-            XCTFail("expected a root node")
-            return
-        }
-        XCTAssert(nodes.count == 1)
+
+    @Test
+    func testSingleQuotedMultiWordPropertyOnRoot() throws {
+        let nodes = try rootNodes("$['property & more']")
+        #expect(nodes.count == 1)
         guard case let .property(name) = nodes[0] else {
-            XCTFail("expecting a property node")
+            Issue.record("expecting a property node")
             return
         }
-        XCTAssertEqual(name, "property & more")
+        #expect(name == "property & more")
     }
-    
-    func testDoubleQuotedPropertyOnRoot() {
-        let result = PathParser.parse(path: "$[\"property\"]")
-        XCTAssertNotNil(result)
-        guard case let .path(base, nodes) = result! else {
-            XCTFail("PathParser.parse returned unexpected node type")
-            return
-        }
-        guard case .root = base else {
-            XCTFail("expected a root node")
-            return
-        }
-        XCTAssert(nodes.count == 1)
+
+    @Test
+    func testDoubleQuotedPropertyOnRoot() throws {
+        let nodes = try rootNodes("$[\"property\"]")
+        #expect(nodes.count == 1)
         guard case let .property(name) = nodes[0] else {
-            XCTFail("expecting a property node")
+            Issue.record("expecting a property node")
             return
         }
-        XCTAssertEqual(name, "property")
+        #expect(name == "property")
     }
-    
-    func testDoubleQuotedMultiWordPropertyOnRoot() {
-        let result = PathParser.parse(path: "$[\"property & more\"]")
-        XCTAssertNotNil(result)
-        guard case let .path(base, nodes) = result! else {
-            XCTFail("PathParser.parse returned unexpected node type")
-            return
-        }
-        guard case .root = base else {
-            XCTFail("expected a root node")
-            return
-        }
-        XCTAssert(nodes.count == 1)
+
+    @Test
+    func testDoubleQuotedMultiWordPropertyOnRoot() throws {
+        let nodes = try rootNodes("$[\"property & more\"]")
+        #expect(nodes.count == 1)
         guard case let .property(name) = nodes[0] else {
-            XCTFail("expecting a property node")
+            Issue.record("expecting a property node")
             return
         }
-        XCTAssertEqual(name, "property & more")
+        #expect(name == "property & more")
     }
-    
-    func testQuotedPropertiesOnRoot() {
-        let result = PathParser.parse(path: "$[\"property\", 'another'=>'new-name', 'three']")
-        XCTAssertNotNil(result)
-        guard case let .path(base, nodes) = result! else {
-            XCTFail("PathParser.parse returned unexpected node type")
-            return
-        }
-        guard case .root = base else {
-            XCTFail("expected a root node")
-            return
-        }
-        XCTAssert(nodes.count == 1)
+
+    @Test
+    func testQuotedPropertiesOnRoot() throws {
+        let nodes = try rootNodes("$[\"property\", 'another'=>'new-name', 'three']")
+        #expect(nodes.count == 1)
         guard case let .properties(names, rename) = nodes[0] else {
-            XCTFail("expecting a properties node")
+            Issue.record("expecting a properties node")
             return
         }
-        XCTAssertEqual(names, ["property", "another", "three"])
-        XCTAssertEqual(rename, ["property", "new-name", "three"])
+        #expect(names == ["property", "another", "three"])
+        #expect(rename == ["property", "new-name", "three"])
     }
-    
-    func testPropertyWithDash() {
-        let result = PathParser.parse(path: "$.dash-property")
-        XCTAssertNotNil(result)
-        guard case let .path(base, nodes) = result! else {
-            XCTFail("PathParser.parse returned unexpected node type")
-            return
-        }
-        guard case .root = base else {
-            XCTFail("expected a root node")
-            return
-        }
-        XCTAssert(nodes.count == 1)
+
+    @Test
+    func testPropertyWithDash() throws {
+        let nodes = try rootNodes("$.dash-property")
+        #expect(nodes.count == 1)
         guard case let .property(name) = nodes[0] else {
-            XCTFail("expecting a property node")
+            Issue.record("expecting a property node")
             return
         }
-        XCTAssertEqual(name, "dash-property")
+        #expect(name == "dash-property")
     }
-    
-    func testWildcard() {
-        let result = PathParser.parse(path: "$.*")
-        XCTAssertNotNil(result)
-        guard case let .path(base, nodes) = result! else {
-            XCTFail("PathParser.parse returned unexpected node type")
-            return
-        }
-        guard case .root = base else {
-            XCTFail("expected a root node")
-            return
-        }
-        XCTAssert(nodes.count == 1)
+
+    @Test
+    func testWildcard() throws {
+        let nodes = try rootNodes("$.*")
+        #expect(nodes.count == 1)
         guard case .values = nodes[0] else {
-            XCTFail("expecting a values node")
+            Issue.record("expecting a values node")
             return
         }
     }
-    
-    func testWildcard2() {
-        let result = PathParser.parse(path: "$.coins.*[\"name\", \"ticker\"=>'symbol', 'exchange_rate_btc' => \"btc\"]")
-        XCTAssertNotNil(result)
-        guard case let .path(base, nodes) = result! else {
-            XCTFail("PathParser.parse returned unexpected node type")
-            return
-        }
-        guard case .root = base else {
-            XCTFail("expected a root node")
-            return
-        }
-        XCTAssert(nodes.count == 3)
+
+    @Test
+    func testWildcard2() throws {
+        let nodes = try rootNodes("$.coins.*[\"name\", \"ticker\"=>'symbol', 'exchange_rate_btc' => \"btc\"]")
+        #expect(nodes.count == 3)
         guard case let .property(name) = nodes[0] else {
-            XCTFail("expecting a property node")
+            Issue.record("expecting a property node")
             return
         }
-        XCTAssertEqual(name, "coins")
+        #expect(name == "coins")
         guard case .values = nodes[1] else {
-            XCTFail("expecting a values node")
+            Issue.record("expecting a values node")
             return
         }
         guard case let .properties(names, rename) = nodes[2] else {
-            XCTFail("expecting a properties node")
+            Issue.record("expecting a properties node")
             return
         }
-        XCTAssertEqual(names, ["name", "ticker", "exchange_rate_btc"])
-        XCTAssertEqual(rename, ["name", "symbol", "btc"])
+        #expect(names == ["name", "ticker", "exchange_rate_btc"])
+        #expect(rename == ["name", "symbol", "btc"])
     }
 
-    func testArrayWildcard() {
-        let result = PathParser.parse(path: "$.array[*]")
-        XCTAssertNotNil(result)
-        guard case let .path(base, nodes) = result! else {
-            XCTFail("PathParser.parse returned unexpected node type")
-            return
-        }
-        guard case .root = base else {
-            XCTFail("expected a root node")
-            return
-        }
-        XCTAssert(nodes.count == 2)
+    @Test
+    func testArrayWildcard() throws {
+        let nodes = try rootNodes("$.array[*]")
+        #expect(nodes.count == 2)
         guard case let .property(name) = nodes[0] else {
-            XCTFail("expecting a property node")
+            Issue.record("expecting a property node")
             return
         }
-        XCTAssertEqual(name, "array")
+        #expect(name == "array")
         guard case .arrayValues = nodes[1] else {
-            XCTFail("expecting an arrayValues node")
+            Issue.record("expecting an arrayValues node")
             return
         }
     }
 
-    func testArraySlice() {
+    @Test
+    func testArraySlice() throws {
         let tests: [(String, Int?, Int?, Int?)] = [
             ("$.array[1:3]", 1, 3, nil),
             ("$.array[:3]", nil, 3, nil),
@@ -268,56 +166,48 @@ class PathParserTests: XCTestCase {
         ]
 
         for (path, lowerBound, upperBound, step) in tests {
-            let result = PathParser.parse(path: path)
-            guard let result = result else {
-                XCTFail("expected \(path) to parse")
+            let nodes = try rootNodes(path)
+            #expect(nodes.count == 2)
+            guard case let .property(name) = nodes[0] else {
+                Issue.record("expecting a property node")
                 continue
             }
-            guard case let .path(base, nodes) = result else {
-                XCTFail("PathParser.parse returned unexpected node type")
-                return
-            }
-            guard case .root = base else {
-                XCTFail("expected a root node")
-                return
-            }
-            XCTAssert(nodes.count == 2)
-            guard case let .property(name) = nodes[0] else {
-                XCTFail("expecting a property node")
-                return
-            }
-            XCTAssertEqual(name, "array")
+            #expect(name == "array")
             guard case let .arrayRange(from, to, parsedStep) = nodes[1] else {
-                XCTFail("expecting an arrayRange node")
-                return
+                Issue.record("expecting an arrayRange node")
+                continue
             }
-            XCTAssertEqual(from, lowerBound)
-            XCTAssertEqual(to, upperBound)
-            XCTAssertEqual(parsedStep, step)
+            #expect(from == lowerBound)
+            #expect(to == upperBound)
+            #expect(parsedStep == step)
         }
     }
 
-    func testArrayFilter() {
-        let result = PathParser.parse(path: "$.array[?(@.id==5)]")
-        XCTAssertNotNil(result)
-        guard case let .path(base, nodes) = result! else {
-            XCTFail("PathParser.parse returned unexpected node type")
-            return
-        }
-        guard case .root = base else {
-            XCTFail("expected a root node")
-            return
-        }
-        XCTAssert(nodes.count == 2)
+    @Test
+    func testArrayFilter() throws {
+        let nodes = try rootNodes("$.array[?(@.id==5)]")
+        #expect(nodes.count == 2)
         guard case let .property(name) = nodes[0] else {
-            XCTFail("expecting a property node")
+            Issue.record("expecting a property node")
             return
         }
-        XCTAssertEqual(name, "array")
+        #expect(name == "array")
         guard case .arrayFilter = nodes[1] else {
-            XCTFail("expecting an arrayFilter node")
+            Issue.record("expecting an arrayFilter node")
             return
         }
     }
-    
+
+    private func rootNodes(_ path: String) throws -> [PathNode] {
+        let result = try #require(PathParser.parse(path: path), "expected \(path) to parse")
+        guard case let .path(base, nodes) = result else {
+            Issue.record("PathParser.parse returned unexpected node type")
+            throw TestError(message: "unexpected node type")
+        }
+        guard case .root = base else {
+            Issue.record("expected a root node")
+            throw TestError(message: "expected root node")
+        }
+        return nodes
+    }
 }

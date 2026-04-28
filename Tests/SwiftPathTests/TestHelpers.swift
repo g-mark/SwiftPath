@@ -6,7 +6,8 @@
 //  Copyright © 2017 Steven Grosmark. All rights reserved.
 //
 
-import XCTest
+import Foundation
+import Testing
 @testable import SwiftPath
 
 
@@ -15,7 +16,7 @@ func runTest(_ name:String, test: () throws -> Void) {
 		try test()
 	}
 	catch {
-		XCTFail("error running \(name) test: \(error)")
+		Issue.record("error running \(name) test: \(error)")
 	}
 }
 
@@ -26,7 +27,7 @@ struct TestError: Error {
 	}
 }
 
-class Expecting {
+struct Expecting {
 	
 	static func object(_ object:[String:String], result inResult:JsonValue?) throws {
 		guard let result = inResult as? JsonObject else {

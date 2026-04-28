@@ -6,10 +6,12 @@
 //  Copyright © 2017 Steven Grosmark. All rights reserved.
 //
 
-import XCTest
+import Foundation
+import Testing
 @testable import SwiftPath
 
-class PathArrayFunctionTests: XCTestCase {
+@Suite(.serialized)
+struct PathArrayFunctionTests {
 	
 	let positives = [ 980.87, 509.42, 11.98, 165.31, 791.29, 834.18, 68.69, 817.87, 994.97, 862.40 ]
 	let negatives = [ -194.65, -790.89, -696.61, -322.70, -803.83, -57.13, -162.76, -646.61, -260.87, -934.49 ]
@@ -33,15 +35,7 @@ class PathArrayFunctionTests: XCTestCase {
 		}
 	}
 	
-	override func setUp() {
-		super.setUp()
-		
-	}
-	
-	override func tearDown() {
-		super.tearDown()
-	}
-	
+	@Test
 	func testBadInput() {
 		let tests = [
 			Test(numbers: empty, function: .minimum),
@@ -58,12 +52,13 @@ class PathArrayFunctionTests: XCTestCase {
 		]
 		
 		for test in tests {
-			XCTAssertThrowsError(try test.function.evaluate(array: test.numbers), "\(test.function) expected to throw on \(test.numbers)") {error in
-				
+			#expect(throws: (any Error).self, "\(test.function) expected to throw on \(test.numbers)") {
+				try test.function.evaluate(array: test.numbers)
 			}
 		}
 	}
 	
+	@Test
 	func testValid() {
 		let tests = [
 			Test(numbers: positives, function: .minimum, expectedResult: 11.98),
@@ -122,14 +117,14 @@ class PathArrayFunctionTests: XCTestCase {
 					else {
                         equal = abs(test.expectedResult - result) < precision
 					}
-					XCTAssert(equal, "\(test.function) failed: expecting \(test.expectedResult) got \(result) for \(test.numbers)")
+					#expect(equal, "\(test.function) failed: expecting \(test.expectedResult) got \(result) for \(test.numbers)")
 				}
 				else {
-					XCTFail("\(test.function) failed for \(test.numbers) - no return value")
+					Issue.record("\(test.function) failed for \(test.numbers) - no return value")
 				}
 			}
 			catch {
-				XCTFail("\(test.function) failed for \(test.numbers) - \(error)")
+				Issue.record("\(test.function) failed for \(test.numbers) - \(error)")
 			}
 		}
 	}

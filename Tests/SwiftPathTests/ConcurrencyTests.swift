@@ -9,10 +9,12 @@
 //  any data races. Run with `swift test --sanitize=thread` for full coverage.
 //
 
-import XCTest
+import Dispatch
+import Testing
 @testable import SwiftPath
 
-final class ConcurrencyTests: XCTestCase {
+@Suite(.serialized)
+struct ConcurrencyTests {
 
     private let booksJson = """
     {
@@ -45,48 +47,53 @@ final class ConcurrencyTests: XCTestCase {
 
     /// Many threads concurrently parse JSONPath strings.
     /// Exercises PathParser's static parser combinators (Parser<T>: @unchecked Sendable).
+    @Test
     func testParallelPathParsing() {
         let strings = pathStrings
         DispatchQueue.concurrentPerform(iterations: Self.iterations) { i in
             let str = strings[i % strings.count]
-            XCTAssertNotNil(JsonPath(str), "failed to parse \(str)")
+            #expect(JsonPath(str) != nil, "failed to parse \(str)")
         }
     }
 
     /// One shared JsonPath evaluated against the same JSON from many threads.
     /// Exercises that the compiled PathNode tree can be safely read concurrently.
+    @Test
     func testParallelEvaluationSharedPath() {
         guard let path = JsonPath("$.books[?(@.available == true)]") else {
-            return XCTFail("path failed to parse")
+            Issue.record("path failed to parse")
+            return
         }
         let json = booksJson
         DispatchQueue.concurrentPerform(iterations: Self.iterations) { _ in
             do {
                 let result = try path.evaluate(with: json) as? JsonArray
-                XCTAssertEqual(result?.count, 3)
+                #expect(result?.count == 3)
             } catch {
-                XCTFail("evaluate failed: \(error)")
+                Issue.record("evaluate failed: \(error)")
             }
         }
     }
 
     /// Multiple distinct JsonPaths evaluated concurrently against the same JSON.
+    @Test
     func testParallelEvaluationDifferentPaths() {
         let paths: [JsonPath] = pathStrings.compactMap(JsonPath.init)
-        XCTAssertEqual(paths.count, pathStrings.count)
+        #expect(paths.count == pathStrings.count)
         let json = booksJson
         DispatchQueue.concurrentPerform(iterations: Self.iterations) { i in
             let path = paths[i % paths.count]
             do {
                 _ = try path.evaluate(with: json)
             } catch {
-                XCTFail("evaluate failed: \(error)")
+                Issue.record("evaluate failed: \(error)")
             }
         }
     }
 
     /// Filter expressions exercised heavily across threads.
     /// Exercises FilterExpression: @unchecked Sendable (the case carrying JsonValue = Any).
+    @Test
     func testParallelFilterEvaluation() {
         let filterPaths: [JsonPath] = [
             "$.books[?(@.id == 1 || @.id == 2 || @.id == 3)]",
@@ -96,44 +103,48 @@ final class ConcurrencyTests: XCTestCase {
             "$.books[?(@.author == 'Ernest Cline')]",
             "$.books[?(@.title == 'Snow Crash')]",
         ].compactMap(JsonPath.init)
-        XCTAssertEqual(filterPaths.count, 6)
+        #expect(filterPaths.count == 6)
         let json = booksJson
         DispatchQueue.concurrentPerform(iterations: Self.iterations) { i in
             let path = filterPaths[i % filterPaths.count]
             do {
                 _ = try path.evaluate(with: json)
             } catch {
-                XCTFail("evaluate failed: \(error)")
+                Issue.record("evaluate failed: \(error)")
             }
         }
     }
 
     /// Mixed workload: half the iterations parse, half evaluate.
+    @Test
     func testParallelMixedParseAndEvaluate() {
         guard let sharedPath = JsonPath("$.books[?(@.id == 5)]") else {
-            return XCTFail("path failed to parse")
+            Issue.record("path failed to parse")
+            return
         }
         let strings = pathStrings
         let json = booksJson
         DispatchQueue.concurrentPerform(iterations: Self.iterations) { i in
             if i.isMultiple(of: 2) {
                 let str = strings[i % strings.count]
-                XCTAssertNotNil(JsonPath(str), "failed to parse \(str)")
+                #expect(JsonPath(str) != nil, "failed to parse \(str)")
             } else {
                 do {
                     let result = try sharedPath.evaluate(with: json) as? JsonArray
-                    XCTAssertEqual(result?.count, 1)
+                    #expect(result?.count == 1)
                 } catch {
-                    XCTFail("evaluate failed: \(error)")
+                    Issue.record("evaluate failed: \(error)")
                 }
             }
         }
     }
 
     /// Different threading model — global queue + DispatchGroup, vs concurrentPerform.
+    @Test
     func testParallelEvaluationViaGlobalQueue() {
         guard let path = JsonPath("$.books[*].title") else {
-            return XCTFail("path failed to parse")
+            Issue.record("path failed to parse")
+            return
         }
         let json = booksJson
         let group = DispatchGroup()
@@ -144,16 +155,17 @@ final class ConcurrencyTests: XCTestCase {
                 defer { group.leave() }
                 do {
                     let result = try path.evaluate(with: json) as? JsonArray
-                    XCTAssertEqual(result?.count, 5)
+                    #expect(result?.count == 5)
                 } catch {
-                    XCTFail("evaluate failed: \(error)")
+                    Issue.record("evaluate failed: \(error)")
                 }
             }
         }
-        XCTAssertEqual(group.wait(timeout: .now() + 30), .success)
+        #expect(group.wait(timeout: .now() + 30) == .success)
     }
 
     /// Exercise array-slice paths in parallel — the most recent feature on this branch.
+    @Test
     func testParallelArraySliceEvaluation() {
         let slicePaths: [(String, Int)] = [
             ("$.books[1:3]", 2),
@@ -168,15 +180,15 @@ final class ConcurrencyTests: XCTestCase {
             guard let path = JsonPath(string) else { return nil }
             return (path, count)
         }
-        XCTAssertEqual(compiled.count, slicePaths.count)
+        #expect(compiled.count == slicePaths.count)
         let json = booksJson
         DispatchQueue.concurrentPerform(iterations: Self.iterations) { i in
             let (path, expectedCount) = compiled[i % compiled.count]
             do {
                 let result = try path.evaluate(with: json) as? JsonArray
-                XCTAssertEqual(result?.count, expectedCount)
+                #expect(result?.count == expectedCount)
             } catch {
-                XCTFail("evaluate failed: \(error)")
+                Issue.record("evaluate failed: \(error)")
             }
         }
     }
@@ -184,6 +196,7 @@ final class ConcurrencyTests: XCTestCase {
     // MARK: - Swift Concurrency variants
 
     /// Parse paths concurrently via a structured TaskGroup.
+    @Test
     func testParallelPathParsingViaTaskGroup() async {
         let strings = pathStrings
         await withTaskGroup(of: Bool.self) { group in
@@ -194,15 +207,17 @@ final class ConcurrencyTests: XCTestCase {
                 }
             }
             for await parsed in group {
-                XCTAssertTrue(parsed)
+                #expect(parsed)
             }
         }
     }
 
     /// One shared JsonPath evaluated from many child tasks.
+    @Test
     func testParallelEvaluationViaTaskGroup() async {
         guard let path = JsonPath("$.books[?(@.available == true)]") else {
-            return XCTFail("path failed to parse")
+            Issue.record("path failed to parse")
+            return
         }
         let json = booksJson
         await withTaskGroup(of: Int?.self) { group in
@@ -213,12 +228,13 @@ final class ConcurrencyTests: XCTestCase {
                 }
             }
             for await count in group {
-                XCTAssertEqual(count, 3)
+                #expect(count == 3)
             }
         }
     }
 
     /// Filter expressions exercised across child tasks — JsonValue=Any in associated values.
+    @Test
     func testParallelFilterEvaluationViaTaskGroup() async {
         let filterPaths: [JsonPath] = [
             "$.books[?(@.id == 1 || @.id == 2 || @.id == 3)]",
@@ -228,7 +244,7 @@ final class ConcurrencyTests: XCTestCase {
             "$.books[?(@.author == 'Ernest Cline')]",
             "$.books[?(@.title == 'Snow Crash')]",
         ].compactMap(JsonPath.init)
-        XCTAssertEqual(filterPaths.count, 6)
+        #expect(filterPaths.count == 6)
         let json = booksJson
         await withTaskGroup(of: Bool.self) { group in
             for i in 0..<Self.iterations {
@@ -238,15 +254,17 @@ final class ConcurrencyTests: XCTestCase {
                 }
             }
             for await ok in group {
-                XCTAssertTrue(ok)
+                #expect(ok)
             }
         }
     }
 
     /// Force off-actor execution via Task.detached — closer to the GCD global-queue model.
+    @Test
     func testParallelEvaluationViaDetachedTasks() async {
         guard let path = JsonPath("$.books[*].title") else {
-            return XCTFail("path failed to parse")
+            Issue.record("path failed to parse")
+            return
         }
         let json = booksJson
         await withTaskGroup(of: Int?.self) { group in
@@ -259,18 +277,20 @@ final class ConcurrencyTests: XCTestCase {
                 }
             }
             for await count in group {
-                XCTAssertEqual(count, 5)
+                #expect(count == 5)
             }
         }
     }
 
     /// Fixed parallelism via async let — each iteration evaluates four paths concurrently.
+    @Test
     func testAsyncLetParallelEvaluation() async {
         guard let pathA = JsonPath("$.books[?(@.id == 1)]"),
               let pathB = JsonPath("$.books[?(@.id == 2)]"),
               let pathC = JsonPath("$.books[?(@.id == 3)]"),
               let pathD = JsonPath("$.books[?(@.id == 4)]") else {
-            return XCTFail("paths failed to parse")
+            Issue.record("paths failed to parse")
+            return
         }
         let json = booksJson
 
@@ -285,15 +305,17 @@ final class ConcurrencyTests: XCTestCase {
                 }
             }
             for await counts in group {
-                XCTAssertEqual(counts, [1, 1, 1, 1])
+                #expect(counts == [1, 1, 1, 1])
             }
         }
     }
 
     /// Mixed parse + evaluate via TaskGroup.
+    @Test
     func testParallelMixedParseAndEvaluateViaTaskGroup() async {
         guard let sharedPath = JsonPath("$.books[?(@.id == 5)]") else {
-            return XCTFail("path failed to parse")
+            Issue.record("path failed to parse")
+            return
         }
         let strings = pathStrings
         let json = booksJson
@@ -312,7 +334,7 @@ final class ConcurrencyTests: XCTestCase {
                 }
             }
             for await ok in group {
-                XCTAssertTrue(ok)
+                #expect(ok)
             }
         }
     }

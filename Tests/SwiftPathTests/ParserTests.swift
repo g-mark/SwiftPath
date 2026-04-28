@@ -6,194 +6,194 @@
 //  Copyright © 2017 Steven Grosmark. All rights reserved.
 //
 
-import XCTest
+import Dispatch
+import Testing
 @testable import SwiftPath
 
-class ParserTests: XCTestCase {
-    
-    override func setUp() {
-        super.setUp()
-    }
-    
-    override func tearDown() {
-        super.tearDown()
-    }
+@Suite(.serialized)
+struct ParserTests {
     
     /// sime parsing of a literal
-    func testLiteral() {
+    @Test
+    func testLiteral() throws {
         let helloParser = literal(string: "hello")
-        let tup = helloParser.run("hello")
-        XCTAssertNotNil(tup)
-        let (result, remains) = tup!
-        XCTAssertEqual(result, "hello")
-        XCTAssertEqual(remains, "")
+        let (result, remains) = try #require(helloParser.run("hello"))
+        #expect(result == "hello")
+        #expect(remains == "")
     }
     
-    func testLiteralRemnants() {
+    @Test
+    func testLiteralRemnants() throws {
         let helloParser = literal(string: "hello")
-        let tup = helloParser.run("helloooo")
-        XCTAssertNotNil(tup)
-        let (result, remains) = tup!
-        XCTAssertEqual(result, "hello")
-        XCTAssertNotEqual(remains, "")
+        let (result, remains) = try #require(helloParser.run("helloooo"))
+        #expect(result == "hello")
+        #expect(remains != "")
     }
     
+    @Test
     func testLiteralFail() {
         let helloParser = literal(string: "hello")
         var tup = helloParser.run("goodbye")
-        XCTAssertNil(tup)
+        #expect(tup == nil)
         
         tup = helloParser.run("")
-        XCTAssertNil(tup)
+        #expect(tup == nil)
         
         tup = helloParser.run("well, hello")
-        XCTAssertNil(tup)
+        #expect(tup == nil)
     }
     
     /// simple RegEx pattern
-    func testPattern() {
+    @Test
+    func testPattern() throws {
         let alphaParser = pattern(string: "[a-zA-Z]+")
         
-        var tup = alphaParser.run("hello")
-        XCTAssertNotNil(tup)
-        var (result, remains) = tup!
-        XCTAssertEqual(result, "hello")
-        XCTAssertEqual(remains, "")
+        var (result, remains) = try #require(alphaParser.run("hello"))
+        #expect(result == "hello")
+        #expect(remains == "")
         
-        tup = alphaParser.run("Othello123")
-        XCTAssertNotNil(tup)
-        (result, remains) = tup!
-        XCTAssertEqual(result, "Othello")
-        XCTAssertEqual(remains, "123")
+        (result, remains) = try #require(alphaParser.run("Othello123"))
+        #expect(result == "Othello")
+        #expect(remains == "123")
     }
     
+    @Test
     func testPatternFail() {
         let alphaParser = pattern(string: "[a-zA-Z]+")
         
         var tup = alphaParser.run("123")
-        XCTAssertNil(tup)
+        #expect(tup == nil)
         
         tup = alphaParser.run("")
-        XCTAssertNil(tup)
+        #expect(tup == nil)
         
         tup = alphaParser.run("!$@#%^%$")
-        XCTAssertNil(tup)
+        #expect(tup == nil)
         
         tup = alphaParser.run("汉语/漢語")
-        XCTAssertNil(tup)
+        #expect(tup == nil)
+    }
+
+    @Test
+    func testPatternDoesNotMatchEmptyAtAdvancedScannerPosition() {
+        let bracketedNumberParser = literal(string: "[").followed(by: pattern(string: "-?[0-9]+"))
+        #expect(bracketedNumberParser.run("[*]") == nil)
     }
     
     /// one parser followed by another
-    func testSequence() {
+    @Test
+    func testSequence() throws {
         let helloParser = literal(string: "hello")
         let worldParser = literal(string: "world")
         let space = pattern(string: "[\\s\\t\\r\\n]+")
         let helloWorldParser = helloParser.followed(by: [space, worldParser])
         
-        let tup = helloWorldParser.run("hello world")
-        XCTAssertNotNil(tup)
-        let (result, remains) = tup!
-        XCTAssertEqual(result.count, 3)
-        XCTAssertEqual(result.joined(), "hello world")
-        XCTAssertEqual(remains, "")
+        let (result, remains) = try #require(helloWorldParser.run("hello world"))
+        #expect(result.count == 3)
+        #expect(result.joined() == "hello world")
+        #expect(remains == "")
     }
     
     /// one or another parser
-    func testOr() {
+    @Test
+    func testOr() throws {
         let helloParser = literal(string: "hello")
         let hiParser = literal(string: "hi")
         let holaParser = literal(string: "¡Hola")
         let moshiParser = literal(string: "もしもし")
         let greeting = helloParser.or(hiParser).or(holaParser).or(moshiParser)
         
-        var tup = greeting.run("hello")
-        XCTAssertNotNil(tup)
-        var (result, remains) = tup!
-        XCTAssertEqual(result, "hello")
-        XCTAssertEqual(remains, "")
+        var (result, remains) = try #require(greeting.run("hello"))
+        #expect(result == "hello")
+        #expect(remains == "")
         
-        tup = greeting.run("hi")
-        XCTAssertNotNil(tup)
-        (result, remains) = tup!
-        XCTAssertEqual(result, "hi")
-        XCTAssertEqual(remains, "")
+        (result, remains) = try #require(greeting.run("hi"))
+        #expect(result == "hi")
+        #expect(remains == "")
         
-        tup = greeting.run("¡Hola")
-        XCTAssertNotNil(tup)
-        (result, remains) = tup!
-        XCTAssertEqual(result, "¡Hola")
-        XCTAssertEqual(remains, "")
+        (result, remains) = try #require(greeting.run("¡Hola"))
+        #expect(result == "¡Hola")
+        #expect(remains == "")
         
-        tup = greeting.run("もしもし")
-        XCTAssertNotNil(tup)
-        (result, remains) = tup!
-        XCTAssertEqual(result, "もしもし")
-        XCTAssertEqual(remains, "")
+        (result, remains) = try #require(greeting.run("もしもし"))
+        #expect(result == "もしもし")
+        #expect(remains == "")
     }
 
-    func testAttemptRollsBackConsumedInputOnFailure() {
+    @Test
+    func testAttemptRollsBackConsumedInputOnFailure() throws {
         let abParser = literal(string: "a").followed(by: literal(string: "b")).attempt()
         let aParser = literal(string: "a").map { [$0] }
         let parser = abParser.or(aParser)
 
-        let tup = parser.run("ac")
-        XCTAssertNotNil(tup)
-        let (result, remains) = tup!
-        XCTAssertEqual(result, ["a"])
-        XCTAssertEqual(remains, "c")
+        let (result, remains) = try #require(parser.run("ac"))
+        #expect(result == ["a"])
+        #expect(remains == "c")
     }
 
-    func testTokenParsersConsumeSurroundingWhitespace() {
+    @Test
+    func testTokenParsersConsumeSurroundingWhitespace() throws {
         let equalsParser = token(string: "==")
-        let tup = equalsParser.run("  ==  rest")
-        XCTAssertNotNil(tup)
-        let (result, remains) = tup!
-        XCTAssertEqual(result, "==")
-        XCTAssertEqual(remains, "rest")
+        let (result, remains) = try #require(equalsParser.run("  ==  rest"))
+        #expect(result == "==")
+        #expect(remains == "rest")
 
         let numberParser = tokenPattern(string: "-?[0-9]+")
-        let numberTup = numberParser.run("  -12  rest")
-        XCTAssertNotNil(numberTup)
-        let (number, numberRemains) = numberTup!
-        XCTAssertEqual(number, "-12")
-        XCTAssertEqual(numberRemains, "rest")
+        let (number, numberRemains) = try #require(numberParser.run("  -12  rest"))
+        #expect(number == "-12")
+        #expect(numberRemains == "rest")
     }
 
-    func testChainLeftParsesLeftAssociativeOperators() {
+    @Test
+    func testChainLeftParsesLeftAssociativeOperators() throws {
         let numberParser = tokenPattern(string: "[0-9]+").map { Int($0)! }
         let plusParser = token(string: "+").map { _ in { (lhs: Int, rhs: Int) in lhs + rhs } }
         let parser = numberParser.chainLeft(operator: plusParser)
 
-        let tup = parser.run("1 + 2 + 3 rest")
-        XCTAssertNotNil(tup)
-        let (result, remains) = tup!
-        XCTAssertEqual(result, 6)
-        XCTAssertEqual(remains, "rest")
+        let (result, remains) = try #require(parser.run("1 + 2 + 3 rest"))
+        #expect(result == 6)
+        #expect(remains == "rest")
     }
 
-    func testLazyDefersParserConstruction() {
+    @Test
+    func testLazyDefersParserConstruction() throws {
         let parser = Parser<String>.lazy { literal(string: "later") }
-        let tup = parser.run("later remains")
-        XCTAssertNotNil(tup)
-        let (result, remains) = tup!
-        XCTAssertEqual(result, "later")
-        XCTAssertEqual(remains, " remains")
+        let (result, remains) = try #require(parser.run("later remains"))
+        #expect(result == "later")
+        #expect(remains == " remains")
     }
 
-    func testOptionalParserReturnsNilWithoutConsumingInput() {
+    @Test
+    func testOptionalParserReturnsNilWithoutConsumingInput() throws {
         let parser = literal(string: "hello").optional()
 
-        let missing = parser.run("world")
-        XCTAssertNotNil(missing)
-        XCTAssertNil(missing!.0)
-        XCTAssertEqual(missing!.1, "world")
+        let missing = try #require(parser.run("world"))
+        #expect(missing.0 == nil)
+        #expect(missing.1 == "world")
 
-        let present = parser.run("hello world")
-        XCTAssertNotNil(present)
-        XCTAssertEqual(present!.0, "hello")
-        XCTAssertEqual(present!.1, " world")
+        let present = try #require(parser.run("hello world"))
+        #expect(present.0 == "hello")
+        #expect(present.1 == " world")
+    }
+
+    @Test
+    func testRepeatedParserDoesNotLoopForeverWhenParserSucceedsWithoutConsumingInput() {
+        let emptyParser = Parser<String>(parse: { scanner in ("", scanner) })
+        let parser = emptyParser.repeated()
+        let finished = DispatchSemaphore(value: 0)
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            _ = parser.run("input")
+            finished.signal()
+        }
+
+        #expect(
+            finished.wait(timeout: .now() + .milliseconds(200)) == .success,
+            "repeated() must fail or stop when its parser succeeds without advancing the scanner"
+        )
     }
     
+    @Test
     func testRepeated() {
         
     }

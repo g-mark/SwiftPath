@@ -6,10 +6,12 @@
 //  Copyright © 2017 Steven Grosmark. All rights reserved.
 //
 
-import XCTest
+import Foundation
+import Testing
 @testable import SwiftPath
 
-class CompiledPathTessts: XCTestCase {
+@Suite(.serialized)
+struct CompiledPathTessts {
 	
 	let bookList: JsonObject = [
         "books": [
@@ -22,6 +24,7 @@ class CompiledPathTessts: XCTestCase {
     ]
 	
 	/// $.books[1].author
+	@Test
     func testSimplePathValid() {
 		let nodes: [PathNode] = [.root, .property(name: "books"), .arrayItem(index: 1), .property(name:"author")]
 		let compiledPart = JsonPathPart(parts: nodes)
@@ -32,6 +35,7 @@ class CompiledPathTessts: XCTestCase {
     }
 	
 	/// $.books.price.sum()
+	@Test
 	func testCollatePropertyOnArray() {
 		let nodes: [PathNode] = [.root, .property(name: "books"), .property(name:"price"), .function(function: .sum)]
 		let compiledPart = JsonPathPart(parts: nodes)
@@ -41,123 +45,141 @@ class CompiledPathTessts: XCTestCase {
 		}
 	}
 
+	@Test
 	func testArrayWildcardPath() {
 		runTest("array wildcard path") {
-			guard let path = JsonPath("$.books[*]") else {
-				XCTFail("expected path to parse")
-				return
-			}
+			let path = try #require(JsonPath("$.books[*]"), "expected path to parse")
 			let result = try path.evaluate(with: bookList)
-			guard let array = result as? JsonArray else {
-				XCTFail("expected an array result")
-				return
-			}
-			XCTAssertEqual(array.count, 5)
+			let array = try #require(result as? JsonArray, "expected an array result")
+			#expect(array.count == 5)
 		}
 	}
 
+	@Test
 	func testArraySlicePaths() {
 		runTest("array slice paths") {
-			XCTAssertEqual(try titles(path: "$.books[1:3]"), ["Snow Crash", "Do Androids Dream of Electric Sheep?"])
-			XCTAssertEqual(try titles(path: "$.books[:3]"), ["Ready Player One", "Snow Crash", "Do Androids Dream of Electric Sheep?"])
-			XCTAssertEqual(try titles(path: "$.books[2:]"), ["Do Androids Dream of Electric Sheep?", "Slaughterhouse-Five", "Oryx and Crake"])
-			XCTAssertEqual(try titles(path: "$.books[-2:]"), ["Slaughterhouse-Five", "Oryx and Crake"])
-			XCTAssertEqual(try titles(path: "$.books[1:5:2]"), ["Snow Crash", "Slaughterhouse-Five"])
-			XCTAssertEqual(try titles(path: "$.books[::-1]"), ["Oryx and Crake", "Slaughterhouse-Five", "Do Androids Dream of Electric Sheep?", "Snow Crash", "Ready Player One"])
-			XCTAssertEqual(try titles(path: "$.books[-99:99]"), ["Ready Player One", "Snow Crash", "Do Androids Dream of Electric Sheep?", "Slaughterhouse-Five", "Oryx and Crake"])
-			XCTAssertEqual(try titles(path: "$.books[99:100]"), [])
-			XCTAssertEqual(try titles(path: "$.books[4:1]"), [])
-			XCTAssertEqual(try titles(path: "$.books[::0]"), [])
-			XCTAssertEqual(try titles(path: "$.books[10:-10:-2]"), ["Oryx and Crake", "Do Androids Dream of Electric Sheep?", "Ready Player One"])
+			let bounded = try titles(path: "$.books[1:3]")
+			let openStart = try titles(path: "$.books[:3]")
+			let openEnd = try titles(path: "$.books[2:]")
+			let negativeStart = try titles(path: "$.books[-2:]")
+			let stepped = try titles(path: "$.books[1:5:2]")
+			let reversed = try titles(path: "$.books[::-1]")
+			let clamped = try titles(path: "$.books[-99:99]")
+			let startPastEnd = try titles(path: "$.books[99:100]")
+			let emptyForward = try titles(path: "$.books[4:1]")
+			let zeroStep = try titles(path: "$.books[::0]")
+			let clampedReverse = try titles(path: "$.books[10:-10:-2]")
+
+			#expect(bounded == ["Snow Crash", "Do Androids Dream of Electric Sheep?"])
+			#expect(openStart == ["Ready Player One", "Snow Crash", "Do Androids Dream of Electric Sheep?"])
+			#expect(openEnd == ["Do Androids Dream of Electric Sheep?", "Slaughterhouse-Five", "Oryx and Crake"])
+			#expect(negativeStart == ["Slaughterhouse-Five", "Oryx and Crake"])
+			#expect(stepped == ["Snow Crash", "Slaughterhouse-Five"])
+			#expect(reversed == ["Oryx and Crake", "Slaughterhouse-Five", "Do Androids Dream of Electric Sheep?", "Snow Crash", "Ready Player One"])
+			#expect(clamped == ["Ready Player One", "Snow Crash", "Do Androids Dream of Electric Sheep?", "Slaughterhouse-Five", "Oryx and Crake"])
+			#expect(startPastEnd == [])
+			#expect(emptyForward == [])
+			#expect(zeroStep == [])
+			#expect(clampedReverse == ["Oryx and Crake", "Do Androids Dream of Electric Sheep?", "Ready Player One"])
 		}
 	}
 
+	@Test
 	func testArrayFilterPath() {
 		runTest("array filter path") {
-			guard let path = JsonPath("$.books[?(@.id==5)]") else {
-				XCTFail("expected path to parse")
-				return
-			}
+			let path = try #require(JsonPath("$.books[?(@.id==5)]"), "expected path to parse")
 			let result = try path.evaluate(with: bookList)
-			guard let array = result as? JsonArray else {
-				XCTFail("expected an array result")
-				return
-			}
-			XCTAssertEqual(array.count, 1)
-			guard let object = array[0] as? JsonObject else {
-				XCTFail("expected an object result")
-				return
-			}
-			XCTAssertEqual(object["id"] as? Int, 5)
+			let array = try #require(result as? JsonArray, "expected an array result")
+			#expect(array.count == 1)
+			let object = try #require(array[0] as? JsonObject, "expected an object result")
+			#expect(object["id"] as? Int == 5)
 		}
 	}
 
+	@Test
 	func testArrayFilterStringLiteralPath() {
 		runTest("array filter string literal path") {
 			let result = try filterResult(path: "$.books[?(@.title == 'Snow Crash')]")
-			XCTAssertEqual(result.count, 1)
-			XCTAssertEqual((result[0] as? JsonObject)?["id"] as? Int, 2)
+			#expect(result.count == 1)
+			#expect((result[0] as? JsonObject)?["id"] as? Int == 2)
 		}
 	}
 
+	@Test
 	func testArrayFilterBoolLiteralPath() {
 		runTest("array filter bool literal path") {
 			let result = try filterResult(path: "$.books[?(@.available == true)]")
-			XCTAssertEqual(result.count, 3)
+			#expect(result.count == 3)
 		}
 	}
 
+	@Test
 	func testArrayFilterNullLiteralPath() {
 		runTest("array filter null literal path") {
 			let result = try filterResult(path: "$.books[?(@.isbn == null)]")
-			XCTAssertEqual(result.count, 1)
-			XCTAssertEqual((result[0] as? JsonObject)?["id"] as? Int, 5)
+			#expect(result.count == 1)
+			#expect((result[0] as? JsonObject)?["id"] as? Int == 5)
 		}
 	}
 
+	@Test
 	func testArrayFilterComparisonOperators() {
 		runTest("array filter comparison operators") {
-			XCTAssertEqual(try filterResult(path: "$.books[?(@.id != 5)]").count, 4)
-			XCTAssertEqual(try filterResult(path: "$.books[?(@.price < 10.0)]").count, 2)
-			XCTAssertEqual(try filterResult(path: "$.books[?(@.price <= 9.99)]").count, 2)
-			XCTAssertEqual(try filterResult(path: "$.books[?(@.price > 13.89)]").count, 1)
-			XCTAssertEqual(try filterResult(path: "$.books[?(@.price >= 13.89)]").count, 2)
+			let notFive = try filterResult(path: "$.books[?(@.id != 5)]")
+			let belowTen = try filterResult(path: "$.books[?(@.price < 10.0)]")
+			let atMostNineNinetyNine = try filterResult(path: "$.books[?(@.price <= 9.99)]")
+			let aboveThirteenEightyNine = try filterResult(path: "$.books[?(@.price > 13.89)]")
+			let atLeastThirteenEightyNine = try filterResult(path: "$.books[?(@.price >= 13.89)]")
+
+			#expect(notFive.count == 4)
+			#expect(belowTen.count == 2)
+			#expect(atMostNineNinetyNine.count == 2)
+			#expect(aboveThirteenEightyNine.count == 1)
+			#expect(atLeastThirteenEightyNine.count == 2)
 		}
 	}
 
+	@Test
 	func testArrayFilterExistencePath() {
 		runTest("array filter existence path") {
-			XCTAssertEqual(try filterResult(path: "$.books[?(@.isbn)]").count, 5)
-			XCTAssertEqual(try filterResult(path: "$.books[?(@.missing)]").count, 0)
+			let booksWithIsbn = try filterResult(path: "$.books[?(@.isbn)]")
+			let booksWithMissingProperty = try filterResult(path: "$.books[?(@.missing)]")
+
+			#expect(booksWithIsbn.count == 5)
+			#expect(booksWithMissingProperty.count == 0)
 		}
 	}
 
+	@Test
 	func testArrayFilterLogicalAndPath() {
 		runTest("array filter logical and path") {
 			let result = try filterResult(path: "$.books[?(@.available == true && @.price < 12.0)]")
-			XCTAssertEqual(result.count, 2)
+			#expect(result.count == 2)
 		}
 	}
 
+	@Test
 	func testArrayFilterLogicalOrPath() {
 		runTest("array filter logical or path") {
 			let result = try filterResult(path: "$.books[?(@.id == 1 || @.id == 2)]")
-			XCTAssertEqual(result.count, 2)
+			#expect(result.count == 2)
 		}
 	}
 
+	@Test
 	func testArrayFilterLogicalNotPath() {
 		runTest("array filter logical not path") {
 			let result = try filterResult(path: "$.books[?(!(@.available == true))]")
-			XCTAssertEqual(result.count, 2)
+			#expect(result.count == 2)
 		}
 	}
 
+	@Test
 	func testArrayFilterQuotedPropertyPath() {
 		runTest("array filter quoted property path") {
 			let result = try filterResult(path: "$.books[?(@['id'] == 5)]")
-			XCTAssertEqual(result.count, 1)
-			XCTAssertEqual((result[0] as? JsonObject)?["title"] as? String, "Oryx and Crake")
+			#expect(result.count == 1)
+			#expect((result[0] as? JsonObject)?["title"] as? String == "Oryx and Crake")
 		}
 	}
 

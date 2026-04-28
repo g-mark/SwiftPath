@@ -6,25 +6,17 @@
 //  Copyright © 2017 Steven Grosmark. All rights reserved.
 //
 
-import XCTest
+import Testing
 @testable import SwiftPath
 
-class PathNodeTests: XCTestCase {
+@Suite(.serialized)
+struct PathNodeTests {
 	
 	let jsonObject: JsonObject = ["name":"the name value", "summary": "the summary value", "three": "the three value"]
 	let jsonArray: JsonArray = [ "zero", "one", "two", "three", "four"]
 	let numberArray: JsonArray = [ 2.0, 4.0, 6.0 ]
 	
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
-    
+    @Test
     func testProperty() {
 		let node = PathNode.property(name: "summary")
 		runTest("property") {
@@ -33,6 +25,7 @@ class PathNodeTests: XCTestCase {
 		}
     }
     
+    @Test
     func testProperyValues() {
         let node = PathNode.values
         runTest("property values") {
@@ -41,6 +34,7 @@ class PathNodeTests: XCTestCase {
         }
     }
 	
+	@Test
 	func testCollatedProperty() {
 		var array: JsonArray = []
 		for i in 1...4 {
@@ -54,6 +48,7 @@ class PathNodeTests: XCTestCase {
 		}
 	}
 	
+	@Test
 	func testPropertyList() {
         let node = PathNode.properties(names: ["summary", "three"], rename: ["summary", "third"])
 		runTest("property list") {
@@ -63,6 +58,7 @@ class PathNodeTests: XCTestCase {
 	}
 	
 	/// [1]
+	@Test
 	func testArrayItem() {
 		let node = PathNode.arrayItem(index: 1)
 		runTest("array item") {
@@ -72,6 +68,7 @@ class PathNodeTests: XCTestCase {
 	}
 	
 	/// [-2]
+	@Test
 	func testArrayItemFromEnd() {
 		let node = PathNode.arrayItem(index: -2)
 		runTest("array item") {
@@ -81,6 +78,7 @@ class PathNodeTests: XCTestCase {
 	}
 	
 	/// [1, 3]
+	@Test
 	func testArrayItems() {
 		let node = PathNode.arrayItems(indices: [1, 3])
 		runTest("array items") {
@@ -90,6 +88,7 @@ class PathNodeTests: XCTestCase {
 	}
 	
 	/// [1:3] 1 up to 3 (exclusive);
+	@Test
 	func testSimpleArrayRange() {
 		let node = PathNode.arrayRange(from: 1, to: 3)
 		runTest("simple array range") {
@@ -99,6 +98,7 @@ class PathNodeTests: XCTestCase {
 	}
 	
 	///	[:3] 0 up to 3
+	@Test
 	func testOpenStartArrayRange() {
 		let node = PathNode.arrayRange(from: nil, to: 3)
 		runTest("array range with open start") {
@@ -108,6 +108,7 @@ class PathNodeTests: XCTestCase {
 	}
 	
 	/// [2:] 2 through the end
+	@Test
 	func testOpenEndArrayRange() {
 		let node = PathNode.arrayRange(from: 2, to: nil)
 		runTest("array range with open end") {
@@ -117,6 +118,7 @@ class PathNodeTests: XCTestCase {
 	}
 	
 	/// [-2:] 2nd from the end, through to the end
+	@Test
 	func testOpenEndArrayRangeFromEnd() {
 		let node = PathNode.arrayRange(from: -2, to: nil)
 		runTest("array range with open end (negative start)") {
@@ -126,6 +128,7 @@ class PathNodeTests: XCTestCase {
 	}
 
 	/// [1:5:2] 1 up to 5, every second item
+	@Test
 	func testArrayRangeWithStep() {
 		let node = PathNode.arrayRange(from: 1, to: 5, step: 2)
 		runTest("array range with step") {
@@ -135,6 +138,7 @@ class PathNodeTests: XCTestCase {
 	}
 
 	/// [::-1] all items in reverse order
+	@Test
 	func testArrayRangeWithNegativeStep() {
 		let node = PathNode.arrayRange(from: nil, to: nil, step: -1)
 		runTest("array range with negative step") {
@@ -143,6 +147,7 @@ class PathNodeTests: XCTestCase {
 		}
 	}
 
+	@Test
 	func testArrayRangeClampsOutOfBounds() {
 		let node = PathNode.arrayRange(from: -10, to: 10)
 		runTest("array range clamps out of bounds") {
@@ -151,6 +156,7 @@ class PathNodeTests: XCTestCase {
 		}
 	}
 
+	@Test
 	func testArrayRangeReturnsEmptyWhenBoundsDoNotIterate() {
 		let node = PathNode.arrayRange(from: 4, to: 1)
 		runTest("array range returns empty") {
@@ -159,6 +165,7 @@ class PathNodeTests: XCTestCase {
 		}
 	}
 
+	@Test
 	func testArrayRangeReturnsEmptyForZeroStep() {
 		let node = PathNode.arrayRange(from: nil, to: nil, step: 0)
 		runTest("array range returns empty for zero step") {
@@ -167,6 +174,7 @@ class PathNodeTests: XCTestCase {
 		}
 	}
 
+	@Test
 	func testReverseArrayRangeClampsOutOfBounds() {
 		let node = PathNode.arrayRange(from: 10, to: -10, step: -2)
 		runTest("reverse array range clamps out of bounds") {
@@ -175,6 +183,7 @@ class PathNodeTests: XCTestCase {
 		}
 	}
 	
+	@Test
 	func testFunction() {
 		let node = PathNode.function(function: .average)
 		runTest("function") {
@@ -183,6 +192,7 @@ class PathNodeTests: XCTestCase {
 		}
 	}
 	
+	@Test
 	func testRegister() {
 		let node = PathNode.registerValue(index: 1)
 		runTest("function") {
@@ -191,6 +201,7 @@ class PathNodeTests: XCTestCase {
 		}
 	}
 
+	@Test
 	func testArrayFilter() {
 		let filter = ArrayFilter(path: JsonPathPart(parts: [.current, .property(name: "index")]), expectedValue: 3)
 		let node = PathNode.arrayFilter(filter: filter)
@@ -201,15 +212,15 @@ class PathNodeTests: XCTestCase {
 		runTest("array filter") {
 			let result = try node.process(with: array, registers: [])
 			guard let filtered = result as? JsonArray else {
-				XCTFail("expected an array result")
+				Issue.record("expected an array result")
 				return
 			}
-			XCTAssertEqual(filtered.count, 1)
+			#expect(filtered.count == 1)
 			guard let object = filtered[0] as? JsonObject else {
-				XCTFail("expected an object result")
+				Issue.record("expected an object result")
 				return
 			}
-			XCTAssertEqual(object["key"] as? String, "three")
+			#expect(object["key"] as? String == "three")
 		}
 	}
 

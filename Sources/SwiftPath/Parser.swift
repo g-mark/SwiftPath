@@ -98,9 +98,14 @@ extension Parser {
             var scanner = initialScanner
 
             while true {
+                // A looped parser must consume input. Treat zero-width success as
+                // no operator so expressions such as `a + b` cannot spin forever
+                // if either side accidentally succeeds without advancing.
                 scanner.pushLocation()
+                let startIndex = scanner.startIndex
                 guard let (combine, operatorScanner) = op.parse(scanner),
-                      let (nextValue, nextScanner) = self.parse(operatorScanner) else {
+                      let (nextValue, nextScanner) = self.parse(operatorScanner),
+                      nextScanner.startIndex != startIndex else {
                     scanner.popLocation()
                     break
                 }
@@ -116,10 +121,32 @@ extension Parser {
     /// one or more repetitions of this parser
     internal func repeated() -> Parser<[T]> {
         return Parser<[T]>(parse: { scanner in
-            guard let (lvalue, lscanner) = self.parse(scanner) else { return nil }
+            // `repeated` cannot accept an empty first match; otherwise the
+            // minimum of "one" repetition could be satisfied without consuming
+            // input, and the caller would observe a misleading success.
+            scanner.pushLocation()
+            let startIndex = scanner.startIndex
+            guard let (lvalue, lscanner) = self.parse(scanner),
+                  lscanner.startIndex != startIndex else {
+                scanner.popLocation()
+                return nil
+            }
+            scanner.dropLocation()
+
             var scanner = lscanner
             var collected = [lvalue]
-            while let (rvalue, rscanner) = self.parse(scanner) {
+            while true {
+                // Stop on zero-width success. This protects parser authors from
+                // accidental empty matches, including platform regex quirks, that
+                // would otherwise leave the scanner parked on the same character.
+                scanner.pushLocation()
+                let startIndex = scanner.startIndex
+                guard let (rvalue, rscanner) = self.parse(scanner),
+                      rscanner.startIndex != startIndex else {
+                    scanner.popLocation()
+                    break
+                }
+                scanner.dropLocation()
                 collected.append(rvalue)
                 scanner = rscanner
             }
@@ -130,11 +157,40 @@ extension Parser {
     /// one or more repetitions of this parser separated by a delimiter
     internal func repeated<A>(delimiter: Parser<A>) -> Parser<[T]> {
         return Parser<[T]>(parse: { scanner in
-            guard let (lvalue, lscanner) = self.parse(scanner) else { return nil }
+            // Require the first value to consume input for the same reason as
+            // `repeated()`: one-or-more repetition must not succeed on empty.
+            scanner.pushLocation()
+            let startIndex = scanner.startIndex
+            guard let (lvalue, lscanner) = self.parse(scanner),
+                  lscanner.startIndex != startIndex else {
+                scanner.popLocation()
+                return nil
+            }
+            scanner.dropLocation()
+
             var scanner = lscanner
             var collected = [lvalue]
-            while let (_, rscanner) = delimiter.parse(scanner) {
-                guard let (rvalue, rscanner) = self.parse(rscanner) else { return nil }
+
+            while true {
+                // The delimiter and value are one repetition unit. Roll back if
+                // the delimiter appears without a following value, and stop if the
+                // pair succeeds without advancing; accepting either case would
+                // corrupt the caller's scanner position or loop indefinitely.
+                scanner.pushLocation()
+                let startIndex = scanner.startIndex
+                guard let (_, delimiterScanner) = delimiter.parse(scanner) else {
+                    scanner.popLocation()
+                    break
+                }
+                guard let (rvalue, rscanner) = self.parse(delimiterScanner) else {
+                    scanner.popLocation()
+                    return nil
+                }
+                guard rscanner.startIndex != startIndex else {
+                    scanner.popLocation()
+                    break
+                }
+                scanner.dropLocation()
                 collected.append(rvalue)
                 scanner = rscanner
             }
@@ -145,10 +201,31 @@ extension Parser {
     /// zero or more repetitions of this parser
     internal func zeroOrMore() -> Parser<[T]> {
         return Parser<[T]>(parse: { scanner in
-            guard let (lvalue, lscanner) = self.parse(scanner) else { return ([], scanner) }
+            // Empty input is a valid zero-repetition result, but an empty parser
+            // success is not a real repetition. Leave the scanner untouched and
+            // report zero matches in that case.
+            scanner.pushLocation()
+            let startIndex = scanner.startIndex
+            guard let (lvalue, lscanner) = self.parse(scanner),
+                  lscanner.startIndex != startIndex else {
+                scanner.popLocation()
+                return ([], scanner)
+            }
+            scanner.dropLocation()
+
             var scanner = lscanner
             var collected = [lvalue]
-            while let (rvalue, rscanner) = self.parse(scanner) {
+            while true {
+                // Additional repetitions must make progress; otherwise a parser
+                // that succeeds at the same position would keep appending forever.
+                scanner.pushLocation()
+                let startIndex = scanner.startIndex
+                guard let (rvalue, rscanner) = self.parse(scanner),
+                      rscanner.startIndex != startIndex else {
+                    scanner.popLocation()
+                    break
+                }
+                scanner.dropLocation()
                 collected.append(rvalue)
                 scanner = rscanner
             }
