@@ -124,6 +124,15 @@ class PathNodeTests: XCTestCase {
 			try Expecting.array(["three", "four"], result: result)
 		}
 	}
+
+	/// [1:5:2] 1 up to 5, every second item
+	func testArrayRangeWithStep() {
+		let node = PathNode.arrayRange(from: 1, to: 5, step: 2)
+		runTest("array range with step") {
+			let result = try node.process(with: jsonArray, registers: [])
+			try Expecting.array(["one", "three"], result: result)
+		}
+	}
 	
 	func testFunction() {
 		let node = PathNode.function(function: .average)

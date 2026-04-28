@@ -257,14 +257,15 @@ class PathParserTests: XCTestCase {
     }
 
     func testArraySlice() {
-        let tests: [(String, Int?, Int?)] = [
-            ("$.array[1:3]", 1, 3),
-            ("$.array[:3]", nil, 3),
-            ("$.array[2:]", 2, nil),
-            ("$.array[-2:]", -2, nil)
+        let tests: [(String, Int?, Int?, Int?)] = [
+            ("$.array[1:3]", 1, 3, nil),
+            ("$.array[:3]", nil, 3, nil),
+            ("$.array[2:]", 2, nil, nil),
+            ("$.array[-2:]", -2, nil, nil),
+            ("$.array[1:5:2]", 1, 5, 2)
         ]
 
-        for (path, lowerBound, upperBound) in tests {
+        for (path, lowerBound, upperBound, step) in tests {
             let result = PathParser.parse(path: path)
             guard let result = result else {
                 XCTFail("expected \(path) to parse")
@@ -284,12 +285,13 @@ class PathParserTests: XCTestCase {
                 return
             }
             XCTAssertEqual(name, "array")
-            guard case let .arrayRange(from, to) = nodes[1] else {
+            guard case let .arrayRange(from, to, parsedStep) = nodes[1] else {
                 XCTFail("expecting an arrayRange node")
                 return
             }
             XCTAssertEqual(from, lowerBound)
             XCTAssertEqual(to, upperBound)
+            XCTAssertEqual(parsedStep, step)
         }
     }
 

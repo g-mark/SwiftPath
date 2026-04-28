@@ -50,8 +50,9 @@ internal enum PathNode {
 	///	[:4] 0 up to 4;
 	/// [2:] 2 through the end
 	///	[-2:] two from the end, through to the end
+	/// [1:5:2] 1 up to 5, every second item
 	/// executed on an array, evaluates to an array of JsonValues
-	case arrayRange(from: Int?, to: Int?)
+	case arrayRange(from: Int?, to: Int?, step: Int? = nil)
 	
 	/// [?(@.name==value)]
 	/// executed on an array, evaluates to the items whose filter matches
@@ -154,22 +155,29 @@ extension PathNode {
 			}
 			return node
 		
-		case .arrayRange(let lowerBound, let upperBound):
+		case .arrayRange(let lowerBound, let upperBound, let step):
 			guard let node = json as? JsonArray else {
 				throw JsonPathEvaluateError.expectingAnArray
 			}
 			var lb = lowerBound ?? 0
 			var ub = upperBound ?? node.count
+			let increment = step ?? 1
 			if lb < 0 {
 				lb += node.count
 			}
 			if ub < 0 {
 				ub += node.count
 			}
-			guard lb >= 0 && lb < ub && ub <= node.count else {
+			guard lb >= 0 && lb < ub && ub <= node.count && increment > 0 else {
 				throw JsonPathEvaluateError.indexOutOfBounds
 			}
-			return Array(node[lb..<ub])
+			var result = JsonArray()
+			var index = lb
+			while index < ub {
+				result.append(node[index])
+				index += increment
+			}
+			return result
 
 		case .arrayFilter(let filter):
 			guard let node = json as? JsonArray else {

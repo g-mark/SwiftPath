@@ -109,12 +109,13 @@ internal struct PathParser {
         return flat.count == 1 ? PathNode.arrayItem(index: flat[0]) : PathNode.arrayItems(indices: flat)
     }
 
-    /// array slice selector, e.g. `1:3`, `:3`, `2:`, or `-2:`
+    /// array slice selector, e.g. `1:3`, `:3`, `2:`, `-2:`, or `1:5:2`
     private static let ArraySliceSpecifier = Parser<PathNode>(parse: { scanner in
-        guard let match = scanner.mustMatch(pattern: "\\s*-?[0-9]*\\s*:\\s*-?[0-9]*\\s*") else { return nil }
+        guard let match = scanner.mustMatch(pattern: "\\s*-?[0-9]*\\s*:\\s*-?[0-9]*\\s*(?::\\s*-?[0-9]+\\s*)?") else { return nil }
         let parts = match.components(separatedBy: ":")
-        guard parts.count == 2 else { return nil }
-        return (PathNode.arrayRange(from: optionalInt(parts[0]), to: optionalInt(parts[1])), scanner)
+        guard parts.count == 2 || parts.count == 3 else { return nil }
+        let step = parts.count == 3 ? optionalInt(parts[2]) : nil
+        return (PathNode.arrayRange(from: optionalInt(parts[0]), to: optionalInt(parts[1]), step: step), scanner)
     })
 
     /// array filter selector, e.g. `[?(@.id == 5)]`
