@@ -1,9 +1,6 @@
 # SwiftPath
-[![Swift 6.1 compatible](https://img.shields.io/badge/Swift%206.1-compatible-4BC51D.svg?style=flat)](https://developer.apple.com/swift)
-[![swift-package-manager](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
-[![License: MIT](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://raw.githubusercontent.com/g-mark/SwiftPath/master/LICENSE)
 
-JSONPath for Swift
+[JSONPath](https://www.rfc-editor.org/rfc/rfc9535.html) for Swift
 
 ### Problem
 Sometimes, you don't want to hard-code the mapping from JSON to your model. You may want a generic way to model data from different sources. You may want to be able to update your remote data structure without having to update your app binary.
