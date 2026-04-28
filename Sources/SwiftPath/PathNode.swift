@@ -41,6 +41,10 @@ internal enum PathNode {
 	/// [0, 1, 3]
 	/// executed on an array, evaluates to an array of JsonValues
 	case arrayItems(indices: [Int])
+
+	/// [*]
+	/// executed on an array, evaluates to the whole array
+	case arrayValues
 	
 	/// [0:3] 0 up to 3;
 	///	[:4] 0 up to 4;
@@ -141,6 +145,12 @@ extension PathNode {
 				slice.append(try node.value(at: idx))
 			}
 			return slice
+
+		case .arrayValues:
+			guard let node = json as? JsonArray else {
+				throw JsonPathEvaluateError.expectingAnArray
+			}
+			return node
 		
 		case .arrayRange(let lowerBound, let upperBound):
 			guard let node = json as? JsonArray else {

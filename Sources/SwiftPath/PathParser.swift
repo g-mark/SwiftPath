@@ -29,9 +29,9 @@ internal struct PathParser {
     /// wildcard
     ///  the special "all values" property of an object
     ///   $.book.*
-    ///  TODO: the special "all items" of an array
+    ///  the special "all items" of an array
     ///   $.books[*]
-    private static let Wildcard = literal(string: "*")
+    private static let Wildcard = literal(string: "*").map { _ in PathNode.arrayValues }
     
     /// a dot-property
     /// specifies a named property of an object
@@ -91,8 +91,8 @@ internal struct PathParser {
         let flat = list.compactMap { $0 }
         return flat.count == 1 ? PathNode.arrayItem(index: flat[0]) : PathNode.arrayItems(indices: flat)
     }
-    
-    private static let SubscriptSpecifier = SubscriptPropertyList.or(IndexValueList)
+
+    private static let SubscriptSpecifier = SubscriptPropertyList.or(IndexValueList).or(Wildcard)
     
     
     private static let OpenSubscript = pattern(string: "\\[\\s*").map { str -> PathNode in PathNode.noop }
