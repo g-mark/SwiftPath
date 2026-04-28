@@ -159,50 +159,7 @@ extension PathNode {
 			guard let node = json as? JsonArray else {
 				throw JsonPathEvaluateError.expectingAnArray
 			}
-			let increment = step ?? 1
-			var result = JsonArray()
-
-			if increment > 0 {
-				var lb = lowerBound ?? 0
-				var ub = upperBound ?? node.count
-				if lb < 0 {
-					lb += node.count
-				}
-				if ub < 0 {
-					ub += node.count
-				}
-				guard lb >= 0 && lb < ub && ub <= node.count else {
-					throw JsonPathEvaluateError.indexOutOfBounds
-				}
-				var index = lb
-				while index < ub {
-					result.append(node[index])
-					index += increment
-				}
-				return result
-			}
-
-			guard increment < 0 else {
-				throw JsonPathEvaluateError.indexOutOfBounds
-			}
-
-			var ub = lowerBound ?? node.count - 1
-			var lb = upperBound ?? -node.count - 1
-			if ub < 0 {
-				ub += node.count
-			}
-			if lb < 0 {
-				lb += node.count
-			}
-			guard ub >= 0 && ub < node.count && lb >= -1 && lb < ub else {
-				throw JsonPathEvaluateError.indexOutOfBounds
-			}
-			var index = ub
-			while lb < index {
-				result.append(node[index])
-				index += increment
-			}
-			return result
+			return node.slice(from: lowerBound, to: upperBound, by: step ?? 1)
 
 		case .arrayFilter(let filter):
 			guard let node = json as? JsonArray else {
@@ -228,6 +185,47 @@ extension PathNode {
         case .nodes(_), .path(_, _):
             throw JsonPathEvaluateError.unexpectedInternalNode
 		}
+	}
+}
+
+private extension Array where Element == JsonValue {
+	func slice(from lowerBound: Int?, to upperBound: Int?, by step: Int) -> JsonArray {
+		guard step != 0 else { return [] }
+
+		let len = count
+		var result = JsonArray()
+
+		if step > 0 {
+			let start = lowerBound ?? 0
+			let end = upperBound ?? len
+			let lower = clamp(normalize(start, length: len), min: 0, max: len)
+			let upper = clamp(normalize(end, length: len), min: 0, max: len)
+			var index = lower
+			while index < upper {
+				result.append(self[index])
+				index += step
+			}
+			return result
+		}
+
+		let start = lowerBound ?? len - 1
+		let end = upperBound ?? -len - 1
+		let upper = clamp(normalize(start, length: len), min: -1, max: len - 1)
+		let lower = clamp(normalize(end, length: len), min: -1, max: len - 1)
+		var index = upper
+		while lower < index {
+			result.append(self[index])
+			index += step
+		}
+		return result
+	}
+
+	func normalize(_ index: Int, length: Int) -> Int {
+		return index >= 0 ? index : length + index
+	}
+
+	func clamp(_ value: Int, min lowerBound: Int, max upperBound: Int) -> Int {
+		return Swift.min(Swift.max(value, lowerBound), upperBound)
 	}
 }
 

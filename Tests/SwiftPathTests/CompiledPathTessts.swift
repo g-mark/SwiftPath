@@ -64,6 +64,11 @@ class CompiledPathTessts: XCTestCase {
 			XCTAssertEqual(try titles(path: "$.books[-2:]"), ["Slaughterhouse-Five", "Oryx and Crake"])
 			XCTAssertEqual(try titles(path: "$.books[1:5:2]"), ["Snow Crash", "Slaughterhouse-Five"])
 			XCTAssertEqual(try titles(path: "$.books[::-1]"), ["Oryx and Crake", "Slaughterhouse-Five", "Do Androids Dream of Electric Sheep?", "Snow Crash", "Ready Player One"])
+			XCTAssertEqual(try titles(path: "$.books[-99:99]"), ["Ready Player One", "Snow Crash", "Do Androids Dream of Electric Sheep?", "Slaughterhouse-Five", "Oryx and Crake"])
+			XCTAssertEqual(try titles(path: "$.books[99:100]"), [])
+			XCTAssertEqual(try titles(path: "$.books[4:1]"), [])
+			XCTAssertEqual(try titles(path: "$.books[::0]"), [])
+			XCTAssertEqual(try titles(path: "$.books[10:-10:-2]"), ["Oryx and Crake", "Do Androids Dream of Electric Sheep?", "Ready Player One"])
 		}
 	}
 

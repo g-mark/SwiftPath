@@ -263,7 +263,8 @@ class PathParserTests: XCTestCase {
             ("$.array[2:]", 2, nil, nil),
             ("$.array[-2:]", -2, nil, nil),
             ("$.array[1:5:2]", 1, 5, 2),
-            ("$.array[::-1]", nil, nil, -1)
+            ("$.array[::-1]", nil, nil, -1),
+            ("$.array[::0]", nil, nil, 0)
         ]
 
         for (path, lowerBound, upperBound, step) in tests {
