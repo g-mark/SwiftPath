@@ -142,6 +142,22 @@ class ParserTests: XCTestCase {
         XCTAssertEqual(result, ["a"])
         XCTAssertEqual(remains, "c")
     }
+
+    func testTokenParsersConsumeSurroundingWhitespace() {
+        let equalsParser = token(string: "==")
+        let tup = equalsParser.run("  ==  rest")
+        XCTAssertNotNil(tup)
+        let (result, remains) = tup!
+        XCTAssertEqual(result, "==")
+        XCTAssertEqual(remains, "rest")
+
+        let numberParser = tokenPattern(string: "-?[0-9]+")
+        let numberTup = numberParser.run("  -12  rest")
+        XCTAssertNotNil(numberTup)
+        let (number, numberRemains) = numberTup!
+        XCTAssertEqual(number, "-12")
+        XCTAssertEqual(numberRemains, "rest")
+    }
     
     func testRepeated() {
         

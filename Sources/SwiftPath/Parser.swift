@@ -131,3 +131,31 @@ func pattern(string: String) -> Parser<String> {
         return (match, scanner)
     })
 }
+
+func token(string: String) -> Parser<String> {
+    return Parser<String>(parse: { scanner in
+        scanner.pushLocation()
+        _ = scanner.mustMatch(pattern: "\\s*")
+        guard scanner.mustBe(string: string) else {
+            scanner.popLocation()
+            return nil
+        }
+        _ = scanner.mustMatch(pattern: "\\s*")
+        scanner.dropLocation()
+        return (string, scanner)
+    })
+}
+
+func tokenPattern(string: String) -> Parser<String> {
+    return Parser<String>(parse: { scanner in
+        scanner.pushLocation()
+        _ = scanner.mustMatch(pattern: "\\s*")
+        guard let match = scanner.mustMatch(pattern: string) else {
+            scanner.popLocation()
+            return nil
+        }
+        _ = scanner.mustMatch(pattern: "\\s*")
+        scanner.dropLocation()
+        return (match, scanner)
+    })
+}
