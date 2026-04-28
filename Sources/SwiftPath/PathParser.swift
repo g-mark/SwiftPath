@@ -109,6 +109,14 @@ internal struct PathParser {
         return flat.count == 1 ? PathNode.arrayItem(index: flat[0]) : PathNode.arrayItems(indices: flat)
     }
 
+    /// array slice selector, e.g. `1:3`, `:3`, `2:`, or `-2:`
+    private static let ArraySliceSpecifier = Parser<PathNode>(parse: { scanner in
+        guard let match = scanner.mustMatch(pattern: "\\s*-?[0-9]*\\s*:\\s*-?[0-9]*\\s*") else { return nil }
+        let parts = match.components(separatedBy: ":")
+        guard parts.count == 2 else { return nil }
+        return (PathNode.arrayRange(from: optionalInt(parts[0]), to: optionalInt(parts[1])), scanner)
+    })
+
     /// array filter selector, e.g. `[?(@.id == 5)]`
     private static let ArrayFilterSpecifier = Parser<PathNode>(parse: { scanner in
         guard let (_, filterScanner) = token(string: "?").parse(scanner) else { return nil }
@@ -196,8 +204,8 @@ internal struct PathParser {
         return (JsonPathPart(parts: [base] + nodes), pathScanner)
     }
 
-    /// bracket selector contents, e.g. `'id'`, `0`, `*`, or `?(@.id == 5)`
-    private static let BracketSpecifier = PropertySelectionList.or(IndexValueList).or(Wildcard).or(ArrayFilterSpecifier)
+    /// bracket selector contents, e.g. `'id'`, `0`, `1:3`, `*`, or `?(@.id == 5)`
+    private static let BracketSpecifier = PropertySelectionList.or(ArraySliceSpecifier).or(IndexValueList).or(Wildcard).or(ArrayFilterSpecifier)
     
     
     /// opening bracket in a bracket selector, e.g. `[` in `[0]`
@@ -300,4 +308,11 @@ private func parseFilterValue(_ scanner: PathScanner) -> JsonValue? {
         return Int(value)
     }
     return nil
+}
+
+/// parse an optional integer, e.g. `-2`
+private func optionalInt(_ string: String) -> Int? {
+    let trimmed = string.trimmingCharacters(in: .whitespaces)
+    guard !trimmed.isEmpty else { return nil }
+    return Int(trimmed)
 }

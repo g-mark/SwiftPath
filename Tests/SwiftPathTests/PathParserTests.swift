@@ -256,6 +256,43 @@ class PathParserTests: XCTestCase {
         }
     }
 
+    func testArraySlice() {
+        let tests: [(String, Int?, Int?)] = [
+            ("$.array[1:3]", 1, 3),
+            ("$.array[:3]", nil, 3),
+            ("$.array[2:]", 2, nil),
+            ("$.array[-2:]", -2, nil)
+        ]
+
+        for (path, lowerBound, upperBound) in tests {
+            let result = PathParser.parse(path: path)
+            guard let result = result else {
+                XCTFail("expected \(path) to parse")
+                continue
+            }
+            guard case let .path(base, nodes) = result else {
+                XCTFail("PathParser.parse returned unexpected node type")
+                return
+            }
+            guard case .root = base else {
+                XCTFail("expected a root node")
+                return
+            }
+            XCTAssert(nodes.count == 2)
+            guard case let .property(name) = nodes[0] else {
+                XCTFail("expecting a property node")
+                return
+            }
+            XCTAssertEqual(name, "array")
+            guard case let .arrayRange(from, to) = nodes[1] else {
+                XCTFail("expecting an arrayRange node")
+                return
+            }
+            XCTAssertEqual(from, lowerBound)
+            XCTAssertEqual(to, upperBound)
+        }
+    }
+
     func testArrayFilter() {
         let result = PathParser.parse(path: "$.array[?(@.id==5)]")
         XCTAssertNotNil(result)
