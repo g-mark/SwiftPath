@@ -68,6 +68,18 @@ extension Parser {
         })
     }
 
+    internal func optional() -> Parser<T?> {
+        return Parser<T?>(parse: { scanner in
+            scanner.pushLocation()
+            if let (result, resultScanner) = self.parse(scanner) {
+                scanner.dropLocation()
+                return (result, resultScanner)
+            }
+            scanner.popLocation()
+            return (nil, scanner)
+        })
+    }
+
     internal func chainLeft(operator op: Parser<(T, T) -> T>) -> Parser<T> {
         return Parser<T>(parse: { scanner in
             guard let (initialValue, initialScanner) = self.parse(scanner) else { return nil }

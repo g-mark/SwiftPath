@@ -179,6 +179,20 @@ class ParserTests: XCTestCase {
         XCTAssertEqual(result, "later")
         XCTAssertEqual(remains, " remains")
     }
+
+    func testOptionalParserReturnsNilWithoutConsumingInput() {
+        let parser = literal(string: "hello").optional()
+
+        let missing = parser.run("world")
+        XCTAssertNotNil(missing)
+        XCTAssertNil(missing!.0)
+        XCTAssertEqual(missing!.1, "world")
+
+        let present = parser.run("hello world")
+        XCTAssertNotNil(present)
+        XCTAssertEqual(present!.0, "hello")
+        XCTAssertEqual(present!.1, " world")
+    }
     
     func testRepeated() {
         
