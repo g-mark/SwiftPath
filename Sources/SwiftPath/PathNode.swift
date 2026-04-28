@@ -200,11 +200,49 @@ extension PathNode {
 
 internal struct ArrayFilter {
 	let path: JsonPathPart
-	let expectedValue: JsonValue
+	let expectedValue: JsonValue?
+	let comparisonOperator: FilterComparisonOperator?
+
+	internal init(path: JsonPathPart) {
+		self.path = path
+		expectedValue = nil
+		comparisonOperator = nil
+	}
+
+	internal init(path: JsonPathPart, expectedValue: JsonValue, comparisonOperator: FilterComparisonOperator = .equal) {
+		self.path = path
+		self.expectedValue = expectedValue
+		self.comparisonOperator = comparisonOperator
+	}
 
 	internal func matches(_ json: JsonValue) throws -> Bool {
 		let value = try path.evaluate(with: json, registers: [json])
-		return valuesEqual(value, expectedValue)
+		guard let comparisonOperator = comparisonOperator, let expectedValue = expectedValue else {
+			return value != nil
+		}
+		return compare(value, expectedValue, with: comparisonOperator)
+	}
+
+	private func compare(_ lhs: JsonValue?, _ rhs: JsonValue, with comparisonOperator: FilterComparisonOperator) -> Bool {
+		guard lhs != nil else { return false }
+		switch comparisonOperator {
+		case .equal:
+			return valuesEqual(lhs, rhs)
+		case .notEqual:
+			return !valuesEqual(lhs, rhs)
+		case .lessThan:
+			guard let comparison = numericComparison(lhs, rhs) else { return false }
+			return comparison < 0
+		case .lessThanOrEqual:
+			guard let comparison = numericComparison(lhs, rhs) else { return false }
+			return comparison <= 0
+		case .greaterThan:
+			guard let comparison = numericComparison(lhs, rhs) else { return false }
+			return comparison > 0
+		case .greaterThanOrEqual:
+			guard let comparison = numericComparison(lhs, rhs) else { return false }
+			return comparison >= 0
+		}
 	}
 
 	private func valuesEqual(_ lhs: JsonValue?, _ rhs: JsonValue) -> Bool {
@@ -243,4 +281,33 @@ internal struct ArrayFilter {
 		}
 		return false
 	}
+
+	private func numericComparison(_ lhs: JsonValue?, _ rhs: JsonValue) -> Int? {
+		guard let lhsNumber = doubleValue(lhs), let rhsNumber = doubleValue(rhs) else { return nil }
+		if lhsNumber < rhsNumber { return -1 }
+		if lhsNumber > rhsNumber { return 1 }
+		return 0
+	}
+
+	private func doubleValue(_ value: JsonValue?) -> Double? {
+		if let value = value as? Double {
+			return value
+		}
+		if let value = value as? Int {
+			return Double(value)
+		}
+		if let value = value as? NSNumber {
+			return value.doubleValue
+		}
+		return nil
+	}
+}
+
+internal enum FilterComparisonOperator {
+	case equal
+	case notEqual
+	case lessThan
+	case lessThanOrEqual
+	case greaterThan
+	case greaterThanOrEqual
 }

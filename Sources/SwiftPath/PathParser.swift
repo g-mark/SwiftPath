@@ -106,10 +106,13 @@ internal struct PathParser {
         guard scanner.mustMatch(pattern: "\\?\\s*\\(\\s*") != nil else { return nil }
         guard let (parsedPath, pathScanner) = FilterPath.parse(scanner), let pathNode = parsedPath else { return nil }
         guard case let .path(base, nodes) = pathNode else { return nil }
-        guard pathScanner.mustMatch(pattern: "\\s*==\\s*") != nil else { return nil }
+        guard let comparisonOperator = parseFilterComparisonOperator(pathScanner) else {
+            guard pathScanner.mustMatch(pattern: "\\s*\\)") != nil else { return nil }
+            return (PathNode.arrayFilter(filter: ArrayFilter(path: JsonPathPart(parts: [base] + nodes))), pathScanner)
+        }
         guard let expectedValue = parseFilterValue(pathScanner) else { return nil }
         guard pathScanner.mustMatch(pattern: "\\s*\\)") != nil else { return nil }
-        return (PathNode.arrayFilter(filter: ArrayFilter(path: JsonPathPart(parts: [base] + nodes), expectedValue: expectedValue)), pathScanner)
+        return (PathNode.arrayFilter(filter: ArrayFilter(path: JsonPathPart(parts: [base] + nodes), expectedValue: expectedValue, comparisonOperator: comparisonOperator)), pathScanner)
     })
 
     private static let SubscriptSpecifier = SubscriptPropertyList.or(IndexValueList).or(Wildcard).or(ArrayFilterSpecifier)
@@ -171,6 +174,19 @@ internal struct PathParser {
     
     Path.run("$[1].hello")
      */
+}
+
+private func parseFilterComparisonOperator(_ scanner: PathScanner) -> FilterComparisonOperator? {
+    guard let operatorString = scanner.mustMatch(pattern: "\\s*(==|!=|<=|<|>=|>)\\s*") else { return nil }
+    switch operatorString.trimmingCharacters(in: .whitespaces) {
+    case "==": return .equal
+    case "!=": return .notEqual
+    case "<": return .lessThan
+    case "<=": return .lessThanOrEqual
+    case ">": return .greaterThan
+    case ">=": return .greaterThanOrEqual
+    default: return nil
+    }
 }
 
 private func parseFilterValue(_ scanner: PathScanner) -> JsonValue? {

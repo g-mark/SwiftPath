@@ -13,11 +13,11 @@ class CompiledPathTessts: XCTestCase {
 	
 	let bookList: JsonObject = [
         "books": [
-            ["id": 1, "title": "Ready Player One", "author": "Ernest Cline", "isbn": "978-0307887436", "price": 9.99],
-            ["id": 2, "title": "Snow Crash", "author": "Neal Stephenson", "isbn": "0-553-08853-X", "price": 14.95],
-            ["id": 3, "title": "Do Androids Dream of Electric Sheep?", "author": "Philip K. Dick", "isbn": "978-0345404473", "price": 11.89],
-            ["id": 4, "title": "Slaughterhouse-Five", "author": "Kurt Vonnegut", "isbn": "9780812417753", "price": 8.96],
-            ["id": 5, "title": "Oryx and Crake", "author": "Margaret Atwood", "isbn": "978-0385503853", "price": 13.89]
+            ["id": 1, "title": "Ready Player One", "author": "Ernest Cline", "isbn": "978-0307887436", "price": 9.99, "available": true],
+            ["id": 2, "title": "Snow Crash", "author": "Neal Stephenson", "isbn": "0-553-08853-X", "price": 14.95, "available": false],
+            ["id": 3, "title": "Do Androids Dream of Electric Sheep?", "author": "Philip K. Dick", "isbn": "978-0345404473", "price": 11.89, "available": true],
+            ["id": 4, "title": "Slaughterhouse-Five", "author": "Kurt Vonnegut", "isbn": "9780812417753", "price": 8.96, "available": false],
+            ["id": 5, "title": "Oryx and Crake", "author": "Margaret Atwood", "isbn": NSNull(), "price": 13.89, "available": true]
         ]
     ]
 	
@@ -74,6 +74,56 @@ class CompiledPathTessts: XCTestCase {
 			}
 			XCTAssertEqual(object["id"] as? Int, 5)
 		}
+	}
+
+	func testArrayFilterStringLiteralPath() {
+		runTest("array filter string literal path") {
+			let result = try filterResult(path: "$.books[?(@.title == 'Snow Crash')]")
+			XCTAssertEqual(result.count, 1)
+			XCTAssertEqual((result[0] as? JsonObject)?["id"] as? Int, 2)
+		}
+	}
+
+	func testArrayFilterBoolLiteralPath() {
+		runTest("array filter bool literal path") {
+			let result = try filterResult(path: "$.books[?(@.available == true)]")
+			XCTAssertEqual(result.count, 3)
+		}
+	}
+
+	func testArrayFilterNullLiteralPath() {
+		runTest("array filter null literal path") {
+			let result = try filterResult(path: "$.books[?(@.isbn == null)]")
+			XCTAssertEqual(result.count, 1)
+			XCTAssertEqual((result[0] as? JsonObject)?["id"] as? Int, 5)
+		}
+	}
+
+	func testArrayFilterComparisonOperators() {
+		runTest("array filter comparison operators") {
+			XCTAssertEqual(try filterResult(path: "$.books[?(@.id != 5)]").count, 4)
+			XCTAssertEqual(try filterResult(path: "$.books[?(@.price < 10.0)]").count, 2)
+			XCTAssertEqual(try filterResult(path: "$.books[?(@.price <= 9.99)]").count, 2)
+			XCTAssertEqual(try filterResult(path: "$.books[?(@.price > 13.89)]").count, 1)
+			XCTAssertEqual(try filterResult(path: "$.books[?(@.price >= 13.89)]").count, 2)
+		}
+	}
+
+	func testArrayFilterExistencePath() {
+		runTest("array filter existence path") {
+			XCTAssertEqual(try filterResult(path: "$.books[?(@.isbn)]").count, 5)
+			XCTAssertEqual(try filterResult(path: "$.books[?(@.missing)]").count, 0)
+		}
+	}
+
+	private func filterResult(path: String) throws -> JsonArray {
+		guard let path = JsonPath(path) else {
+			throw TestError(message: "expected path to parse")
+		}
+		guard let array = try path.evaluate(with: bookList) as? JsonArray else {
+			throw TestError(message: "expected array result")
+		}
+		return array
 	}
     
 }
