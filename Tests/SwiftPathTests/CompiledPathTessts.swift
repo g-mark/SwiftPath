@@ -116,6 +116,27 @@ class CompiledPathTessts: XCTestCase {
 		}
 	}
 
+	func testArrayFilterLogicalAndPath() {
+		runTest("array filter logical and path") {
+			let result = try filterResult(path: "$.books[?(@.available == true && @.price < 12.0)]")
+			XCTAssertEqual(result.count, 2)
+		}
+	}
+
+	func testArrayFilterLogicalOrPath() {
+		runTest("array filter logical or path") {
+			let result = try filterResult(path: "$.books[?(@.id == 1 || @.id == 2)]")
+			XCTAssertEqual(result.count, 2)
+		}
+	}
+
+	func testArrayFilterLogicalNotPath() {
+		runTest("array filter logical not path") {
+			let result = try filterResult(path: "$.books[?(!(@.available == true))]")
+			XCTAssertEqual(result.count, 2)
+		}
+	}
+
 	private func filterResult(path: String) throws -> JsonArray {
 		guard let path = JsonPath(path) else {
 			throw TestError(message: "expected path to parse")

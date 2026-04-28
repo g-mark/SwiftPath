@@ -199,28 +199,46 @@ extension PathNode {
 }
 
 internal struct ArrayFilter {
-	let path: JsonPathPart
-	let expectedValue: JsonValue?
-	let comparisonOperator: FilterComparisonOperator?
+	let expression: FilterExpression
 
 	internal init(path: JsonPathPart) {
-		self.path = path
-		expectedValue = nil
-		comparisonOperator = nil
+		expression = .exists(path)
 	}
 
 	internal init(path: JsonPathPart, expectedValue: JsonValue, comparisonOperator: FilterComparisonOperator = .equal) {
-		self.path = path
-		self.expectedValue = expectedValue
-		self.comparisonOperator = comparisonOperator
+		expression = .comparison(path, comparisonOperator, expectedValue)
+	}
+
+	internal init(expression: FilterExpression) {
+		self.expression = expression
 	}
 
 	internal func matches(_ json: JsonValue) throws -> Bool {
-		let value = try path.evaluate(with: json, registers: [json])
-		guard let comparisonOperator = comparisonOperator, let expectedValue = expectedValue else {
-			return value != nil
+		return try expression.matches(json)
+	}
+}
+
+internal indirect enum FilterExpression {
+	case exists(JsonPathPart)
+	case comparison(JsonPathPart, FilterComparisonOperator, JsonValue)
+	case not(FilterExpression)
+	case and(FilterExpression, FilterExpression)
+	case or(FilterExpression, FilterExpression)
+
+	internal func matches(_ json: JsonValue) throws -> Bool {
+		switch self {
+		case .exists(let path):
+			return try path.evaluate(with: json, registers: [json]) != nil
+		case .comparison(let path, let comparisonOperator, let expectedValue):
+			let value = try path.evaluate(with: json, registers: [json])
+			return compare(value, expectedValue, with: comparisonOperator)
+		case .not(let expression):
+			return try !expression.matches(json)
+		case .and(let lhs, let rhs):
+			return try lhs.matches(json) && rhs.matches(json)
+		case .or(let lhs, let rhs):
+			return try lhs.matches(json) || rhs.matches(json)
 		}
-		return compare(value, expectedValue, with: comparisonOperator)
 	}
 
 	private func compare(_ lhs: JsonValue?, _ rhs: JsonValue, with comparisonOperator: FilterComparisonOperator) -> Bool {

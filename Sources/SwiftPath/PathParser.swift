@@ -103,17 +103,79 @@ internal struct PathParser {
     /// used to select items in an array
     ///   [?(@.id==5)]
     private static let ArrayFilterSpecifier = Parser<PathNode>(parse: { scanner in
-        guard scanner.mustMatch(pattern: "\\?\\s*\\(\\s*") != nil else { return nil }
+        guard let (_, filterScanner) = token(string: "?").parse(scanner) else { return nil }
+        guard let (expression, expressionScanner) = FilterExpressionParser.parse(filterScanner) else { return nil }
+        return (PathNode.arrayFilter(filter: ArrayFilter(expression: expression)), expressionScanner)
+    })
+
+    private static var FilterExpressionParser: Parser<FilterExpression> {
+        return Parser<FilterExpression>.lazy { FilterOrExpression }
+    }
+
+    private static var FilterOrExpression: Parser<FilterExpression> {
+        return FilterAndExpression.chainLeft(operator: FilterOrOperator)
+    }
+
+    private static var FilterAndExpression: Parser<FilterExpression> {
+        return FilterNotExpression.chainLeft(operator: FilterAndOperator)
+    }
+
+    private static var FilterNotExpression: Parser<FilterExpression> {
+        return Parser<FilterExpression>(parse: { scanner in
+            if let (_, notScanner) = token(string: "!").parse(scanner) {
+                guard let (expression, expressionScanner) = Self.FilterNotExpression.parse(notScanner) else { return nil }
+                return (.not(expression), expressionScanner)
+            }
+            return FilterPrimaryExpression.parse(scanner)
+        })
+    }
+
+    private static var FilterPrimaryExpression: Parser<FilterExpression> {
+        return FilterComparisonExpression.attempt().or(FilterExistenceExpression).or(FilterParenthesizedExpression)
+    }
+
+    private static var FilterComparisonExpression: Parser<FilterExpression> {
+        return Parser<FilterExpression>(parse: { scanner in
+            guard let (path, pathScanner) = parseFilterPath(scanner) else { return nil }
+            guard let comparisonOperator = parseFilterComparisonOperator(pathScanner) else { return nil }
+            guard let expectedValue = parseFilterValue(pathScanner) else { return nil }
+            return (.comparison(path, comparisonOperator, expectedValue), pathScanner)
+        })
+    }
+
+    private static var FilterExistenceExpression: Parser<FilterExpression> {
+        return Parser<FilterExpression>(parse: { scanner in
+            guard let (path, pathScanner) = parseFilterPath(scanner) else { return nil }
+            return (.exists(path), pathScanner)
+        })
+    }
+
+    private static var FilterParenthesizedExpression: Parser<FilterExpression> {
+        return Parser<FilterExpression>(parse: { scanner in
+            guard let (_, openScanner) = token(string: "(").parse(scanner) else { return nil }
+            guard let (expression, expressionScanner) = FilterExpressionParser.parse(openScanner) else { return nil }
+            guard let (_, closeScanner) = token(string: ")").parse(expressionScanner) else { return nil }
+            return (expression, closeScanner)
+        })
+    }
+
+    private static var FilterAndOperator: Parser<(FilterExpression, FilterExpression) -> FilterExpression> {
+        return token(string: "&&").map { _ in
+            { (lhs: FilterExpression, rhs: FilterExpression) in .and(lhs, rhs) }
+        }
+    }
+
+    private static var FilterOrOperator: Parser<(FilterExpression, FilterExpression) -> FilterExpression> {
+        return token(string: "||").map { _ in
+            { (lhs: FilterExpression, rhs: FilterExpression) in .or(lhs, rhs) }
+        }
+    }
+
+    private static func parseFilterPath(_ scanner: PathScanner) -> (JsonPathPart, PathScanner)? {
         guard let (parsedPath, pathScanner) = FilterPath.parse(scanner), let pathNode = parsedPath else { return nil }
         guard case let .path(base, nodes) = pathNode else { return nil }
-        guard let comparisonOperator = parseFilterComparisonOperator(pathScanner) else {
-            guard pathScanner.mustMatch(pattern: "\\s*\\)") != nil else { return nil }
-            return (PathNode.arrayFilter(filter: ArrayFilter(path: JsonPathPart(parts: [base] + nodes))), pathScanner)
-        }
-        guard let expectedValue = parseFilterValue(pathScanner) else { return nil }
-        guard pathScanner.mustMatch(pattern: "\\s*\\)") != nil else { return nil }
-        return (PathNode.arrayFilter(filter: ArrayFilter(path: JsonPathPart(parts: [base] + nodes), expectedValue: expectedValue, comparisonOperator: comparisonOperator)), pathScanner)
-    })
+        return (JsonPathPart(parts: [base] + nodes), pathScanner)
+    }
 
     private static let SubscriptSpecifier = SubscriptPropertyList.or(IndexValueList).or(Wildcard).or(ArrayFilterSpecifier)
     
