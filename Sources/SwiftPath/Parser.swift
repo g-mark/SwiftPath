@@ -14,17 +14,20 @@ internal struct Parser<T> {
 
 extension Parser {
 
+    /// create a parser whose implementation is built when it runs
     internal static func lazy(_ parser: @escaping () -> Parser<T>) -> Parser<T> {
         return Parser<T>(parse: { scanner in
             parser().parse(scanner)
         })
     }
     
+    /// run a parser against a string and return the result with unparsed remnants
     internal func run(_ string: String) -> (T, String)? {
         guard let (result, remainder) = parse(PathScanner(string: string)) else { return nil }
         return (result, remainder.contextString)
     }
     
+    /// this parser followed by another parser of the same type
     internal func followed(by rparser:Parser, required: Bool = true) -> Parser<[T]> {
         return Parser<[T]>(parse: { scanner in
             guard let (lvalue, lscanner) = self.parse(scanner) else { return nil }
@@ -36,6 +39,7 @@ extension Parser {
         })
     }
     
+    /// this parser followed by a list of parsers of the same type
     internal func followed(by rparsers:[Parser]) -> Parser<[T]> {
         return Parser<[T]>(parse: { scanner in
             guard let (lvalue, lscanner) = self.parse(scanner) else { return nil }
@@ -50,12 +54,14 @@ extension Parser {
         })
     }
     
+    /// this parser or another parser of the same type; use attempt to roll back consumed input
     internal func or(_ rparser: Parser) -> Parser<T> {
         return Parser<T>(parse: { scanner in
             return self.parse(scanner) ?? rparser.parse(scanner)
         })
     }
 
+    /// restore the scanner position if this parser fails
     internal func attempt() -> Parser<T> {
         return Parser<T>(parse: { scanner in
             scanner.pushLocation()
@@ -68,6 +74,7 @@ extension Parser {
         })
     }
 
+    /// return nil without consuming input when this parser does not match
     internal func optional() -> Parser<T?> {
         return Parser<T?>(parse: { scanner in
             scanner.pushLocation()
@@ -80,6 +87,7 @@ extension Parser {
         })
     }
 
+    /// parse left-associative binary expressions with this parser as the term
     internal func chainLeft(operator op: Parser<(T, T) -> T>) -> Parser<T> {
         return Parser<T>(parse: { scanner in
             guard let (initialValue, initialScanner) = self.parse(scanner) else { return nil }
@@ -102,6 +110,7 @@ extension Parser {
         })
     }
     
+    /// one or more repetitions of this parser
     internal func repeated() -> Parser<[T]> {
         return Parser<[T]>(parse: { scanner in
             guard let (lvalue, lscanner) = self.parse(scanner) else { return nil }
@@ -115,6 +124,7 @@ extension Parser {
         })
     }
     
+    /// one or more repetitions of this parser separated by a delimiter
     internal func repeated<A>(delimiter: Parser<A>) -> Parser<[T]> {
         return Parser<[T]>(parse: { scanner in
             guard let (lvalue, lscanner) = self.parse(scanner) else { return nil }
@@ -129,6 +139,7 @@ extension Parser {
         })
     }
     
+    /// zero or more repetitions of this parser
     internal func zeroOrMore() -> Parser<[T]> {
         return Parser<[T]>(parse: { scanner in
             guard let (lvalue, lscanner) = self.parse(scanner) else { return ([], scanner) }
@@ -142,6 +153,7 @@ extension Parser {
         })
     }
     
+    /// transform this parser's result
     internal func map<TResult>(_ transform: @escaping (T) -> TResult) -> Parser<TResult> {
         return Parser<TResult> { scanner in
             guard let (result, remainder) = self.parse(scanner) else { return nil }
@@ -153,6 +165,7 @@ extension Parser {
 }
 
 
+/// parse a literal string
 func literal(string: String) -> Parser<String> {
     return Parser<String>(parse: { scanner in
         guard scanner.mustBe(string: string) else {
@@ -163,6 +176,7 @@ func literal(string: String) -> Parser<String> {
 }
 
 
+/// parse an anchored regular expression pattern
 func pattern(string: String) -> Parser<String> {
     return Parser<String>(parse: { scanner in
         guard let match = scanner.mustMatch(pattern: string) else {
@@ -172,6 +186,7 @@ func pattern(string: String) -> Parser<String> {
     })
 }
 
+/// parse a literal string with optional surrounding whitespace
 func token(string: String) -> Parser<String> {
     return Parser<String>(parse: { scanner in
         scanner.pushLocation()
@@ -186,6 +201,7 @@ func token(string: String) -> Parser<String> {
     })
 }
 
+/// parse an anchored regular expression pattern with optional surrounding whitespace
 func tokenPattern(string: String) -> Parser<String> {
     return Parser<String>(parse: { scanner in
         scanner.pushLocation()
