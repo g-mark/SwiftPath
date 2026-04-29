@@ -102,20 +102,51 @@ internal struct PathParser {
     }
     
     /// array index value, e.g. `0` in `[0]`
-    private static let IndexValue = pattern(string: "-?[0-9]+").map { Int($0) }
+    private static let IndexValue = Parser<Int>(parse: { scanner in
+        scanner.pushLocation()
+        guard let value = scanner.mustMatch(pattern: JsonPathIntegerPattern),
+              let integer = parseJsonPathInteger(value) else {
+            scanner.popLocation()
+            return nil
+        }
+        scanner.dropLocation()
+        return (integer, scanner)
+    })
     /// comma-separated array index values, e.g. `0, 2` in `[0, 2]`
     private static let IndexValueList = IndexValue.repeated(delimiter: Comma).map { list -> PathNode in
-        let flat = list.compactMap { $0 }
-        return flat.count == 1 ? PathNode.arrayItem(index: flat[0]) : PathNode.arrayItems(indices: flat)
+        return list.count == 1 ? PathNode.arrayItem(index: list[0]) : PathNode.arrayItems(indices: list)
     }
 
-    /// array slice selector, e.g. `1:3`, `:3`, `2:`, `-2:`, or `1:5:2`
+    /// array slice selector, e.g. `1:3`, `:3`, `2:`, `-2:`, `1:5:2`, or `1:5:`
     private static let ArraySliceSpecifier = Parser<PathNode>(parse: { scanner in
-        guard let match = scanner.mustMatch(pattern: "\\s*-?[0-9]*\\s*:\\s*-?[0-9]*\\s*(?::\\s*-?[0-9]+\\s*)?") else { return nil }
+        scanner.pushLocation()
+        let optionalInteger = "(?:\(JsonPathIntegerPattern))?"
+        guard let match = scanner.mustMatch(pattern: "\\s*\(optionalInteger)\\s*:\\s*\(optionalInteger)\\s*(?::\\s*\(optionalInteger)\\s*)?") else {
+            scanner.popLocation()
+            return nil
+        }
         let parts = match.components(separatedBy: ":")
-        guard parts.count == 2 || parts.count == 3 else { return nil }
-        let step = parts.count == 3 ? optionalInt(parts[2]) : nil
-        return (PathNode.arrayRange(from: optionalInt(parts[0]), to: optionalInt(parts[1]), step: step), scanner)
+        guard parts.count == 2 || parts.count == 3 else {
+            scanner.popLocation()
+            return nil
+        }
+        guard let start = parseOptionalJsonPathInteger(parts[0]),
+              let end = parseOptionalJsonPathInteger(parts[1]) else {
+            scanner.popLocation()
+            return nil
+        }
+        let step: Int?
+        if parts.count == 3 {
+            guard let parsedStep = parseOptionalJsonPathInteger(parts[2]) else {
+                scanner.popLocation()
+                return nil
+            }
+            step = parsedStep
+        } else {
+            step = nil
+        }
+        scanner.dropLocation()
+        return (PathNode.arrayRange(from: start, to: end, step: step), scanner)
     })
 
     /// array filter selector, e.g. `[?(@.id == 5)]`
@@ -311,9 +342,28 @@ private func parseFilterValue(_ scanner: PathScanner) -> JsonValue? {
     return nil
 }
 
-/// parse an optional integer, e.g. `-2`
-private func optionalInt(_ string: String) -> Int? {
+private let JsonPathIntegerPattern = "(?:0|-?[1-9][0-9]*)"
+private let JsonPathMaximumExactInteger: Int64 = 9_007_199_254_740_991
+private let JsonPathMinimumExactInteger: Int64 = -9_007_199_254_740_991
+
+/// parse a JSONPath integer, e.g. `-2`
+private func parseJsonPathInteger(_ string: String) -> Int? {
     let trimmed = string.trimmingCharacters(in: .whitespaces)
-    guard !trimmed.isEmpty else { return nil }
-    return Int(trimmed)
+    guard trimmed.range(of: "^\(JsonPathIntegerPattern)$", options: .regularExpression) != nil else {
+        return nil
+    }
+    guard let value = Int64(trimmed),
+          value >= JsonPathMinimumExactInteger,
+          value <= JsonPathMaximumExactInteger else {
+        return nil
+    }
+    return Int(value)
+}
+
+/// parse an optional JSONPath integer, e.g. `-2` or an omitted slice bound
+private func parseOptionalJsonPathInteger(_ string: String) -> Int?? {
+    let trimmed = string.trimmingCharacters(in: .whitespaces)
+    guard !trimmed.isEmpty else { return .some(nil) }
+    guard let value = parseJsonPathInteger(trimmed) else { return nil }
+    return .some(value)
 }

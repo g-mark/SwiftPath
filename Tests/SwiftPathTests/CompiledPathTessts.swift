@@ -85,6 +85,16 @@ struct CompiledPathTessts {
 	}
 
 	@Test
+	func testArraySliceOnNonArraySelectsNothing() {
+		runTest("array slice on non-array") {
+			let path = try #require(JsonPath("$.name[1:3]"), "expected path to parse")
+			let result = try path.evaluate(with: ["name": "SwiftPath"])
+			let array = try #require(result as? JsonArray, "expected an array result")
+			#expect(array.isEmpty)
+		}
+	}
+
+	@Test
 	func testArrayFilterPath() {
 		runTest("array filter path") {
 			let path = try #require(JsonPath("$.books[?(@.id==5)]"), "expected path to parse")

@@ -161,7 +161,7 @@ extension PathNode {
 		
 		case .arrayRange(let lowerBound, let upperBound, let step):
 			guard let node = json as? JsonArray else {
-				throw JsonPathEvaluateError.expectingAnArray
+				return JsonArray()
 			}
 			return node.slice(from: lowerBound, to: upperBound, by: step ?? 1)
 

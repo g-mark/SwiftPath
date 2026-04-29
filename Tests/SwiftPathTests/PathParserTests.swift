@@ -162,7 +162,10 @@ struct PathParserTests {
             ("$.array[-2:]", -2, nil, nil),
             ("$.array[1:5:2]", 1, 5, 2),
             ("$.array[::-1]", nil, nil, -1),
-            ("$.array[::0]", nil, nil, 0)
+            ("$.array[::0]", nil, nil, 0),
+            ("$.array[1:5:]", 1, 5, nil),
+            ("$.array[::]", nil, nil, nil),
+            ("$.array[1::]", 1, nil, nil)
         ]
 
         for (path, lowerBound, upperBound, step) in tests {
@@ -180,6 +183,62 @@ struct PathParserTests {
             #expect(from == lowerBound)
             #expect(to == upperBound)
             #expect(parsedStep == step)
+        }
+    }
+
+    @Test
+    func testArraySliceRejectsInvalidIntegers() {
+        let invalidPaths = [
+            "$.array[01:3]",
+            "$.array[-01:3]",
+            "$.array[1:03]",
+            "$.array[1:3:02]",
+            "$.array[9007199254740992:3]",
+            "$.array[-9007199254740992:3]"
+        ]
+
+        for path in invalidPaths {
+            #expect(PathParser.parse(path: path) == nil, "expected \(path) to fail parsing")
+        }
+    }
+
+    @Test
+    func testArraySliceAcceptsIJsonIntegerBoundaries() {
+        let validPaths = [
+            "$.array[9007199254740991:9007199254740991]",
+            "$.array[-9007199254740991:-9007199254740991]",
+            "$.array[0:0]"
+        ]
+
+        for path in validPaths {
+            #expect(PathParser.parse(path: path) != nil, "expected \(path) to parse")
+        }
+    }
+
+    @Test
+    func testArrayIndexRejectsInvalidIntegers() {
+        let invalidPaths = [
+            "$.array[01]",
+            "$.array[-01]",
+            "$.array[9007199254740992]",
+            "$.array[-9007199254740992]"
+        ]
+
+        for path in invalidPaths {
+            #expect(PathParser.parse(path: path) == nil, "expected \(path) to fail parsing")
+        }
+    }
+
+    @Test
+    func testArrayIndexAcceptsIJsonIntegerBoundaries() {
+        let validPaths = [
+            "$.array[9007199254740991]",
+            "$.array[-9007199254740991]",
+            "$.array[0]"
+        ]
+
+        for path in validPaths {
+            #expect(PathParser.parse(path: path) != nil, "expected \(path) to parse")
         }
     }
 
