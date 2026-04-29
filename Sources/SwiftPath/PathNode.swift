@@ -136,17 +136,19 @@ extension PathNode {
             
 		case .arrayItem(let index):
 			guard let node = json as? JsonArray else {
-				throw JsonPathEvaluateError.expectingAnArray
+				return JsonArray()
 			}
-			return try node.value(at: index)
+			return node.value(at: index) ?? JsonArray()
 		
 		case .arrayItems(let indices):
 			guard let node = json as? JsonArray else {
-				throw JsonPathEvaluateError.expectingAnArray
+				return JsonArray()
 			}
 			var slice: JsonArray = []
 			for idx in indices {
-				slice.append(try node.value(at: idx))
+				if let value = node.value(at: idx) {
+                    slice.append(value)
+                }
 			}
 			return slice
 

@@ -94,6 +94,43 @@ struct PathNodeTests {
 			try Expecting.string("three", result: result)
 		}
 	}
+
+    /// [-5]
+    @Test
+    func testArrayItemFromStartUsingNegativeCount() {
+        let node = PathNode.arrayItem(index: -5)
+        runTest("array item from start using negative count") {
+            let result = try node.process(with: jsonArray, registers: [])
+            try Expecting.string("zero", result: result)
+        }
+    }
+
+    @Test
+    func testArrayItemReturnsEmptyForOutOfBoundsIndex() {
+        let node = PathNode.arrayItem(index: 99)
+        runTest("array item out of bounds") {
+            let result = try node.process(with: jsonArray, registers: [])
+            try Expecting.array([], result: result)
+        }
+    }
+
+    @Test
+    func testArrayItemReturnsEmptyForNegativeOutOfBoundsIndex() {
+        let node = PathNode.arrayItem(index: -6)
+        runTest("array item negative out of bounds") {
+            let result = try node.process(with: jsonArray, registers: [])
+            try Expecting.array([], result: result)
+        }
+    }
+
+    @Test
+    func testArrayItemReturnsEmptyForNonArray() {
+        let node = PathNode.arrayItem(index: 0)
+        runTest("array item on non-array") {
+            let result = try node.process(with: jsonObject, registers: [])
+            try Expecting.array([], result: result)
+        }
+    }
 	
 	/// [1, 3]
 	@Test
@@ -104,6 +141,15 @@ struct PathNodeTests {
 			try Expecting.array(["one", "three"], result: result)
 		}
 	}
+
+    @Test
+    func testArrayItemsSkipsOutOfBoundsIndices() {
+        let node = PathNode.arrayItems(indices: [1, 99, -5, -6, 3])
+        runTest("array items skip out of bounds") {
+            let result = try node.process(with: jsonArray, registers: [])
+            try Expecting.array(["one", "zero", "three"], result: result)
+        }
+    }
 	
 	/// [1:3] 1 up to 3 (exclusive);
 	@Test

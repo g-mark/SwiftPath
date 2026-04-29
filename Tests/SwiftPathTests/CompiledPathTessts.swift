@@ -33,6 +33,33 @@ struct CompiledPathTessts {
 			try Expecting.string("Neal Stephenson", result: result)
 		}
     }
+
+    @Test
+    func testInvalidArrayIndexPathSelectsNothing() {
+        runTest("invalid array index path") {
+            let path = try #require(JsonPath("$.books[99]"), "expected path to parse")
+            let result = try path.evaluate(with: bookList)
+            try Expecting.array([], result: result)
+        }
+    }
+
+    @Test
+    func testNegativeArrayIndexAtCountSelectsFirstItem() {
+        runTest("negative array index at count") {
+            let path = try #require(JsonPath("$.books[-5].title"), "expected path to parse")
+            let result = try path.evaluate(with: bookList)
+            try Expecting.string("Ready Player One", result: result)
+        }
+    }
+
+    @Test
+    func testArrayIndexPathOnNonArraySelectsNothing() {
+        runTest("array index path on non-array") {
+            let path = try #require(JsonPath("$.name[0]"), "expected path to parse")
+            let result = try path.evaluate(with: ["name": "SwiftPath"])
+            try Expecting.array([], result: result)
+        }
+    }
 	
 	/// $.books.price.sum()
 	@Test
