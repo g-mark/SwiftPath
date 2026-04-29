@@ -56,6 +56,28 @@ struct CompiledPathTessts {
 	}
 
 	@Test
+	func testDotWildcardPathOnArray() {
+		runTest("dot wildcard path on array") {
+			let path = try #require(JsonPath("$.books.*"), "expected path to parse")
+			let result = try path.evaluate(with: bookList)
+			let array = try #require(result as? JsonArray, "expected an array result")
+			#expect(array.count == 5)
+		}
+	}
+
+	@Test
+	func testBracketWildcardPathOnObject() {
+		runTest("bracket wildcard path on object") {
+			let path = try #require(JsonPath("$.book[*]"), "expected path to parse")
+			let result = try path.evaluate(with: ["book": ["title": "Dune", "price": 10]])
+			let array = try #require(result as? JsonArray, "expected an array result")
+			#expect(array.count == 2)
+			#expect(array.contains { ($0 as? String) == "Dune" })
+			#expect(array.contains { ($0 as? Int) == 10 })
+		}
+	}
+
+	@Test
 	func testArraySlicePaths() {
 		runTest("array slice paths") {
 			let bounded = try titles(path: "$.books[1:3]")

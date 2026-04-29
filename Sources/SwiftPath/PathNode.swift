@@ -132,10 +132,7 @@ extension PathNode {
             return values
 		
         case .values:
-            guard let node = json as? JsonObject else {
-                throw JsonPathEvaluateError.expectingAnObject
-            }
-            return Array(node.values)
+            return wildcardValues(from: json)
             
 		case .arrayItem(let index):
 			guard let node = json as? JsonArray else {
@@ -154,10 +151,7 @@ extension PathNode {
 			return slice
 
 		case .arrayValues:
-			guard let node = json as? JsonArray else {
-				throw JsonPathEvaluateError.expectingAnArray
-			}
-			return node
+			return wildcardValues(from: json)
 		
 		case .arrayRange(let lowerBound, let upperBound, let step):
 			guard let node = json as? JsonArray else {
@@ -232,6 +226,16 @@ private extension Array where Element == JsonValue {
 	func clamp(_ value: Int, min lowerBound: Int, max upperBound: Int) -> Int {
 		return Swift.min(Swift.max(value, lowerBound), upperBound)
 	}
+}
+
+private func wildcardValues(from json: JsonValue) -> JsonArray {
+    if let node = json as? JsonObject {
+        return Array(node.values)
+    }
+    if let node = json as? JsonArray {
+        return node
+    }
+    return []
 }
 
 internal struct ArrayFilter: Sendable {

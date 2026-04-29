@@ -33,6 +33,24 @@ struct PathNodeTests {
             try Expecting.array(["the name value", "the summary value", "the three value"], ordered: false, result: result)
         }
     }
+
+    @Test
+    func testDotWildcardReturnsArrayItems() {
+        let node = PathNode.values
+        runTest("dot wildcard on array") {
+            let result = try node.process(with: jsonArray, registers: [])
+            try Expecting.array(["zero", "one", "two", "three", "four"], result: result)
+        }
+    }
+
+    @Test
+    func testBracketWildcardReturnsObjectValues() {
+        let node = PathNode.arrayValues
+        runTest("bracket wildcard on object") {
+            let result = try node.process(with: jsonObject, registers: [])
+            try Expecting.array(["the name value", "the summary value", "the three value"], ordered: false, result: result)
+        }
+    }
 	
 	@Test
 	func testCollatedProperty() {
