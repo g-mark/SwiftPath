@@ -8,6 +8,8 @@
 
 import Foundation
 
+/// Note: These aggregate functions are not currently exposed in the public API / reachable via JSONPath.
+/// These may be removed, since they are not JSONPath-copliant.
 internal enum ArrayFunction {
 	
 	/// smallest value  requires an array of Doubles where count > 0
