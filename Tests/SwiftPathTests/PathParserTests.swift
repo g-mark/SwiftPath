@@ -85,6 +85,50 @@ struct PathParserTests {
     }
 
     @Test
+    func testQuotedPropertyEscapesOnRoot() throws {
+        let tests = [
+            (#"$['']"#, ""),
+            (#"$['quote\'key']"#, "quote'key"),
+            (#"$["quote\"key"]"#, "quote\"key"),
+            (#"$['slash\/key']"#, "slash/key"),
+            (#"$['backslash\\key']"#, "backslash\\key"),
+            (#"$['line\nkey']"#, "line\nkey"),
+            (#"$['tab\tkey']"#, "tab\tkey"),
+            (#"$['form\ffeed']"#, "form\u{000C}feed"),
+            (#"$['carriage\rreturn']"#, "carriage\rreturn"),
+            (#"$['back\bspace']"#, "back\u{0008}space"),
+            (#"$['snowman\u2603']"#, "snowman\u{2603}"),
+            (#"$['tile\uD83C\uDC41']"#, "tile\u{1F041}")
+        ]
+
+        for (path, expectedName) in tests {
+            let nodes = try rootNodes(path)
+            #expect(nodes.count == 1)
+            guard case let .property(name) = nodes[0] else {
+                Issue.record("expecting a property node")
+                continue
+            }
+            #expect(name == expectedName, "unexpected decoded name for \(path)")
+        }
+    }
+
+    @Test
+    func testQuotedPropertyRejectsInvalidEscapes() {
+        let invalidPaths = [
+            #"$['bad\x']"#,
+            #"$['bad\uD800']"#,
+            #"$['bad\uD83C']"#,
+            #"$['bad\uD83C\u0041']"#,
+            #"$['bad\U2603']"#,
+            "$['bad\nnewline']"
+        ]
+
+        for path in invalidPaths {
+            #expect(PathParser.parse(path: path) == nil, "expected \(path) to fail parsing")
+        }
+    }
+
+    @Test
     func testQuotedPropertiesOnRoot() throws {
         let nodes = try rootNodes("$[\"property\", 'another'=>'new-name', 'three']")
         #expect(nodes.count == 1)

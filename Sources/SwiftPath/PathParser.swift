@@ -39,22 +39,11 @@ internal struct PathParser {
         return PathNode.property(name: list[1])
     }
         
-    /// double quote delimiter, e.g. `"` in `["title"]`
-    private static let Quote = literal(string: "\"")
-    /// single quote delimiter, e.g. `'` in `['title']`
-    private static let SingleQuote = literal(string: "'")
     /// comma delimiter with optional surrounding whitespace, e.g. `, ` in `['a', 'b']`
     private static let Comma = pattern(string: "\\s*,\\s*")
-    
-    /// contents inside a quoted property name, e.g. `title` in `['title']`
-    private static let QuotedPropertyNameContent = pattern(string: "[^\t\r\n\"\']+")
-    /// double-quoted property name, e.g. `"title"`
-    private static let DoubleQuotedPropertyName = Quote.followed(by: [QuotedPropertyNameContent, Quote]).map { $0[1] }
-    /// single-quoted property name, e.g. `'title'`
-    private static let SingleQuotedPropertyName = SingleQuote.followed(by: [QuotedPropertyNameContent, SingleQuote]).map { $0[1] }
-    
-    /// quoted property name, e.g. `"title"` or `'title'`
-    private static let QuotedPropertyName = DoubleQuotedPropertyName.or(SingleQuotedPropertyName)
+
+    /// quoted property name with JSONPath escape decoding, e.g. `"title"` or `'line\nkey'`
+    private static let QuotedPropertyName = Parser<String>(parse: parseJsonPathStringLiteral)
 
     /// opening bracket in filter paths, e.g. `[` in `@['id']`
     private static let FilterOpenBracket = pattern(string: "\\[\\s*").map { _ in PathNode.noop }
@@ -345,6 +334,131 @@ private func parseFilterValue(_ scanner: PathScanner) -> JsonValue? {
 private let JsonPathIntegerPattern = "(?:0|-?[1-9][0-9]*)"
 private let JsonPathMaximumExactInteger: Int64 = 9_007_199_254_740_991
 private let JsonPathMinimumExactInteger: Int64 = -9_007_199_254_740_991
+
+/// parse and decode a single- or double-quoted JSONPath string literal, e.g. `'line\nkey'`
+private func parseJsonPathStringLiteral(_ scanner: PathScanner) -> (String, PathScanner)? {
+    let source = scanner.source
+    var index = scanner.startIndex
+    guard index < scanner.endIndex else { return nil }
+
+    let delimiter = source[index]
+    guard delimiter == "'" || delimiter == "\"" else { return nil }
+    index = source.index(after: index)
+
+    var value = ""
+    while index < scanner.endIndex {
+        let character = source[index]
+
+        if character == delimiter {
+            let consumed = source[scanner.startIndex...index].count
+            scanner.advance(by: consumed)
+            return (value, scanner)
+        }
+
+        if character == "\\" {
+            guard let (escaped, nextIndex) = decodeJsonPathEscape(in: source, at: index, endIndex: scanner.endIndex, delimiter: delimiter) else {
+                return nil
+            }
+            value.append(escaped)
+            index = nextIndex
+            continue
+        }
+
+        guard isValidUnescapedJsonPathStringCharacter(character) else {
+            return nil
+        }
+        value.append(character)
+        index = source.index(after: index)
+    }
+
+    return nil
+}
+
+private func decodeJsonPathEscape(in source: String, at backslashIndex: String.Index, endIndex: String.Index, delimiter: Character) -> (String, String.Index)? {
+    let escapeIndex = source.index(after: backslashIndex)
+    guard escapeIndex < endIndex else { return nil }
+
+    switch source[escapeIndex] {
+    case "b":
+        return ("\u{0008}", source.index(after: escapeIndex))
+    case "f":
+        return ("\u{000C}", source.index(after: escapeIndex))
+    case "n":
+        return ("\n", source.index(after: escapeIndex))
+    case "r":
+        return ("\r", source.index(after: escapeIndex))
+    case "t":
+        return ("\t", source.index(after: escapeIndex))
+    case "/":
+        return ("/", source.index(after: escapeIndex))
+    case "\\":
+        return ("\\", source.index(after: escapeIndex))
+    case "\"":
+        guard delimiter == "\"" else { return nil }
+        return ("\"", source.index(after: escapeIndex))
+    case "'":
+        guard delimiter == "'" else { return nil }
+        return ("'", source.index(after: escapeIndex))
+    case "u":
+        return decodeUnicodeEscape(in: source, at: escapeIndex, endIndex: endIndex)
+    default:
+        return nil
+    }
+}
+
+private func decodeUnicodeEscape(in source: String, at uIndex: String.Index, endIndex: String.Index) -> (String, String.Index)? {
+    guard let (codeUnit, nextIndex) = parseHexCodeUnit(in: source, after: uIndex, endIndex: endIndex) else {
+        return nil
+    }
+
+    if isHighSurrogate(codeUnit) {
+        guard nextIndex < endIndex,
+              source[nextIndex] == "\\",
+              source.index(after: nextIndex) < endIndex,
+              source[source.index(after: nextIndex)] == "u",
+              let (lowSurrogate, finalIndex) = parseHexCodeUnit(in: source, after: source.index(after: nextIndex), endIndex: endIndex),
+              isLowSurrogate(lowSurrogate) else {
+            return nil
+        }
+
+        let scalarValue = 0x1_0000 + ((codeUnit - 0xD800) << 10) + (lowSurrogate - 0xDC00)
+        guard let scalar = UnicodeScalar(scalarValue) else { return nil }
+        return (String(scalar), finalIndex)
+    }
+
+    guard !isLowSurrogate(codeUnit), let scalar = UnicodeScalar(codeUnit) else {
+        return nil
+    }
+    return (String(scalar), nextIndex)
+}
+
+private func parseHexCodeUnit(in source: String, after uIndex: String.Index, endIndex: String.Index) -> (Int, String.Index)? {
+    var index = source.index(after: uIndex)
+    var hex = ""
+    for _ in 0..<4 {
+        guard index < endIndex, source[index].isHexDigit else {
+            return nil
+        }
+        hex.append(source[index])
+        index = source.index(after: index)
+    }
+    guard let value = Int(hex, radix: 16) else { return nil }
+    return (value, index)
+}
+
+private func isValidUnescapedJsonPathStringCharacter(_ character: Character) -> Bool {
+    return character.unicodeScalars.allSatisfy { scalar in
+        scalar.value >= 0x20 && scalar.value != 0x5C
+    }
+}
+
+private func isHighSurrogate(_ value: Int) -> Bool {
+    return value >= 0xD800 && value <= 0xDBFF
+}
+
+private func isLowSurrogate(_ value: Int) -> Bool {
+    return value >= 0xDC00 && value <= 0xDFFF
+}
 
 /// parse a JSONPath integer, e.g. `-2`
 private func parseJsonPathInteger(_ string: String) -> Int? {

@@ -60,6 +60,28 @@ struct CompiledPathTessts {
             try Expecting.array([], result: result)
         }
     }
+
+    @Test
+    func testEscapedNameSelectorPath() {
+        runTest("escaped name selector path") {
+            let json: JsonObject = [
+                "quote'key": "apostrophe",
+                "line\nkey": "newline",
+                "snowman\u{2603}": "unicode",
+                "tile\u{1F041}": "surrogate"
+            ]
+
+            let apostrophe = try #require(JsonPath(#"$['quote\'key']"#), "expected path to parse")
+            let newline = try #require(JsonPath(#"$['line\nkey']"#), "expected path to parse")
+            let unicode = try #require(JsonPath(#"$['snowman\u2603']"#), "expected path to parse")
+            let surrogate = try #require(JsonPath(#"$['tile\uD83C\uDC41']"#), "expected path to parse")
+
+            try Expecting.string("apostrophe", result: try apostrophe.evaluate(with: json))
+            try Expecting.string("newline", result: try newline.evaluate(with: json))
+            try Expecting.string("unicode", result: try unicode.evaluate(with: json))
+            try Expecting.string("surrogate", result: try surrogate.evaluate(with: json))
+        }
+    }
 	
 	/// $.books.price.sum()
 	@Test
