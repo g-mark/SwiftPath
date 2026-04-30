@@ -18,6 +18,10 @@ let package = Package(
             dependencies: []),
         .testTarget(
             name: "SwiftPathTests",
-            dependencies: ["SwiftPath"]),
+            dependencies: ["SwiftPath"],
+            resources: [
+                .copy("Resources/cts.json"),
+                .copy("Resources/cts-known-failures.json"),
+            ]),
     ]
 )
