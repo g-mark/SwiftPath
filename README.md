@@ -15,7 +15,7 @@ SwiftPath allows you to keep your data source **and** your data mapping dynamic.
 SwiftPath is available through Swift Package Manager.
 
 ```swift
-.package(url: "https://github.com/g-mark/SwiftPath.git", from: "0.4.0")
+.package(url: "https://github.com/g-mark/SwiftPath.git", from: "1.0.0")
 ```
 
 ## Documentation
@@ -71,6 +71,9 @@ $['name', 'value'=>'id']
 ## RFC 9535 Compatibility
 
 This section summarizes SwiftPath's public string parser against [RFC 9535](https://www.rfc-editor.org/rfc/rfc9535.html), Section 2.
+
+> [!NOTE]
+> SwiftPath does _not_ use or return Nodelist types. It returns only the value results of the path query.
 
 ### Supported RFC functionality
 
