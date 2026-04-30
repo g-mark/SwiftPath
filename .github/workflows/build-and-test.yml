@@ -8,62 +8,57 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test-macOS-12:
-    runs-on: macos-12
-    strategy:
-      fail-fast: false
-      matrix:
-        xcode-version: [13.4.1, 14.0.1]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        
-      - name: Install dependencies in Gemfile
-        run: gem install fastlane
-      
-      - name: Build & test, using Xcode ${{ matrix.xcode-version }}
-        run: fastlane scan --project "SwiftPath.xcodeproj" --scheme "SwiftPath iOS" --devices "iPhone 11" --clean
-        env:
-         DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode-version }}.app
-
-      - name: Post job cleanup
-        run: git clean -ffdxq
-        if: always()
-        continue-on-error: true
-  
-  build-and-test-macOS-13:
-    runs-on: macos-13
-    strategy:
-      fail-fast: false
-      matrix:
-        xcode-version: [14.2, 14.3]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        
-      - name: Install dependencies in Gemfile
-        run: gem install fastlane
-      
-      - name: Build & test, using Xcode ${{ matrix.xcode-version }}
-        run: fastlane scan --project "SwiftPath.xcodeproj" --scheme "SwiftPath iOS" --devices "iPhone 13" --clean
-        env:
-          DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode-version }}.app/Contents/Developer
-
-      - name: Post job cleanup
-        run: git clean -ffdxq
-        if: always()
-        continue-on-error: true
-
-  build-and-test-swiftpm:
+  test-macos:
+    name: Test macOS
     runs-on: macos-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+      - name: Show Swift version
+        run: swift --version
       - name: Build
         run: swift build -v
       - name: Run tests
         run: swift test -v
-      - name: Post job cleanup
-        run: git clean -ffdxq
-        if: always()
-        continue-on-error: true
+
+  test-ios:
+    name: Test iOS
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Show Xcode version
+        run: xcodebuild -version
+      - name: List package schemes
+        run: xcodebuild -list
+      - name: Run tests
+        run: |
+          device_id="$(xcrun simctl list devices available | awk -F '[()]' '/iPhone/ && $2 ~ /^[0-9A-F-]+$/ { print $2; exit }')"
+          if [ -z "$device_id" ]; then
+            echo "No available iPhone simulator found"
+            xcrun simctl list devices available
+            exit 1
+          fi
+
+          xcodebuild test \
+            -scheme SwiftPath \
+            -destination "platform=iOS Simulator,id=$device_id" \
+            -derivedDataPath .build/xcodebuild/iOS \
+            CODE_SIGNING_ALLOWED=NO
+
+  test-linux:
+    name: Test Linux
+    runs-on: ubuntu-latest
+    container: swift:6.1
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Show Swift version
+        run: swift --version
+      - name: Build
+        run: swift build -v
+      - name: Run tests
+        run: swift test -v

@@ -11,7 +11,7 @@ import Foundation
 @available(*, deprecated, renamed: "JsonPath")
 public typealias SwiftPath = JsonPath
 
-public struct JsonPath {
+public struct JsonPath: Sendable {
     
     /// create a JsonPath from a JSONPath string
     /// will fail if the json path is invalid
@@ -65,7 +65,7 @@ public struct JsonPath {
 	}
 }
 
-internal struct JsonPathPart {
+internal struct JsonPathPart: Sendable {
 	let parts: [PathNode]
 	
 	internal func evaluate(with json:JsonValue, registers:[JsonValue]) throws -> JsonValue? {

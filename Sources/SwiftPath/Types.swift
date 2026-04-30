@@ -15,15 +15,12 @@ public typealias JsonArray = [JsonValue]
 
 extension Array where Element == JsonValue {
     
-	internal func value(at index: Int) throws -> JsonValue {
-		// negative index counts from the end
-		if index < 0 && abs(index) < count {
-			return self[count + index]
-		}
-		if index < count {
-			return self[index]
-		}
-		throw JsonPathEvaluateError.indexOutOfBounds
+	internal func value(at index: Int) -> JsonValue? {
+        let normalizedIndex = index >= 0 ? index : count + index
+        guard normalizedIndex >= 0, normalizedIndex < count else {
+            return nil
+        }
+		return self[normalizedIndex]
 	}
     
     internal func doubles() throws -> [Double] {

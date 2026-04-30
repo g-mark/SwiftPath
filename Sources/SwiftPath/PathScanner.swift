@@ -8,10 +8,12 @@
 
 import Foundation
 
-final class PathScanner {
+// @unchecked Sendable: PathScanner is created, used, and discarded within a single
+// synchronous call on one thread. It never escapes across isolation boundaries.
+final class PathScanner: @unchecked Sendable {
     
 	let source: String
-	private (set) var startIndex: String.Index
+	private(set) var startIndex: String.Index
 	let endIndex: String.Index
 	
 	private var indexStack:[String.Index]
@@ -29,6 +31,9 @@ final class PathScanner {
 	func popLocation() {
 		startIndex = indexStack.removeLast()
 	}
+	func dropLocation() {
+		indexStack.removeLast()
+	}
 	
 	var hasMore: Bool { return startIndex < endIndex }
 	
@@ -41,9 +46,9 @@ final class PathScanner {
 	}
 	
 	func mustMatch(pattern: String ) -> String? {
-		if let match = matches(pattern: pattern) {
-			advance(by: match.count)
-			return match
+		if let match = match(pattern: pattern) {
+			startIndex = match.upperBound
+			return match.value
 		}
 		return nil
 	}
@@ -54,10 +59,25 @@ final class PathScanner {
 	}
 	
 	func matches(pattern: String) -> String? {
-		if let found = source.range(of: pattern, options: [.regularExpression, .anchored], range: startIndex..<endIndex) {
-			return String(source[found])
+		return match(pattern: pattern)?.value
+	}
+
+	private func match(pattern: String) -> (value: String, upperBound: String.Index)? {
+		guard let found = source.range(of: pattern, options: [.regularExpression, .anchored], range: startIndex..<endIndex) else {
+			return nil
 		}
-		return nil
+        #if os(Linux)
+            // https://github.com/swiftlang/swift-corelibs-foundation/issues/5467
+            // With `.anchored`, any real match must begin at the scanner's current
+            // position. swift-corelibs-foundation can report a bogus empty match at
+            // `source.startIndex` when matching a non-zero range on Linux; rejecting
+            // ranges that do not begin at `startIndex` filters that out without
+            // copying the remaining input into a temporary substring.
+            guard found.lowerBound == startIndex else {
+                return nil
+            }
+        #endif
+		return (String(source[found]), found.upperBound)
 	}
 	
 	func skipWhitespace() {
